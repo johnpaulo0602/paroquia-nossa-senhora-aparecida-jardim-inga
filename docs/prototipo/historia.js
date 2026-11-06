@@ -1,0 +1,2 @@
+// Native HTML timeline: every milestone remains readable without animation.
+document.querySelectorAll('[data-history-target]').forEach(button=>button.addEventListener('click',()=>{const item=document.getElementById((button.dataset.timeline||'history')+'-'+button.dataset.historyTarget);item.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});button.closest('nav').querySelectorAll('[data-history-target]').forEach(other=>other.setAttribute('aria-current',String(other===button)));}));
