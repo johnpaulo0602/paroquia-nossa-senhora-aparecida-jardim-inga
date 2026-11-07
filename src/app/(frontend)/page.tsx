@@ -1,59 +1,148 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
+import type { Highlight } from '@/payload-types'
+import { HomeSections } from '@/components/home/HomeSections'
+import type { HeroSlide } from '@/components/home/HeroCarousel'
+import { activeDuring, getCMS } from '@/lib/payload'
 
-import config from '@/payload.config'
-import './styles.css'
+function highlightDestination(highlight: Highlight) {
+  if (highlight.destinationType === 'post' && highlight.post) {
+    if (typeof highlight.post !== 'number') {
+      return { href: `/comunicacao/${highlight.post.slug}`, external: false }
+    }
+  }
 
-export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  if (highlight.destinationType === 'event' && highlight.event) {
+    if (typeof highlight.event !== 'number') {
+      return { href: `/eventos/${highlight.event.slug}`, external: false }
+    }
+  }
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  if (highlight.destinationType === 'internal' && highlight.internalPath?.startsWith('/')) {
+    return { href: highlight.internalPath, external: false }
+  }
+
+  if (highlight.destinationType === 'external' && highlight.externalUrl) {
+    return { href: highlight.externalUrl, external: true }
+  }
+
+  return { href: '/comunicacao', external: false }
+}
+
+function toSlide(highlight: Highlight): HeroSlide {
+  const post = highlight.post && typeof highlight.post !== 'number' ? highlight.post : null
+  const event = highlight.event && typeof highlight.event !== 'number' ? highlight.event : null
+
+  return {
+    id: highlight.id,
+    title: highlight.title || post?.title || event?.title || 'Nossa Senhora Aparecida',
+    eyebrow: highlight.eyebrow || 'Paróquia · Jardim Ingá',
+    summary:
+      highlight.summary ||
+      post?.summary ||
+      event?.summary ||
+      'Acompanhe as informações e os encontros da nossa comunidade.',
+    image: highlight.image || post?.cover || event?.cover,
+    ctaLabel: highlight.ctaLabel || 'Saiba mais',
+    ...highlightDestination(highlight),
+  }
+}
+
+export default async function Home() {
+  const payload = await getCMS()
+  const now = new Date()
+  const nowISO = now.toISOString()
+
+  const [home, highlights, posts, events, communities, projects, sponsors] = await Promise.all([
+    payload.findGlobal({
+      slug: 'home-page',
+      depth: 2,
+      draft: false,
+      overrideAccess: false,
+    }),
+    payload.find({
+      collection: 'highlights',
+      depth: 2,
+      draft: false,
+      limit: 6,
+      overrideAccess: false,
+      sort: 'order',
+      where: {
+        and: [{ placement: { contains: 'home' } }, activeDuring(now)],
+      },
+    }),
+    payload.find({
+      collection: 'posts',
+      depth: 2,
+      draft: false,
+      limit: 6,
+      overrideAccess: false,
+      sort: '-publishedAt',
+    }),
+    payload.find({
+      collection: 'events',
+      depth: 2,
+      draft: false,
+      limit: 3,
+      overrideAccess: false,
+      sort: 'startsAt',
+      where: {
+        and: [{ startsAt: { greater_than_equal: nowISO } }, { archived: { not_equals: true } }],
+      },
+    }),
+    payload.find({
+      collection: 'communities',
+      depth: 2,
+      draft: false,
+      limit: 12,
+      overrideAccess: false,
+      sort: 'order',
+      where: { active: { equals: true } },
+    }),
+    payload.find({
+      collection: 'projects',
+      depth: 2,
+      draft: false,
+      limit: 3,
+      overrideAccess: false,
+      sort: 'order',
+      where: { active: { equals: true } },
+    }),
+    payload.find({
+      collection: 'sponsors',
+      depth: 2,
+      draft: false,
+      limit: 20,
+      overrideAccess: false,
+      sort: 'order',
+      where: {
+        and: [{ approved: { equals: true } }, activeDuring(now)],
+      },
+    }),
+  ])
+
+  const slides: HeroSlide[] = highlights.docs.length
+    ? highlights.docs.map(toSlide)
+    : [
+        {
+          id: 'welcome',
+          title: 'Nossa Senhora Aparecida',
+          eyebrow: 'Paróquia · Jardim Ingá',
+          summary:
+            'Este espaço reunirá os destaques da nossa comunidade. Enquanto isso, conheça a paróquia e participe da nossa caminhada.',
+          ctaLabel: 'Conheça a paróquia',
+          href: '/paroquia',
+        },
+      ]
 
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
-        </div>
-      </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
+    <HomeSections
+      communities={communities.docs}
+      events={events.docs}
+      home={home}
+      liturgyUrl={null}
+      posts={posts.docs}
+      projects={projects.docs}
+      slides={slides}
+      sponsors={sponsors.docs}
+    />
   )
 }

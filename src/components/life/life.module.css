@@ -1,0 +1,1193 @@
+.pageInner {
+  --life-navy: var(--navy, #102a4c);
+  --life-blue: var(--blue, #7ca9ce);
+  --life-ink: var(--ink, #344355);
+  --life-muted: #687f94;
+  --life-line: var(--line, #e0e7ee);
+  --life-soft: #f2f6fa;
+
+  padding-bottom: 90px;
+  color: var(--life-ink);
+}
+
+.pageInner h1,
+.pageInner h2,
+.pageInner h3 {
+  color: var(--life-navy);
+  font-family: var(--display, inherit);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.pageInner p {
+  line-height: 1.85;
+}
+
+.pageInner a:focus-visible,
+.pageInner select:focus-visible {
+  outline: 3px solid var(--gold, #b9944f);
+  outline-offset: 4px;
+}
+
+.topicNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 5px 0 46px;
+}
+
+.topicNav a {
+  border: 1px solid var(--life-line);
+  border-radius: 999px;
+  color: var(--life-navy);
+  font-size: 0.78rem;
+  line-height: 1.3;
+  padding: 10px 19px;
+  text-decoration: none;
+}
+
+.topicNav a[aria-current='page'],
+.topicNav a:hover {
+  background: var(--life-navy);
+  border-color: var(--life-navy);
+  color: #fff;
+}
+
+.sectionIntro {
+  margin-bottom: 28px;
+  max-width: 700px;
+}
+
+.sectionIntro h2,
+.sectionHeading h2 {
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  line-height: 1.3;
+  margin: 10px 0 14px;
+}
+
+.sectionIntro p {
+  color: var(--life-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.guideGrid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.guideCard {
+  background: #f7f9fc;
+  border: 1px solid #edf1f6;
+  border-radius: 17px;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+}
+
+.guideCard h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+
+.guideCard p {
+  color: var(--life-muted);
+  flex: 1;
+  font-size: 0.82rem;
+  margin: 0 0 24px;
+}
+
+.textLink {
+  align-items: center;
+  color: var(--life-navy);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 600;
+  gap: 12px;
+  text-decoration: none;
+  text-underline-offset: 5px;
+}
+
+.textLink:hover {
+  text-decoration: underline;
+}
+
+.pathways {
+  background: #f0f5fa;
+  border-radius: 22px;
+  display: grid;
+  gap: 70px;
+  grid-template-columns: 0.85fr 1.15fr;
+  margin: 75px 0 0;
+  padding: 48px;
+}
+
+.pathways h2 {
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  line-height: 1.35;
+  margin: 16px 0;
+}
+
+.pathways > div > p {
+  color: var(--life-muted);
+  font-size: 0.88rem;
+}
+
+.pathwayLinks a {
+  align-items: center;
+  border-bottom: 1px solid #cfdeeb;
+  color: var(--life-navy);
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 18px 0;
+  text-decoration: none;
+}
+
+.pathwayLinks a:first-child {
+  padding-top: 0;
+}
+
+.pathwayLinks a:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pathwayLinks a > span:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.pathwayLinks strong {
+  font-size: 1rem;
+}
+
+.pathwayLinks small {
+  color: var(--life-muted);
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+.pathwayLinks a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.liturgyPanel,
+.callout,
+.secretariatPanel {
+  align-items: center;
+  background: #edf3f6;
+  border-radius: 22px;
+  display: flex;
+  gap: 35px;
+  justify-content: space-between;
+  margin-top: 70px;
+  padding: 42px 46px;
+}
+
+.liturgyPanel h2,
+.callout h2,
+.secretariatPanel h2 {
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  line-height: 1.3;
+  margin: 12px 0;
+}
+
+.liturgyPanel p,
+.callout p,
+.secretariatPanel p {
+  color: #63768a;
+  font-size: 0.85rem;
+  margin: 0;
+  max-width: 640px;
+}
+
+.liturgyPanel > a,
+.callout > a,
+.secretariatPanel > a {
+  flex-shrink: 0;
+}
+
+.emptyState {
+  background: var(--life-soft);
+  border: 1px solid var(--life-line);
+  border-radius: 17px;
+  padding: 30px;
+}
+
+.emptyState h3 {
+  font-size: 1.2rem;
+  margin: 0 0 10px;
+}
+
+.emptyState p {
+  color: var(--life-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.pastoralGrid,
+.editorialGrid {
+  display: grid;
+  gap: 26px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pastoralCard,
+.editorialCard {
+  background: #fff;
+  border: 1px solid var(--life-line);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pastoralImage,
+.editorialImage {
+  align-items: center;
+  background: #e7eef4;
+  color: #91a9bd;
+  display: flex;
+  height: 210px;
+  justify-content: center;
+  object-fit: cover;
+  width: 100%;
+}
+
+.pastoralImage svg,
+.editorialImage svg,
+.detailImage svg,
+.pastorImage svg,
+.spiritualImage svg {
+  height: 58px;
+  width: 58px;
+}
+
+.pastoralCardBody,
+.editorialCardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 25px;
+}
+
+.pastoralCard h2 {
+  font-size: 1.45rem;
+  line-height: 1.35;
+  margin: 10px 0 13px;
+}
+
+.pastoralCard h2 a,
+.editorialCard h3 a {
+  text-decoration: none;
+}
+
+.pastoralCard h2 a:hover,
+.editorialCard h3 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pastoralCardBody > p,
+.cardRichText,
+.editorialCardBody > p {
+  color: var(--life-muted);
+  flex: 1;
+  font-size: 0.82rem;
+}
+
+.cardRichText p {
+  font-size: inherit;
+  margin: 0 0 20px;
+}
+
+.pastoralCardBody .textLink,
+.editorialCardBody .textLink {
+  align-self: flex-start;
+  margin-top: 20px;
+}
+
+.editorialImage {
+  height: 225px;
+}
+
+.editorialCard h3 {
+  font-size: 1.3rem;
+  line-height: 1.45;
+  margin: 12px 0;
+}
+
+.editorialCardBody > p {
+  margin: 0;
+}
+
+.guideIntro {
+  font-size: 1.05rem;
+  margin: -15px 0 42px;
+  max-width: 800px;
+}
+
+.guideLayout {
+  align-items: start;
+  display: grid;
+  gap: 55px;
+  grid-template-columns: 230px minmax(0, 1fr);
+}
+
+.guideLayout:has(.guideNav) {
+  grid-template-columns: 230px minmax(0, 1fr);
+}
+
+.guideNav {
+  background: var(--life-soft);
+  border-radius: 16px;
+  padding: 25px;
+  position: sticky;
+  top: 24px;
+}
+
+.guideNav ol {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.guideNav a {
+  color: var(--life-navy);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  text-decoration: none;
+}
+
+.guideNav a:hover {
+  text-decoration: underline;
+}
+
+.guideContent {
+  max-width: 800px;
+}
+
+.guideContent > section {
+  scroll-margin-top: 30px;
+}
+
+.guideContent > section + section {
+  border-top: 1px solid var(--life-line);
+  margin-top: 42px;
+  padding-top: 42px;
+}
+
+.guideContent h2 {
+  font-size: 1.75rem;
+  line-height: 1.35;
+  margin: 0 0 20px;
+}
+
+.guideContent section > div,
+.guideContent section > p {
+  font-size: 0.92rem;
+}
+
+.requirements {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.requirements li {
+  align-items: flex-start;
+  background: var(--life-soft);
+  border-radius: 12px;
+  display: flex;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.requirements li > span {
+  color: #3a7195;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.requirements li p {
+  margin: 0;
+}
+
+.secretariatPanel {
+  scroll-margin-top: 30px;
+}
+
+.secretariatPanel :global(.notice) {
+  margin-top: 22px;
+}
+
+.backLink {
+  align-items: center;
+  color: var(--life-navy);
+  display: inline-flex;
+  font-size: 0.8rem;
+  gap: 10px;
+  margin: 0 0 35px;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.detailHero {
+  align-items: center;
+  display: grid;
+  gap: 55px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detailHero figure {
+  margin: 0;
+}
+
+.detailImage {
+  align-items: center;
+  background: #e7eef4;
+  border-radius: 24px;
+  color: #91a9bd;
+  display: flex;
+  height: 430px;
+  justify-content: center;
+  object-fit: cover;
+  width: 100%;
+}
+
+.detailHero figcaption {
+  color: var(--life-muted);
+  font-size: 0.7rem;
+  margin-top: 10px;
+}
+
+.detailHero h1 {
+  font-size: clamp(2rem, 4.5vw, 3.15rem);
+  line-height: 1.2;
+  margin: 14px 0 22px;
+}
+
+.lead {
+  color: #617386;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.lead p {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.detailHero .button {
+  margin-top: 15px;
+}
+
+.detailBody {
+  display: grid;
+  gap: 65px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.8fr);
+  margin: 65px 0 0;
+}
+
+.detailBody h2 {
+  font-size: 1.65rem;
+  line-height: 1.35;
+  margin: 0 0 20px;
+}
+
+.detailBody > div > section + section {
+  margin-top: 40px;
+}
+
+.activityList {
+  display: grid;
+  gap: 15px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activityList li {
+  align-items: flex-start;
+  display: flex;
+  gap: 14px;
+}
+
+.activityList li > span {
+  color: #3a7195;
+  margin-top: 3px;
+}
+
+.activityList strong {
+  color: var(--life-navy);
+}
+
+.activityList p {
+  color: var(--life-muted);
+  font-size: 0.85rem;
+  margin: 5px 0 0;
+}
+
+.infoPanel {
+  align-self: start;
+  background: var(--life-soft);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.infoPanel section {
+  border-bottom: 1px solid #dce4e9;
+  padding: 17px 0;
+}
+
+.infoPanel h3 {
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+}
+
+.infoPanel p,
+.infoPanel li,
+.infoPanel section > div {
+  color: var(--life-muted);
+  font-size: 0.78rem;
+  line-height: 1.75;
+}
+
+.infoPanel p {
+  margin: 0;
+}
+
+.infoPanel ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.infoPanel .button {
+  margin-top: 25px;
+}
+
+.meetingList {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0 !important;
+}
+
+.meetingList li {
+  display: grid;
+  gap: 3px;
+}
+
+.meetingList strong {
+  color: var(--life-navy);
+}
+
+.communityList {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+}
+
+.communityList li {
+  background: var(--life-soft);
+  border-radius: 12px;
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+}
+
+.communityList span {
+  color: var(--life-muted);
+  font-size: 0.8rem;
+}
+
+.pastorIntro {
+  align-items: center;
+  display: grid;
+  gap: 60px;
+  grid-template-columns: 0.8fr 1.2fr;
+  padding: 15px 0 70px;
+}
+
+.pastorImage {
+  align-items: center;
+  background: #e7eef4;
+  border-radius: 24px;
+  color: #91a9bd;
+  display: flex;
+  height: 420px;
+  justify-content: center;
+  object-fit: cover;
+  width: 100%;
+}
+
+.pastorIntro h2 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  line-height: 1.3;
+  margin: 15px 0 22px;
+}
+
+.pastorIntro p {
+  font-size: 0.88rem;
+}
+
+.clergyList {
+  display: grid;
+  gap: 9px;
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+
+.clergyList li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.clergyList li span::before {
+  content: '·';
+  margin-right: 6px;
+}
+
+.sectionHeading {
+  margin-bottom: 27px;
+}
+
+.spiritualHero {
+  align-items: center;
+  background: var(--life-navy);
+  border-radius: 25px;
+  color: #fff;
+  display: flex;
+  isolation: isolate;
+  min-height: 420px;
+  overflow: hidden;
+  padding: 50px;
+  position: relative;
+}
+
+.spiritualHero::after {
+  background: linear-gradient(90deg, #0a2547f5, #0a2547c7 55%, #0a254738);
+  content: '';
+  inset: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.spiritualImage {
+  align-items: center;
+  color: #91a9bd;
+  display: flex;
+  height: 100%;
+  inset: 0;
+  justify-content: center;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+  z-index: -2;
+}
+
+.spiritualHero > div:last-child {
+  max-width: 580px;
+  position: relative;
+}
+
+.spiritualHero h2 {
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  line-height: 1.3;
+  margin: 15px 0;
+}
+
+.spiritualHero p {
+  color: #e2eaf3;
+  font-size: 0.9rem;
+}
+
+.spiritualHero :global(.eyebrow) {
+  color: #d4e8f4;
+}
+
+.spiritualHero :global(.button) {
+  background: #fff;
+  border-color: #fff;
+  color: var(--life-navy);
+  margin-top: 12px;
+}
+
+.practiceGrid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 38px 0 75px;
+}
+
+.practiceGrid > section {
+  background: var(--life-soft);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.practiceNumber {
+  color: #698aa3;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  margin-bottom: 25px;
+}
+
+.practiceGrid h3 {
+  font-size: 1.3rem;
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+
+.practiceGrid p {
+  color: var(--life-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.visuallyHidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.reading {
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.reading header h1 {
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  line-height: 1.2;
+  margin: 15px 0 22px;
+}
+
+.articleMeta {
+  color: var(--life-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  gap: 8px 20px;
+  margin: 20px 0;
+}
+
+.readingImage {
+  align-items: center;
+  background: #e7eef4;
+  border-radius: 22px;
+  color: #91a9bd;
+  display: flex;
+  height: auto;
+  justify-content: center;
+  margin: 25px 0;
+  max-height: 440px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.readingBody {
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.readingBody h2 {
+  font-size: 1.65rem;
+  margin-top: 40px;
+}
+
+.gallery {
+  margin-top: 45px;
+}
+
+.gallery > div {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gallery figure {
+  margin: 0;
+}
+
+.gallery figure img,
+.gallery figure > div {
+  border-radius: 14px;
+  width: 100%;
+}
+
+.gallery figcaption {
+  color: var(--life-muted);
+  font-size: 0.72rem;
+  margin-top: 8px;
+}
+
+.sourceLink {
+  border-top: 1px solid var(--life-line);
+  font-size: 0.8rem;
+  margin-top: 35px;
+  padding-top: 22px;
+}
+
+.reflectionNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 25px;
+  margin-top: 38px;
+}
+
+.reflectionNav a {
+  color: var(--life-navy);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.birthdays {
+  background: #eef4f7;
+  border-radius: 24px;
+  display: grid;
+  gap: 50px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 38px;
+}
+
+.birthdays h2 {
+  font-size: 1.75rem;
+  margin: 12px 0;
+}
+
+.birthdays p {
+  font-size: 0.86rem;
+}
+
+.birthdays label {
+  display: block;
+  font-size: 0.8rem;
+  margin: 22px 0 8px;
+}
+
+.birthdays select {
+  background: #fff;
+  border: 1px solid #cedbe3;
+  border-radius: 12px;
+  color: var(--life-navy);
+  max-width: 100%;
+  min-height: 48px;
+  min-width: 210px;
+  padding: 11px 18px;
+}
+
+.birthdayResult {
+  align-self: stretch;
+  background: #fff;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+}
+
+.birthdayResult > svg {
+  color: #397298;
+  height: 38px;
+  margin-bottom: 20px;
+  width: 38px;
+}
+
+.birthdayResult h3 {
+  font-size: 1.4rem;
+  margin: 0 0 8px;
+}
+
+.birthdayResult small {
+  color: var(--life-muted);
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+
+.titheIntro {
+  align-items: center;
+  display: grid;
+  gap: 60px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 75px 0;
+}
+
+.titheIntro h2 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  line-height: 1.3;
+  margin: 15px 0 20px;
+}
+
+.titheIntro .button {
+  margin-top: 15px;
+}
+
+.titheStatement {
+  background: var(--life-navy);
+  border-radius: 24px;
+  color: #fff;
+  min-height: 320px;
+  overflow: hidden;
+  padding: 38px;
+  position: relative;
+}
+
+.titheStatement > span {
+  color: #ffffff20;
+  font-family: Georgia, serif;
+  font-size: 15rem;
+  left: 15px;
+  line-height: 1;
+  position: absolute;
+  top: 25px;
+}
+
+.titheStatement p {
+  color: #fff;
+  font-family: var(--display, inherit);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.45;
+  margin: 100px 0 0;
+  position: relative;
+}
+
+.reasons {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reasons li {
+  align-items: center;
+  background: var(--life-soft);
+  border-radius: 16px;
+  display: flex;
+  gap: 24px;
+  padding: 23px;
+}
+
+.reasons li > span {
+  color: #698aa3;
+  font-size: 1.35rem;
+}
+
+.reasons h3 {
+  font-size: 0.95rem;
+  letter-spacing: -0.015em;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.registration {
+  background: #edf3f6;
+  border-radius: 24px;
+  display: grid;
+  gap: 65px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 75px;
+  padding: 45px;
+}
+
+.registration h2 {
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  line-height: 1.3;
+  margin: 15px 0;
+}
+
+.registration p {
+  color: var(--life-muted);
+  font-size: 0.88rem;
+}
+
+.registration > div:last-child {
+  align-self: center;
+}
+
+@media (max-width: 1000px) {
+  .guideGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pastoralGrid,
+  .editorialGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pathways,
+  .detailHero,
+  .detailBody,
+  .pastorIntro,
+  .titheIntro,
+  .registration {
+    gap: 35px;
+  }
+
+  .guideLayout,
+  .guideLayout:has(.guideNav) {
+    gap: 35px;
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .detailImage,
+  .pastorImage {
+    height: 360px;
+  }
+}
+
+@media (max-width: 700px) {
+  .pageInner {
+    padding-bottom: 55px;
+  }
+
+  .topicNav {
+    margin-bottom: 32px;
+  }
+
+  .pathways,
+  .detailHero,
+  .detailBody,
+  .pastorIntro,
+  .birthdays,
+  .titheIntro,
+  .registration,
+  .guideLayout,
+  .guideLayout:has(.guideNav) {
+    grid-template-columns: 1fr;
+  }
+
+  .pathways {
+    gap: 32px;
+    margin-top: 50px;
+    padding: 28px;
+  }
+
+  .liturgyPanel,
+  .callout,
+  .secretariatPanel {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 45px;
+    padding: 28px;
+  }
+
+  .liturgyPanel > a,
+  .callout > a,
+  .secretariatPanel > a {
+    flex-shrink: 1;
+  }
+
+  .guideLayout {
+    gap: 25px;
+  }
+
+  .guideNav {
+    position: static;
+  }
+
+  .guideNav ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .detailImage,
+  .pastorImage {
+    height: 280px;
+  }
+
+  .detailBody {
+    margin-top: 42px;
+  }
+
+  .pastorIntro {
+    padding-bottom: 45px;
+  }
+
+  .spiritualHero {
+    min-height: 450px;
+    padding: 28px;
+  }
+
+  .spiritualHero::after {
+    background: linear-gradient(0deg, #0a2547fa, #0a2547c7);
+  }
+
+  .practiceGrid {
+    gap: 15px;
+    grid-template-columns: 1fr;
+    margin-bottom: 50px;
+  }
+
+  .birthdays,
+  .registration {
+    gap: 25px;
+    padding: 25px;
+  }
+
+  .titheIntro {
+    margin: 50px 0;
+  }
+
+  .titheStatement {
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 520px) {
+  .guideGrid,
+  .pastoralGrid,
+  .editorialGrid,
+  .reasons,
+  .communityList,
+  .gallery > div {
+    grid-template-columns: 1fr;
+  }
+
+  .guideCard {
+    padding: 24px;
+  }
+
+  .pastoralImage,
+  .editorialImage {
+    height: 205px;
+  }
+
+  .guideNav ol {
+    grid-template-columns: 1fr;
+  }
+
+  .infoPanel {
+    padding: 25px;
+  }
+
+  .birthdays select {
+    width: 100%;
+  }
+}

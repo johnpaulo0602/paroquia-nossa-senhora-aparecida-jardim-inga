@@ -7,9 +7,25 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     localPatterns: [
       {
+        pathname: '/api/media/file/**',
+      },
+      {
+        pathname: '/images/**',
+      },
+    ],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/api/media/file/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
         pathname: '/api/media/file/**',
       },
     ],

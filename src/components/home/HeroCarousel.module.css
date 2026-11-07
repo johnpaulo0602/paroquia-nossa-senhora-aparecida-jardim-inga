@@ -1,0 +1,208 @@
+.carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--navy);
+}
+
+.slide {
+  position: relative;
+  isolation: isolate;
+  min-height: 505px;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.media::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #0c2347f7 0%, #102a4ce8 25%, #102a4c60 60%, #102a4c08);
+  content: '';
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% center;
+}
+
+.copy {
+  max-width: 690px;
+  padding: 75px 60px 95px;
+  color: white;
+}
+
+.copy .eyebrow {
+  color: #c4d9eb;
+}
+
+.copy h1 {
+  margin: 19px 0 22px;
+  color: white;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  letter-spacing: -0.055em;
+  line-height: 1.18;
+}
+
+.copy p {
+  max-width: 385px;
+  margin-bottom: 26px;
+  color: #e2eaf3;
+  font-size: 0.85rem;
+  line-height: 1.9;
+}
+
+.heroButton {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 22px;
+  border: 1px solid white;
+  border-radius: 999px;
+  background: white;
+  padding: 13px 22px;
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.heroButton:hover {
+  background: #edf4fa;
+}
+
+.controls {
+  position: absolute;
+  right: 30px;
+  bottom: 24px;
+  left: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots button {
+  position: relative;
+  width: 30px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+}
+
+.dots button::after {
+  position: absolute;
+  top: 12px;
+  left: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #92abc1;
+  content: '';
+}
+
+.dots button[aria-pressed='true']::after {
+  left: 4px;
+  width: 21px;
+  border-radius: 5px;
+  background: white;
+}
+
+.arrows {
+  display: flex;
+  gap: 8px;
+}
+
+.arrows button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #ffffff50;
+  border-radius: 50%;
+  background: #ffffff18;
+  color: white;
+  font-size: 1rem;
+}
+
+.arrows button:hover {
+  background: #ffffff30;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .copy {
+    animation: enter 350ms ease-out;
+  }
+
+  .heroButton,
+  .arrows button {
+    transition: background 180ms ease;
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0.6;
+      transform: translateY(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@media (max-width: 650px) {
+  .carousel {
+    border-radius: 15px;
+  }
+
+  .slide {
+    min-height: 530px;
+  }
+
+  .media::after {
+    background: linear-gradient(0deg, #0b2449ff, #102a4cd9 43%, #102a4c50 100%);
+  }
+
+  .image {
+    object-position: 68% center;
+  }
+
+  .copy {
+    max-width: none;
+    padding: 210px 25px 85px;
+  }
+
+  .copy h1 {
+    margin-block: 14px;
+    font-size: 2rem;
+    letter-spacing: -0.045em;
+  }
+
+  .copy p {
+    max-width: 310px;
+    font-size: 0.75rem;
+  }
+
+  .controls {
+    right: 18px;
+    bottom: 16px;
+    left: 25px;
+  }
+
+  .arrows button {
+    width: 34px;
+    height: 34px;
+  }
+}

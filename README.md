@@ -1,67 +1,107 @@
-# Payload Blank Template
+# Paróquia Nossa Senhora Aparecida — Jardim Ingá
 
-This template comes configured with the bare minimum to get started on anything you need.
+Portal institucional com Next.js, Payload CMS e PostgreSQL. O conteúdo do protótipo em `docs/prototipo` é referência de desenvolvimento: exemplos, pesquisa e acervo permanecem identificados no CMS e não devem ser tratados como informação oficial sem revisão.
 
-## Quick start
+## Desenvolvimento local
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+Requisitos: Node.js 22.23.4 ou superior compatível, npm e Docker com Compose.
 
-## Quick Start - local setup
+1. Copie `.env.example` para `.env` e defina um `PAYLOAD_SECRET` seguro.
+2. Suba apenas o banco local:
 
-To spin up this template locally, follow these steps:
+   ```bash
+   docker compose -f docker/postgres.yml up -d
+   ```
 
-### Clone
+3. Instale e prepare o projeto:
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+   ```bash
+   npm install
+   npm run generate:types
+   ```
 
-### Development
+4. Opcionalmente, defina `PAYLOAD_ADMIN_EMAIL` e `PAYLOAD_ADMIN_PASSWORD` no `.env` e execute `npm run seed`. O seed é idempotente e importa conteúdo de demonstração. Sem essas variáveis, crie o primeiro usuário pela tela `/admin`.
+5. Inicie a aplicação com `npm run dev` e abra `http://localhost:3000`.
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+Em desenvolvimento, demonstrações publicadas são visíveis. Em produção, `SHOW_DEMO_CONTENT` deve permanecer `false`.
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+## Administração
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+O painel está em `/admin`. As funções são:
 
-#### Docker (Optional)
+- **Administrador**: usuários, configuração, conteúdo e atendimento.
+- **Editor**: cria, revisa e publica conteúdo.
+- **Colaborador**: cria e edita rascunhos, sem publicar.
+- **Secretaria**: acompanha contatos, solicitações e interesses privados.
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+Publicações, eventos, horários, comunidades, destaques e demais conteúdos possuem formulários estruturados em português. Rascunhos não são públicos. Observações internas e dados de atendimento têm acesso restrito.
 
-To do so, follow these steps:
+## Formulários opcionais
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+Os fluxos ficam desativados até a paróquia definir responsáveis, atendimento e retenção. Para ativá-los após essa configuração:
 
-## How it works
+```env
+CONTACT_FORM_ENABLED=true
+SACRAMENT_FORM_ENABLED=true
+TITHE_FORM_ENABLED=true
+NEWSLETTER_ENABLED=true
+```
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+Os endpoints validam e persistem os dados antes de responder sucesso. Solicitações de sacramento não reservam datas. Newsletter começa como pendente e possui confirmação/descadastro por token; o envio de e-mails exige configurar um provedor real.
 
-### Collections
+## Verificação
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+```bash
+npm run generate:types
+npx tsc --noEmit
+npm run lint
+npm run test:int
+npm run test:e2e
+npm run build
+```
 
-- #### Users (Authentication)
+Os testes cobrem regras de acesso, fuso `America/Sao_Paulo`, exceções de celebrações, calendário, navegação pública e administração.
 
-  Users are auth-enabled collections that have access to the admin panel.
+## Produção com Docker
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+1. Configure `.env` com URL pública HTTPS, segredo e credenciais fortes de banco.
+2. Construa a imagem e execute as migrações:
 
-- #### Media
+   ```bash
+   docker compose build
+   docker compose run --rm app npm run payload -- migrate
+   ```
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+3. Suba os serviços:
 
-### Docker
+   ```bash
+   docker compose up -d
+   ```
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+`pgdata` e `media` são volumes persistentes. Em produção, alterações de schema usam `src/migrations`; o push automático fica desabilitado. Configure HTTPS por proxy reverso e mantenha a porta do PostgreSQL inacessível publicamente.
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+## Backup e restauração
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+Com os serviços de produção ativos:
 
-## Questions
+```bash
+scripts/backup.sh
+```
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+O backup contém dump do PostgreSQL, mídia e checksums em `backups/<data UTC>`. Copie esse diretório para um destino separado. Para o banco local do arquivo `docker/postgres.yml`:
+
+```bash
+COMPOSE_FILE="$PWD/docker/postgres.yml" scripts/backup.sh
+```
+
+A restauração substitui dados e exige confirmação explícita:
+
+```bash
+CONFIRM_RESTORE=yes scripts/restore.sh backups/AAAAMMDDTHHMMSSZ
+```
+
+Teste a restauração periodicamente em ambiente separado antes de depender do backup.
+
+## Pendências institucionais
+
+Antes da publicação oficial, confirme contatos, horários divergentes, equipe, pastorais, história, requisitos de sacramentos, projetos, patrocinadores e canais de doação. Não publique placeholders, exemplos ou dados financeiros sem aprovação. O dossiê completo está em `docs/DOSSIE-DESENVOLVIMENTO-PAROQUIA.md`.

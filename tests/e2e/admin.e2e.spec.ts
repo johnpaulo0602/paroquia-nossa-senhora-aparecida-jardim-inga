@@ -1,41 +1,47 @@
-import { test, expect, Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+
+import { cleanupTestUser, seedTestUser, testUser } from '../helpers/seedUser'
 import { login } from '../helpers/login'
-import { seedTestUser, cleanupTestUser, testUser } from '../helpers/seedUser'
 
 test.describe('Admin Panel', () => {
-  let page: Page
-
-  test.beforeAll(async ({ browser }, testInfo) => {
+  test.beforeAll(async () => {
     await seedTestUser()
-
-    const context = await browser.newContext()
-    page = await context.newPage()
-
-    await login({ page, user: testUser })
   })
 
   test.afterAll(async () => {
     await cleanupTestUser()
   })
 
-  test('can navigate to dashboard', async () => {
-    await page.goto('http://localhost:3000/admin')
-    await expect(page).toHaveURL('http://localhost:3000/admin')
-    const dashboardArtifact = page.locator('span[title="Dashboard"]').first()
-    await expect(dashboardArtifact).toBeVisible()
+  test.beforeEach(async ({ page }) => {
+    await login({ page, user: testUser })
   })
 
-  test('can navigate to list view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users')
-    await expect(page).toHaveURL('http://localhost:3000/admin/collections/users')
-    const listViewArtifact = page.locator('h1', { hasText: 'Users' }).first()
-    await expect(listViewArtifact).toBeVisible()
+  test('acessa o dashboard autenticado', async ({ page }) => {
+    await page.goto('/admin')
+
+    await expect(page).toHaveURL(/\/admin$/)
+    await expect(page.locator('span[title="Dashboard"]').first()).toBeVisible()
   })
 
-  test('can navigate to edit view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users/create')
-    await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)
-    const editViewArtifact = page.locator('input[name="email"]')
-    await expect(editViewArtifact).toBeVisible()
+  test('acessa a lista de usuários', async ({ page }) => {
+    await page.goto('/admin/collections/users')
+
+    await expect(page.getByRole('heading', { name: 'Usuários' }).first()).toBeVisible()
+  })
+
+  test('abre o formulário de novo usuário', async ({ page }) => {
+    await page.goto('/admin/collections/users/create')
+
+    await expect(page).toHaveURL(/\/admin\/collections\/users\/create$/)
+    await expect(page.locator('input[name="email"]')).toBeVisible()
+    await expect(page.locator('input[name="name"]')).toBeVisible()
+  })
+
+  test('abre os cadastros principais', async ({ page }) => {
+    for (const collection of ['posts', 'events', 'communities', 'celebrations', 'highlights']) {
+      await page.goto(`/admin/collections/${collection}`)
+      await expect(page).toHaveURL(new RegExp(`/admin/collections/${collection}$`))
+      await expect(page.locator('h1').first()).toBeVisible()
+    }
   })
 })
