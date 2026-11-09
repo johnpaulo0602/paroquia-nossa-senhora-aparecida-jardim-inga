@@ -1,7 +1,7 @@
 .carousel {
   position: relative;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
   background: var(--navy);
 }
 
@@ -37,23 +37,23 @@
   color: white;
 }
 
-.copy .eyebrow {
-  color: #c4d9eb;
+.copy :global(.eyebrow) {
+  color: var(--on-dark-muted);
 }
 
 .copy h1 {
   margin: 19px 0 22px;
   color: white;
   font-size: clamp(2.25rem, 4vw, 3rem);
-  letter-spacing: -0.055em;
+  letter-spacing: var(--tracking-tight);
   line-height: 1.18;
 }
 
 .copy p {
   max-width: 385px;
   margin-bottom: 26px;
-  color: #e2eaf3;
-  font-size: 0.85rem;
+  color: var(--line);
+  font-size: var(--text-sm);
   line-height: 1.9;
 }
 
@@ -63,17 +63,17 @@
   align-items: center;
   gap: 22px;
   border: 1px solid white;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: white;
   padding: 13px 22px;
   color: var(--navy);
-  font-size: 0.7rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
 }
 
 .heroButton:hover {
-  background: #edf4fa;
+  background: var(--surface-strong);
 }
 
 .controls {
@@ -132,7 +132,7 @@
   border-radius: 50%;
   background: #ffffff18;
   color: white;
-  font-size: 1rem;
+  font-size: var(--text-base);
 }
 
 .arrows button:hover {
@@ -164,11 +164,12 @@
 
 @media (max-width: 650px) {
   .carousel {
-    border-radius: 15px;
+    border-radius: var(--radius-lg);
   }
 
+  /* Leave room above the fold for the next-celebration strip. */
   .slide {
-    min-height: 530px;
+    min-height: min(440px, 62svh);
   }
 
   .media::after {
@@ -181,18 +182,18 @@
 
   .copy {
     max-width: none;
-    padding: 210px 25px 85px;
+    padding: 140px 22px 76px;
   }
 
   .copy h1 {
     margin-block: 14px;
-    font-size: 2rem;
-    letter-spacing: -0.045em;
+    font-size: var(--text-2xl);
+    letter-spacing: var(--tracking-tight);
   }
 
   .copy p {
     max-width: 310px;
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
   }
 
   .controls {

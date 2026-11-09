@@ -6,6 +6,7 @@ import { RichText } from '@/components/site/RichText'
 
 import { EmptyState } from './EmptyState'
 import styles from './life.module.css'
+import { Icon } from '@/components/site/Icon'
 
 type SacramentGuideViewProps = {
   guide: SacramentGuide | null
@@ -24,7 +25,12 @@ export function SacramentGuideView({
 
   return (
     <>
-      <PageHeader eyebrow="Celebrações e vida cristã" title={title} intro={fallbackIntro} />
+      {/* The CMS intro (rendered below) replaces the fallback, so the sentence never shows twice. */}
+      <PageHeader
+        eyebrow="Celebrações e vida cristã"
+        title={title}
+        intro={guide?.intro ? undefined : fallbackIntro}
+      />
       <nav className={styles.topicNav} aria-label="Assuntos de vida cristã">
         <Link href="/vida">Visão geral</Link>
         <Link
@@ -83,7 +89,7 @@ export function SacramentGuideView({
               <ul className={styles.requirements}>
                 {requirements.map((requirement, index) => (
                   <li key={requirement.id ?? index}>
-                    <span aria-hidden="true">✓</span>
+                    <Icon name="check" />
                     <RichText content={requirement.text} />
                   </li>
                 ))}
@@ -115,7 +121,7 @@ export function SacramentGuideView({
           </p>
         </div>
         <Link className="button" href="/secretaria">
-          Falar com a secretaria <span aria-hidden="true">↗</span>
+          Falar com a secretaria <Icon name="arrow" />
         </Link>
       </section>
     </>

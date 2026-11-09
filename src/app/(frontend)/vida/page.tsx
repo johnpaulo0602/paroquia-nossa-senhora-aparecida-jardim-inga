@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { PageHeader } from '@/components/site/PageHeader'
 import { getLifeSiteSettings } from '@/components/life/queries'
 import styles from '@/components/life/life.module.css'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Vida cristã',
@@ -91,7 +92,7 @@ export default async function ChristianLifePage() {
                 <h3>{guide.title}</h3>
                 <p>{guide.text}</p>
                 <Link className={styles.textLink} href={guide.href}>
-                  {guide.link} <span aria-hidden="true">↗</span>
+                  {guide.link} <Icon name="arrow" />
                 </Link>
               </section>
             ))}
@@ -111,7 +112,7 @@ export default async function ChristianLifePage() {
                   <strong>{pathway.title}</strong>
                   <small>{pathway.text}</small>
                 </span>
-                <span aria-hidden="true">↗</span>
+                <Icon name="arrow" />
               </Link>
             ))}
           </div>
@@ -129,7 +130,7 @@ export default async function ChristianLifePage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Consultar a liturgia <span aria-hidden="true">↗</span>
+            Consultar a liturgia <Icon name="external" />
           </a>
         </section>
       </div>

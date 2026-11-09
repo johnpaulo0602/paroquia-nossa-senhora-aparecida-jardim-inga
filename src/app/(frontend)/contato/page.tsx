@@ -7,6 +7,7 @@ import styles from '@/components/institutional/pages.module.css'
 import { emailHref, phoneHref, whatsappHref } from '@/components/institutional/utils'
 import { PageHeader } from '@/components/site/PageHeader'
 import { getCMS } from '@/lib/payload'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Fale conosco',
@@ -31,9 +32,11 @@ export default async function ContactPage() {
   ])
 
   const whatsappUrl = settings.whatsapp
-    ? whatsappHref(settings.whatsapp, 'Olá! Gostaria de falar com a Paróquia Nossa Senhora Aparecida.')
+    ? whatsappHref(
+        settings.whatsapp,
+        'Olá! Gostaria de falar com a Paróquia Nossa Senhora Aparecida.',
+      )
     : null
-  const contactFormEnabled = process.env.CONTACT_FORM_ENABLED === 'true'
 
   return (
     <div className="page">
@@ -65,12 +68,12 @@ export default async function ContactPage() {
             <div className={styles.actions}>
               {whatsappUrl && (
                 <a className="button" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  Conversar pelo WhatsApp <span aria-hidden="true">↗</span>
+                  Conversar pelo WhatsApp <Icon name="external" />
                 </a>
               )}
               {settings.email && (
                 <a className="button-secondary" href={emailHref(settings.email)}>
-                  Enviar e-mail <span aria-hidden="true">↗</span>
+                  Enviar e-mail <Icon name="arrow" />
                 </a>
               )}
               {settings.phone && (
@@ -79,16 +82,10 @@ export default async function ContactPage() {
                 </a>
               )}
               <Link className="button-secondary" href="/secretaria">
-                Ver horários da secretaria <span aria-hidden="true">↗</span>
+                Ver horários da secretaria <Icon name="arrow" />
               </Link>
             </div>
 
-            {!contactFormEnabled && (
-              <p className={`notice ${styles.contactNote}`}>
-                O formulário online permanece desativado até a definição operacional de atendimento e
-                retenção pela paróquia. Nenhum dado pessoal é coletado por esta página.
-              </p>
-            )}
           </section>
 
           <aside className={styles.communitySidebar} aria-label="Orientações rápidas">
@@ -96,22 +93,20 @@ export default async function ContactPage() {
               <span className="eyebrow">Atendimento presencial</span>
               <h2>Secretaria paroquial</h2>
               <p>
-                Para documentos, certidões, agendamentos pastorais e atendimento presencial, consulte
-                a página exclusiva da secretaria.
+                Para documentos, certidões, agendamentos pastorais e atendimento presencial,
+                consulte a página exclusiva da secretaria.
               </p>
               <Link href="/secretaria">
-                Acessar Secretaria paroquial <span aria-hidden="true">↗</span>
+                Acessar Secretaria paroquial <Icon name="arrow" />
               </Link>
             </section>
 
             <section className={styles.infoPanel}>
               <span className="eyebrow">Sacramentos</span>
               <h2>Batismo, catequese e matrimônio</h2>
-              <p>
-                Veja os requisitos e orientações iniciais antes de procurar a equipe paroquial.
-              </p>
+              <p>Veja os requisitos e orientações iniciais antes de procurar a equipe paroquial.</p>
               <Link href="/vida">
-                Orientações sobre sacramentos <span aria-hidden="true">↗</span>
+                Orientações sobre sacramentos <Icon name="arrow" />
               </Link>
             </section>
           </aside>

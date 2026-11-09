@@ -4,6 +4,7 @@ import type { Post } from '@/payload-types'
 
 import styles from './life.module.css'
 import { MediaPanel } from './MediaPanel'
+import { Icon } from '@/components/site/Icon'
 
 export function PostCard({ post }: { post: Post }) {
   return (
@@ -21,7 +22,7 @@ export function PostCard({ post }: { post: Post }) {
         </h3>
         <p>{post.summary}</p>
         <Link className={styles.textLink} href={`/reflexoes/${post.slug}`}>
-          Ler reflexão <span aria-hidden="true">↗</span>
+          Ler reflexão <Icon name="arrow" />
         </Link>
       </div>
     </article>

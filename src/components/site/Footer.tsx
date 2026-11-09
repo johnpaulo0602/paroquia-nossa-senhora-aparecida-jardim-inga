@@ -68,7 +68,9 @@ export function Footer({ navigation, settings }: FooterProps) {
           <div className={styles.identity}>
             <Brand settings={settings} />
             {settings?.address ? <p>{settings.address}</p> : <p>Jardim Ingá · Luziânia, Goiás</p>}
-            <SmartLink href="/secretaria">Localização e atendimento ↗</SmartLink>
+            <SmartLink href="/secretaria" icon>
+              Localização e atendimento
+            </SmartLink>
             <div className={styles.contacts}>
               {settings?.phone && (
                 <SmartLink href={`tel:${settings.phone.replace(/[^\d+]/g, '')}`}>
@@ -90,7 +92,12 @@ export function Footer({ navigation, settings }: FooterProps) {
                   link.url && (
                     <SmartLink external={link.external} href={link.url} key={link.id || link.url}>
                       {link.label}
-                      {link.external && <span aria-hidden="true"> ↗</span>}
+                      {link.external && (
+                        <>
+                          {' '}
+                          <Icon name="external" />
+                        </>
+                      )}
                     </SmartLink>
                   ),
               )}
@@ -101,7 +108,9 @@ export function Footer({ navigation, settings }: FooterProps) {
           <span>
             © {new Date().getFullYear()} · {name} · Jardim Ingá
           </span>
-          <SmartLink href="/contato">Fale com a paróquia ↗</SmartLink>
+          <SmartLink href="/contato" icon>
+            Fale com a paróquia
+          </SmartLink>
         </div>
       </footer>
     </>

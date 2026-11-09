@@ -1,5 +1,6 @@
 import type { Highlight } from '@/payload-types'
 import { HomeSections } from '@/components/home/HomeSections'
+import { getNextCelebration } from '@/lib/next-celebration'
 import type { HeroSlide } from '@/components/home/HeroCarousel'
 import { activeDuring, getCMS } from '@/lib/payload'
 
@@ -51,7 +52,8 @@ export default async function Home() {
   const now = new Date()
   const nowISO = now.toISOString()
 
-  const [home, highlights, posts, events, communities, projects, sponsors] = await Promise.all([
+  const [home, highlights, posts, events, communities, projects, sponsors, nextCelebration] =
+    await Promise.all([
     payload.findGlobal({
       slug: 'home-page',
       depth: 2,
@@ -117,6 +119,7 @@ export default async function Home() {
         and: [{ approved: { equals: true } }, activeDuring(now)],
       },
     }),
+    getNextCelebration(payload, now),
   ])
 
   const slides: HeroSlide[] = highlights.docs.length
@@ -139,6 +142,7 @@ export default async function Home() {
       events={events.docs}
       home={home}
       liturgyUrl={null}
+      nextCelebration={nextCelebration}
       posts={posts.docs}
       projects={projects.docs}
       slides={slides}

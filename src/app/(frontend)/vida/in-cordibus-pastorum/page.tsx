@@ -8,6 +8,7 @@ import { PrayerCallout } from '@/components/life/PrayerCallout'
 import styles from '@/components/life/life.module.css'
 import { getClergy, getPastorumContent, getReflections } from '@/components/life/queries'
 import { PageHeader } from '@/components/site/PageHeader'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'In Cordibus Pastorum',
@@ -51,7 +52,7 @@ export default async function PastorumPage() {
             </p>
             <ClergyList assignments={clergy} />
             <Link className={styles.textLink} href="/equipe">
-              Conheça a estrutura paroquial <span aria-hidden="true">↗</span>
+              Conheça a estrutura paroquial <Icon name="arrow" />
             </Link>
           </div>
         </section>

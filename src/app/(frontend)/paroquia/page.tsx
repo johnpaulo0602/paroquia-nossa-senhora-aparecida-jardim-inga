@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 import { Callout } from '@/components/institutional/Callout'
 import styles from '@/components/institutional/pages.module.css'
@@ -60,9 +61,16 @@ export default async function ParishHistoryPage() {
             )}
           </figure>
         ) : (
-          <div className={styles.coverFallback}>
-            A imagem de apresentação da paróquia ainda não foi publicada.
-          </div>
+          <figure className={styles.cover}>
+            <Image
+              alt="Fachada da igreja matriz Nossa Senhora Aparecida"
+              className={styles.coverImage}
+              height={688}
+              sizes="(max-width: 1200px) 100vw, 1160px"
+              src="/images/matriz-atual.jpg"
+              width={688}
+            />
+          </figure>
         )}
 
         <section className={styles.introGrid} aria-labelledby="history-memory-title">

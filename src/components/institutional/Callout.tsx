@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import styles from './Callout.module.css'
+import { Icon } from '@/components/site/Icon'
 
 type CalloutProps = {
   eyebrow?: string
@@ -19,7 +20,7 @@ export function Callout({ eyebrow, title, body, href, linkLabel }: CalloutProps)
         <p>{body}</p>
       </div>
       <Link className="button" href={href}>
-        {linkLabel} <span aria-hidden="true">↗</span>
+        {linkLabel} <Icon name="arrow" />
       </Link>
     </section>
   )

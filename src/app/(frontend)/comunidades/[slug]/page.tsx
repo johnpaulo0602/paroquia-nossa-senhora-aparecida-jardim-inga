@@ -15,6 +15,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 import { getCMS } from '@/lib/payload'
+import { Icon } from '@/components/site/Icon'
 
 type CommunityPageProps = {
   params: Promise<{ slug: string }>
@@ -89,15 +90,13 @@ export default async function CommunityDetailPage({ params }: CommunityPageProps
         `Olá! Gostaria de informações sobre a comunidade ${community.name}.`,
       )
     : null
-  const communityWhatsapp = community.publicWhatsapp
-    ? whatsappHref(community.publicWhatsapp)
-    : null
+  const communityWhatsapp = community.publicWhatsapp ? whatsappHref(community.publicWhatsapp) : null
 
   return (
     <div className="page">
       <div className={`container ${styles.page}`}>
         <Link className={styles.backLink} href="/comunidades">
-          <span aria-hidden="true">←</span> Todas as comunidades
+          <Icon name="arrowLeft" /> Todas as comunidades
         </Link>
         <div className={styles.header}>
           <PageHeader
@@ -123,11 +122,7 @@ export default async function CommunityDetailPage({ params }: CommunityPageProps
               <figcaption>{[cover.caption, cover.credit].filter(Boolean).join(' · ')}</figcaption>
             )}
           </figure>
-        ) : (
-          <div className={styles.coverFallback}>
-            A fotografia desta comunidade ainda não foi publicada.
-          </div>
-        )}
+        ) : null}
 
         <div className={styles.communityDetail}>
           <section aria-labelledby="community-participation-title">
@@ -137,26 +132,22 @@ export default async function CommunityDetailPage({ params }: CommunityPageProps
               <RichText content={community.description} className={styles.communityDescription} />
             ) : (
               <p className={styles.communityDescription}>
-                A apresentação desta comunidade ainda não foi publicada. Consulte a secretaria para
-                saber mais sobre celebrações, atividades e formas de participação.
+                Para saber mais sobre celebrações, atividades e formas de participação nesta
+                comunidade, fale com a secretaria paroquial.
               </p>
             )}
 
-            <div className={styles.addressBlock}>
-              <h2>Endereço e localização</h2>
-              {community.address ? (
-                <p>{community.address}</p>
-              ) : (
-                <p>O endereço completo ainda não foi publicado.</p>
-              )}
-              {mapUrl ? (
-                <a href={mapUrl} target="_blank" rel="noopener noreferrer">
-                  Abrir no mapa <span aria-hidden="true">↗</span>
-                </a>
-              ) : (
-                <p>O link do mapa ainda não foi publicado.</p>
-              )}
-            </div>
+            {(community.address || mapUrl) && (
+              <div className={styles.addressBlock}>
+                <h2>Endereço e localização</h2>
+                {community.address && <p>{community.address}</p>}
+                {mapUrl && (
+                  <a href={mapUrl} target="_blank" rel="noopener noreferrer">
+                    Abrir no mapa <Icon name="external" />
+                  </a>
+                )}
+              </div>
+            )}
           </section>
 
           <aside className={styles.communitySidebar}>
@@ -180,25 +171,29 @@ export default async function CommunityDetailPage({ params }: CommunityPageProps
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  WhatsApp da secretaria <span aria-hidden="true">↗</span>
+                  WhatsApp da secretaria <Icon name="external" />
                 </a>
               ) : (
                 <Link className="button" href="/secretaria">
-                  Ver atendimento da secretaria <span aria-hidden="true">↗</span>
+                  Ver atendimento da secretaria <Icon name="arrow" />
                 </Link>
               )}
 
               {(community.publicPhone || community.publicEmail || communityWhatsapp) && (
                 <div className={styles.personLinks}>
                   {community.publicPhone && (
-                    <a href={phoneHref(community.publicPhone)}>Telefone da comunidade ↗</a>
+                    <a href={phoneHref(community.publicPhone)}>
+                      Telefone da comunidade <Icon name="arrow" />
+                    </a>
                   )}
                   {community.publicEmail && (
-                    <a href={emailHref(community.publicEmail)}>E-mail da comunidade ↗</a>
+                    <a href={emailHref(community.publicEmail)}>
+                      E-mail da comunidade <Icon name="arrow" />
+                    </a>
                   )}
                   {communityWhatsapp && (
                     <a href={communityWhatsapp} target="_blank" rel="noopener noreferrer">
-                      WhatsApp da comunidade ↗
+                      WhatsApp da comunidade <Icon name="external" />
                     </a>
                   )}
                 </div>

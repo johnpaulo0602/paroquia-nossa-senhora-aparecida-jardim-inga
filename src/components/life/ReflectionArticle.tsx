@@ -5,6 +5,7 @@ import { RichText } from '@/components/site/RichText'
 
 import styles from './life.module.css'
 import { MediaPanel } from './MediaPanel'
+import { Icon } from '@/components/site/Icon'
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   dateStyle: 'long',
@@ -19,7 +20,7 @@ export function ReflectionArticle({ post }: { post: Post }) {
   return (
     <>
       <Link className={styles.backLink} href={backHref}>
-        <span aria-hidden="true">←</span> Voltar às reflexões
+        <Icon name="arrowLeft" /> Voltar às reflexões
       </Link>
       <article className={styles.reading}>
         <header>
@@ -69,7 +70,7 @@ export function ReflectionArticle({ post }: { post: Post }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Assistir ao vídeo <span aria-hidden="true">↗</span>
+              Assistir ao vídeo <Icon name="external" />
             </a>
           </p>
         ) : null}
@@ -78,7 +79,7 @@ export function ReflectionArticle({ post }: { post: Post }) {
           <p className={styles.sourceLink}>
             Fonte:{' '}
             <a href={post.sourceUrl} target="_blank" rel="noopener noreferrer">
-              {post.sourceName} <span aria-hidden="true">↗</span>
+              {post.sourceName} <Icon name="external" />
             </a>
           </p>
         ) : null}

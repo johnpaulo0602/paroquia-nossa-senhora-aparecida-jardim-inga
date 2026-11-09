@@ -1,0 +1,82 @@
+/*
+ * Design tokens — Paróquia Nossa Senhora Aparecida.
+ * Every color, size, radius, shadow and duration in the frontend should come from here.
+ * Contrast notes are against white (#fff).
+ */
+:root {
+  /* Color · navy */
+  --navy-950: #0c1c35; /* utility bar, dark bands */
+  --navy-800: #102a4c; /* primary, headings · 14:1 */
+  --navy-600: #1b3c63; /* hover, dark surfaces */
+
+  /* Color · blue */
+  --blue-500: #507899; /* secondary text, eyebrow · 4.7:1 */
+  --blue-300: #7ca9ce; /* decorative only */
+  --blue-100: #dcebf5; /* selection, chips */
+  --blue-50: #f3f7fb; /* soft surfaces */
+  --surface-strong: #edf3f8; /* hover surface, date badges */
+
+  /* Color · gold */
+  --gold-500: #b9944f; /* decorative only (2.9:1): active underline, focus ring */
+  --gold-700: #8a6a2f; /* gold text · 5:1 */
+
+  /* Color · text and lines */
+  --ink: #344355; /* body text · 10:1 */
+  --muted: #5b6b7d; /* metadata · 5.5:1 */
+  --line: #e0e7ee; /* borders, dividers */
+  --line-strong: #c9d6e3; /* input and secondary button borders */
+  --on-dark: #ffffff;
+  --on-dark-muted: #c7d5e5; /* secondary text on navy · 8:1 on navy-800 */
+
+  /* Aliases kept for existing modules */
+  --navy: var(--navy-800);
+  --blue: var(--blue-300);
+  --gold: var(--gold-500);
+  --paper: #ffffff;
+
+  /* Typography */
+  --font-body: var(--font-poppins), 'Poppins', Arial, sans-serif;
+  --text-xs: 0.75rem; /* 12px · uppercase eyebrows and badges only */
+  --text-sm: 0.875rem; /* 14px · menu, metadata, captions — the minimum */
+  --text-base: 1rem; /* 16px · body */
+  --text-md: 1.125rem; /* 18px · lead */
+  --text-lg: 1.375rem; /* 22px · h3, card titles */
+  --text-xl: 1.75rem; /* 28px · section titles in cards */
+  --text-2xl: 2rem; /* 32px · h2 */
+  --text-3xl: 2.75rem; /* 44px · h1 */
+  --text-4xl: 3.5rem; /* 56px · display */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-caps: 0.14em;
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* Radius */
+  --radius-sm: 8px; /* inputs */
+  --radius-md: 12px; /* dropdowns, small cards */
+  --radius-lg: 20px; /* cards, sections */
+  --radius-pill: 999px; /* buttons, chips */
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgb(16 42 76 / 6%), 0 4px 12px rgb(16 42 76 / 6%);
+  --shadow-lg: 0 18px 45px rgb(16 42 76 / 12%);
+  --shadow: var(--shadow-lg);
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Breakpoints (reference only — CSS can't use vars in @media):
+     sm 480px · md 768px · lg 1024px · xl 1280px */
+}

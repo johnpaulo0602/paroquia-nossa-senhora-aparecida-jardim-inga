@@ -4,6 +4,7 @@ import type { Milestone } from '@/payload-types'
 
 import styles from './Timeline.module.css'
 import { asMedia, safeExternalUrl } from './utils'
+import { Icon } from '@/components/site/Icon'
 
 type TimelineProps = {
   items: Milestone[]
@@ -34,12 +35,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
           const sourceUrl = safeExternalUrl(item.sourceUrl)
 
           return (
-            <li
-              className={styles.item}
-              id={`${idPrefix}-${item.id}`}
-              key={item.id}
-              tabIndex={-1}
-            >
+            <li className={styles.item} id={`${idPrefix}-${item.id}`} key={item.id} tabIndex={-1}>
               <span className={styles.node} aria-hidden="true" />
               <article className={styles.card}>
                 {image ? (
@@ -51,15 +47,12 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
                       sizes="(max-width: 650px) 100vw, 42vw"
                     />
                     {(image.caption || image.credit) && (
-                      <figcaption>{[image.caption, image.credit].filter(Boolean).join(' · ')}</figcaption>
+                      <figcaption>
+                        {[image.caption, image.credit].filter(Boolean).join(' · ')}
+                      </figcaption>
                     )}
                   </figure>
-                ) : (
-                  <div className={styles.mediaFallback}>
-                    <span>Imagem não cadastrada</span>
-                    <small>O acervo deste marco ainda não foi publicado.</small>
-                  </div>
-                )}
+                ) : null}
                 <span className={styles.date}>{item.displayLabel}</span>
                 <h2>{item.title}</h2>
                 <RichText content={item.body} className={styles.body} />
@@ -68,7 +61,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
                 )}
                 {sourceUrl && (
                   <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
-                    {item.sourceName || 'Consultar fonte'} <span aria-hidden="true">↗</span>
+                    {item.sourceName || 'Consultar fonte'} <Icon name="external" />
                   </a>
                 )}
               </article>

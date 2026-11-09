@@ -7,6 +7,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import type { Event, Highlight, Media, Post } from '@/payload-types'
 
 import styles from './communication.module.css'
+import { Icon } from '@/components/site/Icon'
 
 const relation = <T extends Post | Event>(value: number | T | null | undefined) =>
   value && typeof value === 'object' ? value : null
@@ -30,13 +31,8 @@ const highlightHref = (highlight: Highlight) => {
 export function HighlightsCarousel({ highlights }: { highlights: Highlight[] }) {
   const [index, setIndex] = useState(0)
 
-  if (!highlights.length) {
-    return (
-      <section className={`notice ${styles.highlightFallback}`} aria-label="Destaques">
-        Nenhum destaque está em exibição. Confira abaixo todas as publicações.
-      </section>
-    )
-  }
+  // No highlights: the feed below already lists every post, so render nothing.
+  if (!highlights.length) return null
 
   const highlight = highlights[index]
   const post = relation(highlight.post)
@@ -76,11 +72,11 @@ export function HighlightsCarousel({ highlights }: { highlights: Highlight[] }) 
           {href &&
             (external ? (
               <a className="button" href={href} target="_blank" rel="noopener noreferrer">
-                {highlight.ctaLabel || 'Saiba mais'} <span aria-hidden="true">↗</span>
+                {highlight.ctaLabel || 'Saiba mais'} <Icon name="external" />
               </a>
             ) : (
               <Link className="button" href={href}>
-                {highlight.ctaLabel || 'Saiba mais'} <span aria-hidden="true">→</span>
+                {highlight.ctaLabel || 'Saiba mais'} <Icon name="arrow" />
               </Link>
             ))}
         </div>
@@ -103,10 +99,10 @@ export function HighlightsCarousel({ highlights }: { highlights: Highlight[] }) 
           </p>
           <div>
             <button type="button" onClick={() => show(index - 1)} aria-label="Destaque anterior">
-              ←
+              <Icon name="arrowLeft" />
             </button>
             <button type="button" onClick={() => show(index + 1)} aria-label="Próximo destaque">
-              →
+              <Icon name="arrow" />
             </button>
           </div>
         </div>

@@ -2,7 +2,8 @@ import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 import type { Community, Event, HomePage as HomePageData, Post, Project } from '@/payload-types'
-import { Icon } from '@/components/site/Icon'
+import { Icon, resolveIcon } from '@/components/site/Icon'
+import type { NextCelebration } from '@/lib/next-celebration'
 import { MediaImage } from '@/components/site/MediaImage'
 import { SmartLink } from '@/components/site/SmartLink'
 
@@ -19,6 +20,7 @@ type HomeSectionsProps = {
   projects: Project[]
   sponsors: SponsorLogo[]
   liturgyUrl?: string | null
+  nextCelebration?: NextCelebration | null
 }
 
 const defaultServices = [
@@ -26,13 +28,13 @@ const defaultServices = [
     title: 'Missas e confissões',
     description: 'Encontre sua celebração',
     url: '/horarios',
-    icon: 'church',
+    icon: 'clock',
   },
   {
     title: 'Catequese e crisma',
     description: 'Caminhos de formação',
     url: '/vida/catequese',
-    icon: 'book',
+    icon: 'book-open',
   },
   {
     title: 'Secretaria paroquial',
@@ -44,7 +46,7 @@ const defaultServices = [
     title: 'Como chegar',
     description: 'Venha celebrar conosco',
     url: '/secretaria',
-    icon: 'location',
+    icon: 'map-pin',
   },
 ]
 
@@ -55,7 +57,7 @@ const sacraments = [
     description: 'O início de uma caminhada na fé.',
     url: '/vida/batismo',
     action: 'Orientações',
-    icon: 'church',
+    icon: 'droplet',
   },
   {
     eyebrow: 'Vida em família',
@@ -63,7 +65,7 @@ const sacraments = [
     description: 'Preparação para a vida a dois.',
     url: '/vida/matrimonio',
     action: 'Saiba como começar',
-    icon: 'heart',
+    icon: 'heart-handshake',
   },
   {
     eyebrow: 'Formação e comunidade',
@@ -71,7 +73,7 @@ const sacraments = [
     description: 'Crescer na fé e na participação.',
     url: '/vida/catequese',
     action: 'Conheça a catequese',
-    icon: 'book',
+    icon: 'flame',
   },
 ]
 
@@ -137,11 +139,9 @@ function SectionHeading({
   )
 }
 
+/** Icons typed in the CMS are Lucide names (or Portuguese keywords); unknown ones fall back. */
 function ServiceIcon({ name }: { name?: string | null }) {
-  if (name === 'book' || name === 'catequese') return <Icon name="book" />
-  if (name === 'phone' || name === 'secretaria') return <Icon name="phone" />
-  if (name === 'location' || name === 'mapa') return <Icon name="location" />
-  return <Icon name="church" />
+  return <Icon name={resolveIcon(name, 'church')} />
 }
 
 export function HomeSections({
@@ -153,6 +153,7 @@ export function HomeSections({
   projects,
   sponsors,
   liturgyUrl,
+  nextCelebration,
 }: HomeSectionsProps) {
   const services = home?.serviceLinks?.length ? home.serviceLinks : defaultServices
   const faithLinks = home?.faithLinks?.length ? home.faithLinks : defaultFaithLinks
@@ -162,6 +163,28 @@ export function HomeSections({
     <div className="page">
       <div className={`container ${styles.home}`}>
         <HeroCarousel slides={slides} />
+
+        {nextCelebration && (
+          <SmartLink className={styles.nextMass} href="/horarios">
+            <Icon className={styles.nextMassIcon} name="clock" />
+            <span className={styles.nextMassText}>
+              <small>Próxima celebração · {nextCelebration.relativeDay}</small>
+              <strong>
+                {nextCelebration.title}
+                {nextCelebration.communityName ? ` · ${nextCelebration.communityName}` : ''}
+              </strong>
+            </span>
+            <time
+              className={styles.nextMassTime}
+              dateTime={`${nextCelebration.date}T${nextCelebration.time}:00-03:00`}
+            >
+              {nextCelebration.time.replace(':', 'h')}
+            </time>
+            <span className={styles.nextMassLink}>
+              Todos os horários <Icon name="arrow" />
+            </span>
+          </SmartLink>
+        )}
 
         <nav className={styles.services} aria-label="Serviços e informações">
           {services.map(
@@ -187,8 +210,8 @@ export function HomeSections({
           <section className={styles.section} aria-labelledby="home-communication">
             <SectionHeading
               action={
-                <SmartLink className="button-secondary" href="/comunicacao">
-                  Todos os conteúdos <span aria-hidden="true">↗</span>
+                <SmartLink icon className="button-secondary" href="/comunicacao">
+                  Todos os conteúdos
                 </SmartLink>
               }
               eyebrow="Comunicação"
@@ -251,11 +274,11 @@ export function HomeSections({
                 'Conheça a matriz Nossa Senhora Aparecida e as comunidades que caminham juntas no Jardim Ingá.'}
             </p>
             <div className={styles.actions}>
-              <SmartLink className={styles.lightButton} href="/paroquia">
-                Conheça a paróquia <span aria-hidden="true">↗</span>
+              <SmartLink icon className={styles.lightButton} href="/paroquia">
+                Conheça a paróquia
               </SmartLink>
-              <SmartLink className={styles.textLink} href="/contato">
-                Como chegar <span aria-hidden="true">↗</span>
+              <SmartLink icon className={styles.textLink} href="/contato">
+                Como chegar
               </SmartLink>
             </div>
           </div>
@@ -283,8 +306,8 @@ export function HomeSections({
             <div>
               <SectionHeading
                 action={
-                  <SmartLink className={styles.textLink} href="/agenda">
-                    Agenda completa <span aria-hidden="true">↗</span>
+                  <SmartLink icon className={styles.textLink} href="/agenda">
+                    Agenda completa
                   </SmartLink>
                 }
                 eyebrow="Encontros e participação"
@@ -331,7 +354,7 @@ export function HomeSections({
                           </p>
                         </span>
                         <span className={styles.eventArrow} aria-hidden="true">
-                          →
+                          <Icon name="arrow" />
                         </span>
                       </SmartLink>
                     )
@@ -348,14 +371,14 @@ export function HomeSections({
               <span className="eyebrow">Celebre conosco</span>
               <h2>Um tempo para a sua fé.</h2>
               <p>Consulte missas, confissões e orientações para participar da vida paroquial.</p>
-              <SmartLink className="button" href="/horarios">
-                Ver horários <span aria-hidden="true">↗</span>
+              <SmartLink icon className="button" href="/horarios">
+                Ver horários
               </SmartLink>
               <div className={styles.liturgy}>
                 <span className="eyebrow">Liturgia diária</span>
                 <h3>A Palavra do dia</h3>
-                <SmartLink external className={styles.textLink} href={dailyLiturgyUrl}>
-                  Leia na Canção Nova <span aria-hidden="true">↗</span>
+                <SmartLink icon external className={styles.textLink} href={dailyLiturgyUrl}>
+                  Leia na Canção Nova
                 </SmartLink>
               </div>
             </aside>
@@ -386,7 +409,7 @@ export function HomeSections({
                   <h3>{sacrament.title}</h3>
                   <p>{sacrament.description}</p>
                   <span className={styles.textLink}>
-                    {sacrament.action} <span aria-hidden="true">↗</span>
+                    {sacrament.action} <Icon name="arrow" />
                   </span>
                 </SmartLink>
               ))}
@@ -405,19 +428,18 @@ export function HomeSections({
                 {home?.communitiesIntro ||
                   'A mesma fé reúne a matriz e suas comunidades. Encontre a sua e saiba como participar.'}
               </p>
-              <SmartLink className="button-secondary" href="/comunidades">
-                Conheça as comunidades <span aria-hidden="true">↗</span>
+              <SmartLink icon className="button-secondary" href="/comunidades">
+                Conheça as comunidades
               </SmartLink>
             </div>
             {communities.length ? (
               <div className={styles.communityList}>
                 {communities.map((community) => (
-                  <SmartLink href={`/comunidades/${community.slug}`} key={community.id}>
+                  <SmartLink icon href={`/comunidades/${community.slug}`} key={community.id}>
                     <span>
                       <strong>{community.name}</strong>
                       {community.region && <small>{community.region}</small>}
                     </span>
-                    <span aria-hidden="true">↗</span>
                   </SmartLink>
                 ))}
               </div>
@@ -462,20 +484,14 @@ export function HomeSections({
                       <div>
                         <h3>{project.title}</h3>
                         {project.summary && <p>{project.summary}</p>}
-                        <SmartLink href={`/projetos#${project.slug}`}>
+                        <SmartLink icon href={`/projetos#${project.slug}`}>
                           {project.ctaLabel || 'Conheça o projeto'}{' '}
-                          <span aria-hidden="true">↗</span>
                         </SmartLink>
                       </div>
                     </article>
                   ))}
                 </div>
-              ) : (
-                <p className="notice">
-                  Os projetos ativos serão apresentados aqui. Fale com a paróquia para conhecer as
-                  formas de participação.
-                </p>
-              )}
+              ) : null}
               <div className={styles.actions}>
                 <SmartLink className="button-secondary" href="/contato">
                   Seja um parceiro
@@ -488,18 +504,12 @@ export function HomeSections({
           </section>
         )}
 
-        {home?.showSponsors !== false && (
+        {home?.showSponsors !== false && sponsors.length > 0 && (
           <section className={styles.sponsors} aria-labelledby="home-sponsors">
             <span className="eyebrow">Apoio à comunidade</span>
             <h2 id="home-sponsors">{home?.sponsorsTitle || 'Nossos patrocinadores'}</h2>
             <p>{home?.sponsorsIntro || 'Parceiros que apoiam iniciativas da nossa comunidade.'}</p>
-            {sponsors.length ? (
-              <SponsorsMarquee sponsors={sponsors} />
-            ) : (
-              <p className="notice">
-                Os apoiadores serão apresentados aqui após a confirmação das parcerias.
-              </p>
-            )}
+            <SponsorsMarquee sponsors={sponsors} />
           </section>
         )}
 
@@ -512,8 +522,8 @@ export function HomeSections({
                 {home?.faithIntro ||
                   'A vida da comunidade continua em cada encontro, na oração e no cuidado com o próximo.'}
               </p>
-              <SmartLink className="button" href="/vida/pastorais">
-                Conheça as pastorais <span aria-hidden="true">↗</span>
+              <SmartLink icon className="button" href="/vida/pastorais">
+                Conheça as pastorais
               </SmartLink>
             </div>
             <div className={styles.faithLinks}>
@@ -521,12 +531,11 @@ export function HomeSections({
                 (link, index) =>
                   link.url && (
                     <SmartLink
+                      icon
                       href={link.url}
                       key={('id' in link && link.id) || `${link.title}-${index}`}
                     >
-                      <h3>
-                        {link.title || 'Conheça mais'} <span aria-hidden="true">↗</span>
-                      </h3>
+                      <h3>{link.title || 'Conheça mais'}</h3>
                       {link.description && <p>{link.description}</p>}
                     </SmartLink>
                   ),

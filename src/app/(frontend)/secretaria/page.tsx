@@ -10,6 +10,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 import { getCMS } from '@/lib/payload'
 import type { SiteSetting } from '@/payload-types'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Secretaria paroquial',
@@ -104,7 +105,8 @@ export default async function SecretariatPage() {
             eyebrow="Acolhimento e informações práticas"
             title={page.title || 'Secretaria paroquial'}
             intro={
-              page.intro || 'Atendimento, celebrações e os canais para falar com a equipe paroquial.'
+              page.intro ||
+              'Atendimento, celebrações e os canais para falar com a equipe paroquial.'
             }
           />
         </div>
@@ -124,8 +126,8 @@ export default async function SecretariatPage() {
               </ul>
             ) : (
               <p className="notice">
-                Os horários de atendimento da secretaria estão em atualização. Entre em contato pelos
-                canais abaixo para confirmar o expediente.
+                Os horários de atendimento da secretaria estão em atualização. Entre em contato
+                pelos canais abaixo para confirmar o expediente.
               </p>
             )}
           </div>
@@ -139,7 +141,7 @@ export default async function SecretariatPage() {
             />
             <div className={styles.actions}>
               <Link className="button-secondary" href="/horarios">
-                Ver todas as comunidades <span aria-hidden="true">↗</span>
+                Ver todas as comunidades <Icon name="arrow" />
               </Link>
             </div>
           </div>
@@ -157,7 +159,10 @@ export default async function SecretariatPage() {
           <ContactCards settings={settings} />
         </section>
 
-        <section className={styles.specialCelebrations} aria-labelledby="special-celebrations-title">
+        <section
+          className={styles.specialCelebrations}
+          aria-labelledby="special-celebrations-title"
+        >
           <div className={styles.specialCopy}>
             <span className="eyebrow">Programação e orientações</span>
             <h2 id="special-celebrations-title">
@@ -169,10 +174,10 @@ export default async function SecretariatPage() {
             </p>
             <div className={styles.actions}>
               <Link className="button" href="/agenda">
-                Consultar agenda <span aria-hidden="true">↗</span>
+                Consultar agenda <Icon name="arrow" />
               </Link>
               <Link className="button-secondary" href="/equipe">
-                Estrutura da paróquia <span aria-hidden="true">↗</span>
+                Estrutura da paróquia <Icon name="arrow" />
               </Link>
             </div>
           </div>

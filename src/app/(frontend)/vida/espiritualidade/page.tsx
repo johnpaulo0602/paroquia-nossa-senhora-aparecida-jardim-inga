@@ -11,6 +11,7 @@ import {
   getSpiritualityContent,
 } from '@/components/life/queries'
 import { PageHeader } from '@/components/site/PageHeader'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Espiritualidade',
@@ -54,7 +55,7 @@ export default async function SpiritualityPage() {
                 'Encontre tempo para silenciar, agradecer e rezar. Caminhos simples podem nutrir sua oração pessoal e comunitária.'}
             </p>
             <a className="button" href={liturgyUrl} target="_blank" rel="noopener noreferrer">
-              Liturgia diária <span aria-hidden="true">↗</span>
+              Liturgia diária <Icon name="external" />
             </a>
           </div>
         </section>

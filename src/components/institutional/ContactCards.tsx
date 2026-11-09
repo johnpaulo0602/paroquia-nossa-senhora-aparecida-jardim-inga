@@ -2,6 +2,7 @@ import type { SiteSetting } from '@/payload-types'
 
 import styles from './ContactCards.module.css'
 import { emailHref, phoneHref, safeExternalUrl, whatsappHref } from './utils'
+import { Icon } from '@/components/site/Icon'
 
 type ContactCardsProps = {
   settings: SiteSetting
@@ -16,11 +17,11 @@ export function ContactCards({
   const whatsappUrl = settings.whatsapp ? whatsappHref(settings.whatsapp) : null
   const hasContent = Boolean(
     mapUrl ||
-      settings.address ||
-      settings.postalCode ||
-      settings.phone ||
-      whatsappUrl ||
-      settings.email,
+    settings.address ||
+    settings.postalCode ||
+    settings.phone ||
+    whatsappUrl ||
+    settings.email,
   )
 
   if (!hasContent) return <p className="notice">{emptyMessage}</p>
@@ -35,9 +36,11 @@ export function ContactCards({
           rel="noopener noreferrer"
           aria-label="Abrir endereço da paróquia no mapa"
         >
-          <span className={styles.mapPin} aria-hidden="true">⌖</span>
+          <Icon className={styles.mapPin} name="map-pin" />
           <strong>{settings.shortName || 'Paróquia'} · localização</strong>
-          <span>Abrir no mapa ↗</span>
+          <span>
+            Abrir no mapa <Icon name="external" />
+          </span>
         </a>
       )}
       {(settings.address || settings.postalCode) && (
@@ -47,7 +50,7 @@ export function ContactCards({
           {settings.postalCode && <p>CEP {settings.postalCode}</p>}
           {mapUrl && (
             <a href={mapUrl} target="_blank" rel="noopener noreferrer">
-              Como chegar ↗
+              Como chegar <Icon name="external" />
             </a>
           )}
         </section>
@@ -65,7 +68,7 @@ export function ContactCards({
             )}
             {whatsappUrl && (
               <a className="button" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                WhatsApp ↗
+                WhatsApp <Icon name="external" />
               </a>
             )}
           </div>
@@ -76,7 +79,7 @@ export function ContactCards({
           <h3>E-mail</h3>
           <p className={styles.breakable}>{settings.email}</p>
           <a className="button" href={emailHref(settings.email)}>
-            Enviar e-mail ↗
+            Enviar e-mail <Icon name="arrow" />
           </a>
         </section>
       )}

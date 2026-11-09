@@ -1,5 +1,5 @@
 .contactCta {
-  background: #173b63;
+  background: var(--navy-600);
   padding-block: 50px;
   color: white;
 }
@@ -11,22 +11,22 @@
   gap: 40px;
 }
 
-.contactCta .eyebrow {
-  color: #b8d1e8;
+.contactCta :global(.eyebrow) {
+  color: var(--on-dark-muted);
 }
 
 .contactCta h2 {
   max-width: 650px;
   margin: 12px 0;
   color: white;
-  font-size: 1.9rem;
+  font-size: var(--text-xl);
 }
 
 .contactCta p {
   max-width: 620px;
   margin: 0;
-  color: #ccdae8;
-  font-size: 0.75rem;
+  color: var(--on-dark-muted);
+  font-size: var(--text-sm);
 }
 
 .ctaActions {
@@ -36,18 +36,18 @@
   gap: 12px;
 }
 
-.contactCta .button {
+.contactCta :global(.button) {
   border-color: white;
   background: white;
   color: var(--navy);
 }
 
-.contactCta .button-secondary {
+.contactCta :global(.button-secondary) {
   border-color: #8da9c2;
   color: white;
 }
 
-.contactCta .button-secondary:hover {
+.contactCta :global(.button-secondary):hover {
   background: rgb(255 255 255 / 8%);
 }
 
@@ -57,9 +57,9 @@
 }
 
 .footer {
-  background: #f2f6fa;
+  background: var(--blue-50);
   padding-top: 55px;
-  color: #687f94;
+  color: var(--muted);
 }
 
 .grid {
@@ -71,13 +71,13 @@
 .identity p {
   max-width: 270px;
   margin: 24px 0 14px;
-  font-size: 0.7rem;
+  font-size: var(--text-sm);
   line-height: 1.9;
   white-space: pre-line;
 }
 
 .identity > a {
-  font-size: 0.7rem;
+  font-size: var(--text-sm);
 }
 
 .contacts {
@@ -93,7 +93,7 @@
   max-width: 100%;
   align-items: center;
   gap: 8px;
-  font-size: 0.66rem;
+  font-size: var(--text-sm);
   overflow-wrap: anywhere;
 }
 
@@ -112,12 +112,12 @@
 
 .navGroup h3 {
   margin: 0 0 6px;
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
   letter-spacing: 0;
 }
 
 .navGroup a {
-  font-size: 0.68rem;
+  font-size: var(--text-sm);
   text-decoration: none;
 }
 
@@ -134,7 +134,7 @@
   margin-top: 45px;
   border-top: 1px solid #dbe5ed;
   padding-block: 25px;
-  font-size: 0.58rem;
+  font-size: var(--text-sm);
 }
 
 .bottom a {
@@ -164,7 +164,7 @@
   }
 
   .contactCta h2 {
-    font-size: 1.6rem;
+    font-size: var(--text-xl);
   }
 
   .ctaActions {

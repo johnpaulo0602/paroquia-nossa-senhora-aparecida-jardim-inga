@@ -7,6 +7,7 @@ import styles from '@/components/institutional/pages.module.css'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 import { getCMS } from '@/lib/payload'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Dízimo e doações',
@@ -75,7 +76,7 @@ export default async function ContributePage() {
               comunidade.
             </p>
             <Link href="/vida/mural-do-dizimo">
-              Conhecer o Mural do dízimo <span aria-hidden="true">↗</span>
+              Conhecer o Mural do dízimo <Icon name="arrow" />
             </Link>
           </article>
 
@@ -87,7 +88,7 @@ export default async function ContributePage() {
               solidária.
             </p>
             <Link href="/vida/pastorais">
-              Ver pastorais e movimentos <span aria-hidden="true">↗</span>
+              Ver pastorais e movimentos <Icon name="arrow" />
             </Link>
           </article>
 
@@ -99,7 +100,7 @@ export default async function ContributePage() {
               paroquial.
             </p>
             <Link href="/projetos">
-              Conhecer projetos <span aria-hidden="true">↗</span>
+              Conhecer projetos <Icon name="arrow" />
             </Link>
           </article>
 
@@ -111,7 +112,7 @@ export default async function ContributePage() {
               confirme os procedimentos diretamente na secretaria.
             </p>
             <Link href="/secretaria">
-              Falar com a secretaria <span aria-hidden="true">↗</span>
+              Falar com a secretaria <Icon name="arrow" />
             </Link>
           </article>
         </section>

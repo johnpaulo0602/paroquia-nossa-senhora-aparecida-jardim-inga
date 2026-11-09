@@ -7,6 +7,7 @@ import { asMedia } from '@/components/institutional/utils'
 import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 import { getCMS } from '@/lib/payload'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Comunidades',
@@ -50,7 +51,9 @@ export default async function CommunitiesPage() {
                       sizes="(max-width: 700px) 100vw, (max-width: 950px) 50vw, 33vw"
                     />
                   ) : (
-                    <div className={styles.communityCardFallback} aria-hidden="true">✝</div>
+                    <div className={styles.communityCardFallback} aria-hidden="true">
+                      <Icon name="church" />
+                    </div>
                   )}
                   <div className={styles.communityCardCopy}>
                     <span className="eyebrow">
@@ -64,7 +67,7 @@ export default async function CommunitiesPage() {
                       <p>Apresentação e endereço disponíveis na página da comunidade.</p>
                     )}
                     <Link href={`/comunidades/${community.slug}`}>
-                      Conhecer a comunidade <span aria-hidden="true">↗</span>
+                      Conhecer a comunidade <Icon name="arrow" />
                     </Link>
                   </div>
                 </article>

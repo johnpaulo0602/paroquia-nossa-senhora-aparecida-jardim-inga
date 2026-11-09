@@ -7,6 +7,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 
 import { getCMS } from '@/lib/payload'
+import { Icon, resolveIcon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Nossa Senhora Aparecida',
@@ -66,11 +67,7 @@ export default async function PatronPage() {
               </figcaption>
             )}
           </figure>
-        ) : (
-          <div className={styles.coverFallback}>
-            A imagem de apresentação da padroeira ainda não foi publicada.
-          </div>
-        )}
+        ) : null}
 
         <Timeline
           items={milestones.docs}
@@ -81,14 +78,16 @@ export default async function PatronPage() {
 
         {hasReading && (
           <section className={styles.reading} aria-labelledby="patron-reading-title">
-            <div className={styles.readingMark} aria-hidden="true">Aparecida</div>
+            <div className={styles.readingMark} aria-hidden="true">
+              Aparecida
+            </div>
             <div className={styles.readingCopy}>
               <span className="eyebrow">Para conhecer mais</span>
               <h2 id="patron-reading-title">{page.readingTitle || 'Leitura complementar'}</h2>
               {page.readingBody && <p>{page.readingBody}</p>}
               {readingUrl && (
                 <a className="button" href={readingUrl} target="_blank" rel="noopener noreferrer">
-                  Acessar a leitura <span aria-hidden="true">↗</span>
+                  Acessar a leitura <Icon name="external" />
                 </a>
               )}
             </div>
@@ -104,7 +103,7 @@ export default async function PatronPage() {
             <div className={styles.facts}>
               {facts.map((fact, index) => (
                 <article className={styles.fact} key={fact.id || index}>
-                  {fact.icon && <span className={styles.factIcon} aria-hidden="true">{fact.icon}</span>}
+                  <Icon className={styles.factIcon} name={resolveIcon(fact.icon, 'cross')} />
                   {fact.title && <h3>{fact.title}</h3>}
                   {fact.body && <p>{fact.body}</p>}
                 </article>
@@ -120,7 +119,7 @@ export default async function PatronPage() {
               {sources.map((source, index) => (
                 <li key={source.id || index}>
                   <a href={source.url} target="_blank" rel="noopener noreferrer">
-                    {source.label} <span aria-hidden="true">↗</span>
+                    {source.label} <Icon name="external" />
                   </a>
                 </li>
               ))}

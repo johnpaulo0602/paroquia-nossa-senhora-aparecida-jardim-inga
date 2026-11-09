@@ -11,6 +11,8 @@ import { getCMS } from '@/lib/payload'
 import type { Event } from '@/payload-types'
 
 import styles from '@/components/events/events.module.css'
+import { Icon } from '@/components/site/Icon'
+import { OriginBadge } from '@/components/site/OriginBadge'
 
 export const dynamic = 'force-dynamic'
 
@@ -59,10 +61,11 @@ export default async function EventPage({ params }: PageProps) {
   return (
     <div className="page">
       <div className="container">
-        <Link className={styles.backLink} href="/agenda">← Agenda paroquial</Link>
+        <Link className={styles.backLink} href="/agenda"><Icon name="arrowLeft" /> Agenda paroquial</Link>
         <header className={styles.detailHeader}>
           <span className="eyebrow">Agenda paroquial</span>
           <h1>{title}</h1>
+          <OriginBadge origin={event.origin} />
           {event.summary && <p>{event.summary}</p>}
         </header>
 
@@ -85,7 +88,7 @@ export default async function EventPage({ params }: PageProps) {
             </dl>
             <div className={styles.eventActions}>
               <a className="button" href={`/eventos/${encodeURIComponent(event.slug)}/ics`}>Adicionar ao calendário</a>
-              {registrationUrl && <a className="button button-secondary" href={registrationUrl} target="_blank" rel="noopener noreferrer">Acessar inscrição ↗</a>}
+              {registrationUrl && <a className="button button-secondary" href={registrationUrl} target="_blank" rel="noopener noreferrer">Acessar inscrição <Icon name="external" /></a>}
             </div>
             <p className={styles.factsHelp}>O arquivo usa o horário de Brasília e pode ser aberto em aplicativos de calendário compatíveis.</p>
           </aside>
@@ -100,7 +103,7 @@ export default async function EventPage({ params }: PageProps) {
             <section className={styles.participation} aria-labelledby="participation-title">
               <h2 id="participation-title">Informações para participar</h2>
               {event.participationInfo ? <RichText content={event.participationInfo} /> : <p>Consulte a secretaria para confirmar as orientações de participação.</p>}
-              <p><Link href="/contato">Fale com a secretaria →</Link></p>
+              <p><Link href="/contato">Fale com a secretaria <Icon name="arrow" /></Link></p>
             </section>
           </div>
         </div>

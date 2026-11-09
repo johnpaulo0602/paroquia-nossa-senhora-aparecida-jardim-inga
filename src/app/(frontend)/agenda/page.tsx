@@ -10,6 +10,7 @@ import { RichText } from '@/components/site/RichText'
 import { activeDuring, getCMS } from '@/lib/payload'
 
 import styles from '@/components/events/events.module.css'
+import { Icon } from '@/components/site/Icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +29,13 @@ export default async function AgendaPage({ searchParams }: { searchParams: Searc
   const requestedMonth = first(query.mes)
   const month = requestedMonth && /^\d{4}-(?:0[1-9]|1[0-2])$/.test(requestedMonth) ? requestedMonth : currentMonth(now)
   const requestedPeriod = first(query.periodo)
-  const period = requestedPeriod === 'proximos' || requestedPeriod === 'arquivo' ? requestedPeriod : 'mes'
+  // Upcoming events are the default view; a month (?mes=) or the archive are opt-in.
+  const period =
+    requestedPeriod === 'arquivo' || requestedPeriod === 'mes' || requestedPeriod === 'proximos'
+      ? requestedPeriod
+      : requestedMonth
+        ? 'mes'
+        : 'proximos'
   const community = first(query.comunidade) || ''
   const requestedView = first(query.visualizacao)
   const view = period === 'mes' && requestedView === 'calendario' ? 'calendario' : 'lista'
@@ -81,12 +88,14 @@ export default async function AgendaPage({ searchParams }: { searchParams: Searc
     }),
   ])
 
+  const segment = period === 'mes' ? (view === 'calendario' ? 'calendario' : 'mes') : period
+
   const hrefFor = (changes: Record<string, string | number | null>) => {
     const state: Record<string, string | number | null> = {
       mes: period === 'mes' ? month : null,
       comunidade: community || null,
-      visualizacao: period === 'mes' ? view : null,
-      periodo: period === 'mes' ? null : period,
+      visualizacao: period === 'mes' && view === 'calendario' ? 'calendario' : null,
+      periodo: period === 'arquivo' ? 'arquivo' : null,
       pagina: period !== 'mes' && page > 1 ? page : null,
       ...changes,
     }
@@ -114,47 +123,49 @@ export default async function AgendaPage({ searchParams }: { searchParams: Searc
           </div>
         )}
 
-        <nav className={styles.archiveNav} aria-label="Períodos da agenda">
-          <Link href={hrefFor({ periodo: null, pagina: null, mes: currentMonth(now) })} aria-current={period === 'mes' ? 'page' : undefined}>
-            Calendário mensal
-          </Link>
-          <Link href={hrefFor({ periodo: 'proximos', pagina: null, mes: null, visualizacao: null })} aria-current={period === 'proximos' ? 'page' : undefined}>
-            Próximos eventos
-          </Link>
-          <Link href={hrefFor({ periodo: 'arquivo', pagina: null, mes: null, visualizacao: null })} aria-current={period === 'arquivo' ? 'page' : undefined}>
-            Arquivo
-          </Link>
-        </nav>
-
         <div className={styles.toolbar}>
-          <form className={styles.filterForm} action="/agenda" method="get">
-            {period === 'mes' ? <input type="hidden" name="mes" value={month} /> : <input type="hidden" name="periodo" value={period} />}
-            {period === 'mes' && <input type="hidden" name="visualizacao" value={view} />}
-            <div>
-              <label htmlFor="event-community">Comunidade</label>
-              <select id="event-community" name="comunidade" defaultValue={community}>
-                <option value="">Todas as comunidades</option>
-                {communities.docs.map((item) => (
-                  <option key={item.id} value={item.slug}>{item.name}</option>
-                ))}
-              </select>
-            </div>
-            <button className="button button-secondary" type="submit">Filtrar</button>
-          </form>
+          <nav aria-label="Como ver a agenda" className={styles.viewSwitch}>
+            {[
+              { key: 'proximos', label: 'Próximos', href: hrefFor({ periodo: null, mes: null, visualizacao: null, pagina: null }) },
+              { key: 'mes', label: 'Mês', href: hrefFor({ periodo: null, mes: month, visualizacao: null, pagina: null }) },
+              { key: 'calendario', label: 'Calendário', href: hrefFor({ periodo: null, mes: month, visualizacao: 'calendario', pagina: null }) },
+              { key: 'arquivo', label: 'Arquivo', href: hrefFor({ periodo: 'arquivo', mes: null, visualizacao: null, pagina: null }) },
+            ].map((item) => (
+              <Link aria-current={segment === item.key ? 'page' : undefined} href={item.href} key={item.key}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-          {period === 'mes' && (
-            <nav className={styles.viewSwitch} aria-label="Visualização da agenda">
-              <Link href={hrefFor({ visualizacao: 'lista' })} aria-current={view === 'lista' ? 'page' : undefined}>Lista</Link>
-              <Link href={hrefFor({ visualizacao: 'calendario' })} aria-current={view === 'calendario' ? 'page' : undefined}>Calendário</Link>
-            </nav>
-          )}
+        <div className={styles.communityFilter}>
+          <p className={styles.filterLabel} id="agenda-community">
+            Comunidade
+          </p>
+          <ul aria-labelledby="agenda-community" className="chips">
+            <li>
+              <Link aria-current={!community ? 'true' : undefined} href={hrefFor({ comunidade: null, pagina: null })}>
+                Todas
+              </Link>
+            </li>
+            {communities.docs.map((item) => (
+              <li key={item.id}>
+                <Link
+                  aria-current={community === item.slug ? 'true' : undefined}
+                  href={hrefFor({ comunidade: item.slug || null, pagina: null })}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {period === 'mes' && (
           <nav className={styles.monthNavigation} aria-label="Navegar entre meses">
-            <Link className="button button-secondary" href={hrefFor({ mes: shiftMonth(month, -1), pagina: null })} aria-label="Mês anterior">←</Link>
+            <Link className="button button-secondary" href={hrefFor({ mes: shiftMonth(month, -1), pagina: null })} aria-label="Mês anterior"><Icon name="arrowLeft" /></Link>
             <h2>{monthLabel(month)}</h2>
-            <Link className="button button-secondary" href={hrefFor({ mes: shiftMonth(month, 1), pagina: null })} aria-label="Próximo mês">→</Link>
+            <Link className="button button-secondary" href={hrefFor({ mes: shiftMonth(month, 1), pagina: null })} aria-label="Próximo mês"><Icon name="arrow" /></Link>
           </nav>
         )}
 
@@ -179,9 +190,9 @@ export default async function AgendaPage({ searchParams }: { searchParams: Searc
 
         {period !== 'mes' && events.totalPages > 1 && (
           <nav className={styles.pagination} aria-label="Paginação da agenda">
-            {events.hasPrevPage ? <Link className="button button-secondary" href={hrefFor({ pagina: page - 1 })}>← Página anterior</Link> : <span />}
+            {events.hasPrevPage ? <Link className="button button-secondary" href={hrefFor({ pagina: page - 1 })}><Icon name="arrowLeft" /> Página anterior</Link> : <span />}
             <span>Página {events.page} de {events.totalPages}</span>
-            {events.hasNextPage ? <Link className="button button-secondary" href={hrefFor({ pagina: page + 1 })}>Próxima página →</Link> : <span />}
+            {events.hasNextPage ? <Link className="button button-secondary" href={hrefFor({ pagina: page + 1 })}>Próxima página <Icon name="arrow" /></Link> : <span />}
           </nav>
         )}
       </div>

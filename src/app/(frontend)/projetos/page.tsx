@@ -8,6 +8,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 import { activeDuring, getCMS } from '@/lib/payload'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Projetos e parcerias',
@@ -59,9 +60,7 @@ export default async function ProjectsPage() {
           <div className={styles.sectionHeading}>
             <span className="eyebrow">Fé em ação</span>
             <h2 id="projects-list-title">Iniciativas e propostas</h2>
-            <p>
-              Projetos sociais, mutirões e frentes de cuidado acompanhadas pela paróquia.
-            </p>
+            <p>Projetos sociais, mutirões e frentes de cuidado acompanhadas pela paróquia.</p>
           </div>
 
           {projects.docs.length > 0 ? (
@@ -99,8 +98,7 @@ export default async function ProjectsPage() {
                         </div>
                       )}
                       <Link href="/contato">
-                        {project.ctaLabel || 'Conversar sobre o projeto'}{' '}
-                        <span aria-hidden="true">↗</span>
+                        {project.ctaLabel || 'Conversar sobre o projeto'} <Icon name="arrow" />
                       </Link>
                     </div>
                   </article>
@@ -119,9 +117,7 @@ export default async function ProjectsPage() {
           <div className={styles.sectionHeading}>
             <span className="eyebrow">Apoio institucional</span>
             <h2 id="sponsors-list-title">Apoiadores e patrocinadores</h2>
-            <p>
-              Marcas e parceiros com aprovação institucional vigente para exibição pública.
-            </p>
+            <p>Marcas e parceiros com aprovação institucional vigente para exibição pública.</p>
           </div>
 
           {sponsors.docs.length > 0 ? (

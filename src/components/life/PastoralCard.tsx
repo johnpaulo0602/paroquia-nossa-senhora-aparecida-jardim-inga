@@ -5,6 +5,7 @@ import { RichText } from '@/components/site/RichText'
 
 import styles from './life.module.css'
 import { MediaPanel } from './MediaPanel'
+import { Icon } from '@/components/site/Icon'
 
 export function PastoralCard({ pastoral }: { pastoral: Pastoral }) {
   return (
@@ -13,6 +14,7 @@ export function PastoralCard({ pastoral }: { pastoral: Pastoral }) {
         image={pastoral.cover}
         alt=""
         className={styles.pastoralImage}
+        icon="users"
         sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
       />
       <div className={styles.pastoralCardBody}>
@@ -26,7 +28,7 @@ export function PastoralCard({ pastoral }: { pastoral: Pastoral }) {
           <p>Conheça esta pastoral e as formas de participação confirmadas pela paróquia.</p>
         )}
         <Link className={styles.textLink} href={`/pastorais/${pastoral.slug}`}>
-          Conheça e participe <span aria-hidden="true">↗</span>
+          Conheça e participe <Icon name="arrow" />
         </Link>
       </div>
     </article>

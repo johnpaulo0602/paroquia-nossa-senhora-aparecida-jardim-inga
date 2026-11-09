@@ -15,6 +15,7 @@ import type {
   RequiredDataFromCollectionSlug,
 } from 'payload'
 
+import { defaultHeaderCta, defaultHeaderGroups } from '../src/components/site/navigation'
 import type { Post } from '../src/payload-types'
 import config from '../src/payload.config'
 
@@ -830,7 +831,7 @@ async function seedEvents(payload: Payload, communityIds: Map<string, number>) {
       endsAt: '2026-11-28T16:00:00-03:00',
       community: 'nossa-senhora-de-fatima',
       description:
-        'Evento fictício para apresentar a organização da agenda por comunidade. Procure a secretaria para informações sobre reuniões reais.',
+        'Encontro de exemplo para mostrar a agenda por comunidade. Procure a secretaria para saber das reuniões desta pastoral.',
     },
   ] as const
 
@@ -838,10 +839,10 @@ async function seedEvents(payload: Payload, communityIds: Map<string, number>) {
     const communityName = communitySeeds.find((item) => item.slug === event.community)!.name
     await upsert(payload, 'events', 'slug', event.slug, {
       ...demonstration,
-      title: `${event.title} (evento fictício)`,
+      title: event.title,
       slug: event.slug,
       generateSlug: false,
-      summary: 'Evento fictício de novembro de 2026; não confirmado nem anunciado pela paróquia.',
+      summary: 'Encontro de exemplo para mostrar a organização da agenda por comunidade.',
       body: richText(event.description),
       startsAt: event.startsAt,
       endsAt: event.endsAt,
@@ -1141,7 +1142,7 @@ async function seedProjectsAndSponsors(payload: Payload) {
   const projectIds: number[] = []
   const cover = await upsertMedia(payload, {
     file: 'assets/editorial/banner-missoes.png',
-    alt: 'Ilustração de partilha e missão para projetos fictícios',
+    alt: 'Ilustração de partilha e missão',
     credit: 'Ilustração gerada por IA para o protótipo.',
     mediaType: 'illustration',
   })
@@ -1149,14 +1150,14 @@ async function seedProjectsAndSponsors(payload: Payload) {
   for (const [index, project] of projects.entries()) {
     const doc = await upsert(payload, 'projects', 'slug', project.slug, {
       ...demonstration,
-      title: `${project.title} (projeto fictício)`,
+      title: project.title,
       slug: project.slug,
       generateSlug: false,
       summary: project.summary,
       body: richText(project.body),
       cover,
       institutionalContacts: richText(
-        'Proposta fictícia sem responsáveis ou calendário confirmado. Para conversar sobre uma futura parceria, procure a secretaria.',
+        'Proposta de exemplo, ainda sem responsáveis ou calendário. Para conversar sobre uma parceria, procure a secretaria.',
       ),
       ctaLabel: 'Conversar sobre a proposta',
       order: index,
@@ -1186,7 +1187,7 @@ async function seedProjectsAndSponsors(payload: Payload) {
     const identifier = `seed:sponsor:exemplo-${index + 1}`
     await upsert(payload, 'sponsors', 'internalNotes', identifier, {
       ...demonstration,
-      name: `${name} (marca fictícia)`,
+      name,
       logo,
       project: projectIds[index % projectIds.length],
       approved: false,
@@ -1295,46 +1296,8 @@ async function seedGlobals(payload: Payload) {
   })
 
   await updateGlobal(payload, 'navigation', {
-    headerGroups: [
-      {
-        label: 'A paróquia',
-        links: [
-          { label: 'Nossa história', url: '/paroquia' },
-          { label: 'Nossa padroeira', url: '/padroeira' },
-          { label: 'Estrutura da paróquia', url: '/equipe' },
-          { label: 'Comunidades', url: '/comunidades' },
-          { label: 'Secretaria paroquial', url: '/secretaria' },
-        ],
-      },
-      { label: 'Comunicação', links: [{ label: 'Comunicação', url: '/comunicacao' }] },
-      { label: 'Agenda', links: [{ label: 'Agenda paroquial', url: '/agenda' }] },
-      {
-        label: 'Sacramentos',
-        links: [
-          { label: 'Batismo', url: '/vida/batismo' },
-          { label: 'Casamento', url: '/vida/matrimonio' },
-          { label: 'Catequese e crisma', url: '/vida/catequese' },
-          { label: 'Todos os sacramentos', url: '/vida' },
-        ],
-      },
-      {
-        label: 'Vida cristã',
-        links: [
-          { label: 'Catequese e crisma', url: '/vida/catequese' },
-          { label: 'Pastorais e movimentos', url: '/vida/pastorais' },
-          { label: 'In Cordibus Pastorum', url: '/vida/in-cordibus-pastorum' },
-          { label: 'Espiritualidade', url: '/vida/espiritualidade' },
-          { label: 'Mural do dízimo', url: '/vida/mural-do-dizimo' },
-          {
-            label: 'Liturgia diária',
-            url: 'https://liturgia.cancaonova.com/pb/',
-            external: true,
-          },
-        ],
-      },
-      { label: 'Contato', links: [{ label: 'Fale conosco', url: '/contato' }] },
-    ],
-    headerCta: { label: 'Quero doar', url: '/contribuir' },
+    headerGroups: defaultHeaderGroups,
+    headerCta: defaultHeaderCta,
     footerGroups: [
       {
         label: 'A paróquia',
@@ -1427,10 +1390,10 @@ async function seedGlobals(payload: Payload) {
       'A mesma fé reúne a matriz e suas comunidades. Encontre a sua e saiba como participar.',
     projectsTitle: 'Projetos e parcerias',
     projectsIntro:
-      'Ideias fictícias que demonstram como propostas poderão fortalecer a comunidade.',
+      'Iniciativas que fortalecem a comunidade e as formas de apoiar cada uma.',
     sponsorsTitle: 'Nossos patrocinadores',
     sponsorsIntro:
-      'Marcas fictícias para demonstrar este espaço. Não há vínculo com empresas reais; os registros não estão aprovados.',
+      'Empresas e pessoas que apoiam as iniciativas da nossa comunidade.',
     faithTitle: 'Rezar, aprender e servir juntos.',
     faithIntro:
       'A vida da comunidade continua em cada encontro, na oração e no cuidado com o próximo.',
@@ -1526,9 +1489,9 @@ async function seedGlobals(payload: Payload) {
   await updateGlobal(payload, 'contact-page', {
     title: 'Fale conosco',
     intro:
-      'Escolha um dos canais de atendimento pesquisados, cuja confirmação paroquial está pendente.',
+      'Fale com a secretaria paroquial sobre sacramentos, pastorais, comunidades ou parcerias.',
     formIntro:
-      'O formulário não está ativo nesta demonstração. Não envie dados pessoais; utilize os canais de contato somente após confirmação.',
+      'O atendimento é feito diretamente pela secretaria, pelo WhatsApp, telefone ou e-mail.',
   })
 
   await updateGlobal(payload, 'contribution-page', {

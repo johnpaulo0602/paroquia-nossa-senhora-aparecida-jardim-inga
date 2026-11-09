@@ -1,7 +1,7 @@
 .utility {
-  background: #0c1c35;
-  color: #c7d5e5;
-  font-size: 0.65rem;
+  background: var(--navy-950);
+  color: var(--on-dark-muted);
+  font-size: var(--text-sm);
 }
 
 .utility > div {
@@ -18,7 +18,7 @@
 }
 
 .utility a {
-  color: #e5edf6;
+  color: var(--on-dark);
   text-decoration: none;
 }
 
@@ -50,9 +50,9 @@
 }
 
 .navLink,
-.group > summary {
+.groupTrigger {
   color: var(--navy);
-  font-size: 0.7rem;
+  font-size: var(--text-sm);
   line-height: 1.4;
   text-decoration: none;
   white-space: nowrap;
@@ -62,34 +62,40 @@
   padding-block: 12px;
 }
 
-.navLink:hover {
-  color: #507899;
+.navLink:hover,
+.groupTrigger:hover {
+  color: var(--blue-500);
+}
+
+.active {
+  box-shadow: inset 0 -2px 0 var(--gold);
 }
 
 .group {
   position: relative;
 }
 
-.group > summary {
+.groupTrigger {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-block: 12px;
-  cursor: pointer;
-  list-style: none;
+  gap: 6px;
+  border: 0;
+  background: none;
+  padding: 12px 0;
 }
 
-.group > summary::-webkit-details-marker {
-  display: none;
+.chevron {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
 }
 
-.group > summary::after {
-  content: '⌄';
-  font-size: 0.85rem;
+.groupOpen > .groupTrigger {
+  color: var(--blue-500);
 }
 
-.group[open] > summary {
-  color: #507899;
+.groupOpen .chevron {
+  transform: rotate(180deg);
 }
 
 .dropdown {
@@ -98,22 +104,49 @@
   left: -18px;
   min-width: 225px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: white;
   padding: 10px;
-  box-shadow: 0 15px 35px rgb(16 42 76 / 12%);
+  box-shadow: var(--shadow-lg);
+}
+
+.dropdown[hidden] {
+  display: none;
 }
 
 .dropdown a {
   display: block;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   padding: 10px;
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
   text-decoration: none;
 }
 
-.dropdown a:hover {
-  background: #eef4fa;
+.dropdown a:hover,
+.dropdown a:focus-visible {
+  background: var(--surface-strong);
+}
+
+.dropdown a[aria-current='page'] {
+  background: var(--surface-strong);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chevron {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .dropdown:not([hidden]) {
+    animation: dropdown-in var(--dur-base) var(--ease-out);
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 
 .donate {
@@ -122,18 +155,18 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--navy);
   padding: 11px 18px;
   color: white;
-  font-size: 0.7rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .donate:hover {
-  background: #1b3c63;
+  background: var(--navy-600);
 }
 
 .donate svg {
@@ -146,11 +179,11 @@
   align-items: center;
   gap: 10px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: white;
   padding: 9px 15px;
   color: var(--navy);
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
 }
 
 .menuToggle svg {
@@ -158,36 +191,57 @@
   height: 20px;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1366px) {
   .navigation {
-    gap: 14px;
-  }
-
-  .navLink,
-  .group > summary,
-  .donate {
-    font-size: 0.64rem;
+    gap: 16px;
   }
 }
 
-@media (max-width: 1020px) {
+/*
+ * At 1280px and below the full menu no longer fits at 14px text. The header becomes a single
+ * 64px sticky row and the menu opens as a full-screen sheet with page scroll locked.
+ */
+@media (max-width: 1280px) {
+  .utility {
+    display: none;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+  }
+
   .masthead {
-    min-height: 90px;
-    flex-wrap: wrap;
+    min-height: 0;
+    height: 64px;
+    gap: var(--space-4);
+    padding-block: var(--space-2);
   }
 
   .menuToggle {
     display: flex;
+    flex-shrink: 0;
+    min-height: 44px;
     margin-left: auto;
+    gap: 8px;
+    padding: 8px 14px;
   }
 
   .navigation {
+    position: fixed;
+    inset: 64px 0 0;
+    z-index: 30;
     display: none;
-    width: 100%;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 15px 0 5px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-top: 1px solid var(--line);
+    background: white;
+    --sheet-pad: max(20px, calc((100vw - 720px) / 2));
+
+    padding: var(--space-2) var(--sheet-pad) 0;
   }
 
   .navigation.open {
@@ -195,64 +249,71 @@
   }
 
   .navLink,
-  .group > summary {
+  .groupTrigger {
     width: 100%;
-    padding-block: 13px;
-    font-size: 0.82rem;
+    min-height: 52px;
+    border-bottom: 1px solid var(--line);
+    padding-block: 14px;
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+
+  .active {
+    box-shadow: inset 3px 0 0 var(--gold);
+    padding-left: 14px;
   }
 
   .group {
     width: 100%;
   }
 
-  .group > summary {
+  .groupTrigger {
     justify-content: space-between;
+  }
+
+  .chevron {
+    width: 18px;
+    height: 18px;
   }
 
   .dropdown {
     position: static;
+    animation: none !important;
     border: 0;
-    background: #f3f7fb;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: none;
     box-shadow: none;
+    padding: 4px 0 12px 12px;
   }
 
   .dropdown a {
-    font-size: 0.78rem;
+    padding: 11px 12px;
+    color: var(--ink);
+    font-size: var(--text-base);
   }
 
+  /* Donate stays reachable at the bottom of the sheet while the list scrolls. */
   .donate {
-    margin-top: 15px;
-    font-size: 0.78rem;
+    position: sticky;
+    bottom: 0;
+    margin: auto calc(-1 * var(--sheet-pad)) 0;
+    border-radius: 0;
+    box-shadow: 0 -1px 0 var(--line);
+    padding-block: 18px calc(18px + env(safe-area-inset-bottom));
+    font-size: var(--text-base);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .navigation.open {
+      animation: sheet-in var(--dur-slow) var(--ease-out);
+    }
   }
 }
 
-@media (max-width: 650px) {
-  .utility > div {
-    min-height: 32px;
-    font-size: 0.55rem;
-  }
-
-  .utility nav {
-    gap: 12px;
-  }
-
-  .utility nav a:first-child,
-  .utility nav a:last-child {
-    display: none;
-  }
-
-  .masthead {
-    padding-block: 13px;
-  }
-}
-
-@media (max-width: 420px) {
-  .utility > div > span {
-    display: none;
-  }
-
-  .utility nav {
-    width: 100%;
-    justify-content: space-between;
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }

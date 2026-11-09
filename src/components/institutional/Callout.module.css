@@ -4,9 +4,9 @@
   justify-content: space-between;
   gap: 45px;
   margin-top: 65px;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   padding: 38px 40px;
-  background: #edf3f9;
+  background: var(--surface-strong);
 }
 
 .callout h2 {
@@ -18,8 +18,8 @@
 .callout p {
   max-width: 680px;
   margin: 0;
-  color: #62788b;
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.8;
 }
 

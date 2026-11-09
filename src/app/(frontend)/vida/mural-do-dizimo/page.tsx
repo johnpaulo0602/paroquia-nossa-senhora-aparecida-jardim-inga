@@ -7,6 +7,7 @@ import styles from '@/components/life/life.module.css'
 import { getTitheWallContent } from '@/components/life/queries'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Mural do dízimo',
@@ -44,7 +45,7 @@ export default async function TitheWallPage() {
               </p>
             )}
             <Link className="button" href="/secretaria">
-              Quero ser dizimista <span aria-hidden="true">↗</span>
+              Quero ser dizimista <Icon name="arrow" />
             </Link>
           </div>
           <div className={styles.titheStatement}>
@@ -93,7 +94,7 @@ export default async function TitheWallPage() {
               realiza cadastro nem recebe pagamentos.
             </p>
             <Link className="button" href="/secretaria">
-              Falar com a secretaria <span aria-hidden="true">↗</span>
+              Falar com a secretaria <Icon name="arrow" />
             </Link>
           </div>
         </section>

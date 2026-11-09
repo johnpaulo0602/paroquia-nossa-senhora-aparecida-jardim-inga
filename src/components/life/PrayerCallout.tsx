@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import styles from './life.module.css'
+import { Icon } from '@/components/site/Icon'
 
 export function PrayerCallout() {
   return (
@@ -14,7 +15,7 @@ export function PrayerCallout() {
         </p>
       </div>
       <Link className="button" href="/horarios">
-        Missas e celebrações <span aria-hidden="true">↗</span>
+        Missas e celebrações <Icon name="arrow" />
       </Link>
     </section>
   )

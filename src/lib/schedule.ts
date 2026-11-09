@@ -1,6 +1,7 @@
 const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
 type Relation = number | string | { id: number | string; name?: string | null }
+type Origin = 'official' | 'research' | 'archive' | 'demonstration' | null
 
 type CelebrationRule = {
   id: number | string
@@ -12,6 +13,7 @@ type CelebrationRule = {
   validFrom?: string | null
   validTo?: string | null
   active?: boolean | null
+  origin?: Origin
 }
 
 type CelebrationException = {
@@ -23,6 +25,7 @@ type CelebrationException = {
   exceptionType: 'cancellation' | 'change' | 'extra'
   newTime?: string | null
   reason?: string | null
+  origin?: Origin
 }
 
 const relationID = (relation: Relation | null | undefined) =>
@@ -61,6 +64,7 @@ export const resolveCelebrationsForDate = (
         community: rule.community,
         time: exception?.newTime || rule.time,
         exception: exception || null,
+        origin: rule.origin ?? null,
       }
     })
     .filter((item) => item !== null)
@@ -74,6 +78,7 @@ export const resolveCelebrationsForDate = (
       community: exception.community,
       time: exception.newTime || '00:00',
       exception,
+      origin: exception.origin ?? null,
     }))
 
   return [...regular, ...extras].sort((a, b) => a.time.localeCompare(b.time))

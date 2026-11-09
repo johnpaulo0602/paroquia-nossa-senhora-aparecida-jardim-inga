@@ -1,4 +1,5 @@
 import type { Media } from '@/payload-types'
+import { Icon, type IconName } from '@/components/site/Icon'
 import { MediaImage } from '@/components/site/MediaImage'
 
 type MediaPanelProps = {
@@ -6,15 +7,15 @@ type MediaPanelProps = {
   alt: string
   className?: string
   sizes?: string
+  /** Shown on a soft panel when there is no image. */
+  icon?: IconName
 }
 
-export function MediaPanel({ image, alt, className, sizes }: MediaPanelProps) {
+export function MediaPanel({ image, alt, className, sizes, icon = 'cross' }: MediaPanelProps) {
   if (!image || typeof image === 'number') {
     return (
-      <div className={className} aria-hidden="true">
-        <svg viewBox="0 0 64 64" focusable="false">
-          <path d="M29 8h6v17h17v6H35v25h-6V31H12v-6h17z" fill="currentColor" />
-        </svg>
+      <div aria-hidden="true" className={className} data-media-empty="">
+        <Icon name={icon} />
       </div>
     )
   }

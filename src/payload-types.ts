@@ -1910,6 +1910,9 @@ export interface HomePage {
         title?: string | null;
         description?: string | null;
         url?: string | null;
+        /**
+         * Nome de um ícone Lucide: clock, cross, church, book-open, droplet, flame, heart-handshake, users, phone, map-pin, waves, crown, calendar-days. Nomes desconhecidos usam o ícone padrão.
+         */
         icon?: string | null;
         id?: string | null;
       }[]
@@ -1981,6 +1984,9 @@ export interface PatronPage {
     | {
         title?: string | null;
         body?: string | null;
+        /**
+         * Nome de um ícone Lucide: clock, cross, church, book-open, droplet, flame, heart-handshake, users, phone, map-pin, waves, crown, calendar-days. Nomes desconhecidos usam o ícone padrão.
+         */
         icon?: string | null;
         id?: string | null;
       }[]

@@ -9,15 +9,17 @@ import styles from './Brand.module.css'
 type BrandProps = {
   settings: SiteSetting | null
   inverted?: boolean
+  /** Shrinks to a single line in the mobile header. */
+  compact?: boolean
 }
 
-export function Brand({ settings, inverted = false }: BrandProps) {
+export function Brand({ settings, inverted = false, compact = false }: BrandProps) {
   const name = settings?.shortName || settings?.name || 'Nossa Senhora Aparecida'
 
   return (
     <SmartLink
       aria-label={`${name} — página inicial`}
-      className={`${styles.brand} ${inverted ? styles.inverted : ''}`}
+      className={`${styles.brand} ${inverted ? styles.inverted : ''} ${compact ? styles.compact : ''}`}
       href="/"
     >
       <span className={styles.symbol}>

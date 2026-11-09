@@ -24,7 +24,7 @@
 
 .header :global(p) {
   max-width: 700px;
-  color: #62788b;
+  color: var(--muted);
   line-height: 1.8;
 }
 
@@ -35,8 +35,8 @@
 .cover {
   margin: 0 0 40px;
   overflow: hidden;
-  border-radius: 20px;
-  background: #f0f5f8;
+  border-radius: var(--radius-lg);
+  background: var(--blue-50);
 }
 
 .coverImage {
@@ -47,24 +47,11 @@
 
 .cover figcaption {
   padding: 12px 22px;
-  color: #6c8093;
-  font-size: 0.72rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.7;
 }
 
-.coverFallback {
-  display: grid;
-  min-height: 250px;
-  place-items: center;
-  margin-bottom: 40px;
-  border: 1px dashed #c3d3df;
-  border-radius: 20px;
-  padding: 30px;
-  background: #f0f5f8;
-  color: #6c8093;
-  font-size: 0.85rem;
-  text-align: center;
-}
 
 .introGrid {
   display: grid;
@@ -83,8 +70,8 @@
 
 .introGrid p,
 .sectionHeading > p {
-  color: #62788b;
-  font-size: 0.9rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.9;
 }
 
@@ -107,8 +94,8 @@
   align-items: center;
   overflow: hidden;
   margin-top: 70px;
-  border-radius: 18px;
-  background: #edf3f8;
+  border-radius: var(--radius-lg);
+  background: var(--surface-strong);
 }
 
 .readingCopy {
@@ -117,13 +104,13 @@
 
 .reading h2 {
   margin: 12px 0 18px;
-  font-size: 2rem;
+  font-size: var(--text-2xl);
   line-height: 1.35;
 }
 
 .reading p {
-  color: #62788b;
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.9;
   white-space: pre-line;
 }
@@ -132,10 +119,10 @@
   display: grid;
   min-height: 300px;
   place-items: center;
-  background: #173b63;
-  color: #d6e4ef;
-  font-family: var(--font-display, var(--display, Georgia, serif));
-  font-size: 3.5rem;
+  background: var(--navy-600);
+  color: var(--on-dark-muted);
+  font-size: var(--text-4xl);
+  font-weight: 600;
 }
 
 .facts {
@@ -145,8 +132,8 @@
 }
 
 .fact {
-  border: 1px solid #e0e8ef;
-  border-radius: 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 28px;
   background: #fff;
 }
@@ -154,31 +141,31 @@
 .factIcon {
   display: block;
   margin-bottom: 18px;
-  color: #6f93b0;
-  font-size: 1.6rem;
+  color: var(--blue-500);
+  font-size: var(--text-xl);
 }
 
 .fact h3 {
   margin: 0 0 12px;
-  font-size: 1.3rem;
+  font-size: var(--text-lg);
 }
 
 .fact p {
   margin: 0;
-  color: #687d8f;
-  font-size: 0.82rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.85;
   white-space: pre-line;
 }
 
 .sources {
   margin-top: 50px;
-  border-top: 1px solid #dce5ec;
+  border-top: 1px solid var(--line);
   padding-top: 25px;
 }
 
 .sources h2 {
-  font-size: 1.2rem;
+  font-size: var(--text-md);
 }
 
 .sources ul {
@@ -190,7 +177,7 @@
 }
 
 .sources a {
-  font-size: 0.78rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
@@ -209,7 +196,7 @@
   gap: 35px;
   align-items: center;
   border: 1px solid #edf1f4;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   padding: 25px;
   background: #f5f7f8;
 }
@@ -218,12 +205,12 @@
 .teamCardPhoto {
   width: 100%;
   object-fit: cover;
-  background: #e8eef2;
+  background: var(--line);
 }
 
 .teamPhoto {
   height: 300px;
-  border-radius: 15px;
+  border-radius: var(--radius-lg);
 }
 
 .teamLeadCopy {
@@ -241,18 +228,18 @@
   display: block;
   margin-bottom: 12px;
   color: #627f96;
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
 }
 
 .biography {
-  color: #687d8f;
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.85;
 }
 
 .muted {
-  color: #687d8f;
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.8;
 }
 
@@ -264,7 +251,7 @@
 }
 
 .personLinks a {
-  font-size: 0.78rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
 }
@@ -275,15 +262,15 @@
   justify-content: center;
   min-height: 220px;
   padding: 25px;
-  background: #e8eef2;
+  background: var(--line);
   color: #6c8294;
-  font-size: 0.78rem;
+  font-size: var(--text-sm);
   text-align: center;
 }
 
 .teamLead .photoFallback {
   height: 300px;
-  border-radius: 15px;
+  border-radius: var(--radius-lg);
 }
 
 .teamGrid {
@@ -296,7 +283,7 @@
   min-width: 0;
   overflow: hidden;
   border: 1px solid #e3eaf0;
-  border-radius: 17px;
+  border-radius: var(--radius-lg);
   background: #fff;
 }
 
@@ -310,7 +297,7 @@
 
 .teamCard h3 {
   margin: 10px 0 14px;
-  font-size: 1.45rem;
+  font-size: var(--text-lg);
   line-height: 1.35;
 }
 
@@ -324,8 +311,8 @@
   display: flex;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #e0e8ef;
-  border-radius: 17px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   background: #fff;
   flex-direction: column;
 }
@@ -342,10 +329,9 @@
   place-items: end center;
   border-radius: 110px 110px 0 0;
   padding: 30px;
-  background: #e3edf5;
-  color: #577c9d;
-  font-family: var(--font-display, var(--display, Georgia, serif));
-  font-size: 2rem;
+  background: var(--blue-100);
+  color: var(--blue-500);
+  font-size: var(--text-2xl);
   text-align: center;
 }
 
@@ -359,26 +345,26 @@
 
 .communityCard h2 {
   margin: 10px 0;
-  font-size: 1.55rem;
+  font-size: var(--text-xl);
   line-height: 1.35;
 }
 
 .communityCard p {
-  color: #687d8f;
-  font-size: 0.82rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.8;
 }
 
 .communityCard a {
   margin-top: auto;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .backLink {
   display: inline-block;
   margin-bottom: 20px;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
@@ -390,8 +376,8 @@
 }
 
 .communityDescription {
-  color: #62788b;
-  font-size: 0.95rem;
+  color: var(--muted);
+  font-size: var(--text-base);
   line-height: 1.9;
 }
 
@@ -401,8 +387,8 @@
 }
 
 .infoPanel {
-  border: 1px solid #e0e8ef;
-  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
   padding: 26px;
   background: #fff;
 }
@@ -410,13 +396,13 @@
 .infoPanel h2,
 .infoPanel h3 {
   margin: 10px 0 18px;
-  font-size: 1.45rem;
+  font-size: var(--text-lg);
   line-height: 1.4;
 }
 
 .infoPanel p {
-  color: #62788b;
-  font-size: 0.82rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.85;
   white-space: pre-line;
 }
@@ -424,28 +410,28 @@
 .infoPanel a:not([class]) {
   display: inline-block;
   margin-top: 8px;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .addressBlock {
   margin-top: 28px;
-  border-top: 1px solid #dce5ec;
+  border-top: 1px solid var(--line);
   padding-top: 25px;
 }
 
 .addressBlock h2 {
   margin: 0 0 12px;
-  font-size: 1.35rem;
+  font-size: var(--text-lg);
 }
 
 .addressBlock p {
-  color: #62788b;
+  color: var(--muted);
   white-space: pre-line;
 }
 
 .addressBlock a {
-  font-size: 0.82rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
@@ -458,9 +444,9 @@
 
 .hoursPanel,
 .massPanel {
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 28px;
-  background: #f3f5f7;
+  background: var(--blue-50);
 }
 
 .massPanel {
@@ -479,7 +465,7 @@
   gap: 25px;
   border-bottom: 1px solid #e0e7ec;
   padding: 14px 0;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
 }
 
 .hoursList li:last-child {
@@ -498,8 +484,8 @@
   grid-template-columns: 1.1fr 1fr;
   overflow: hidden;
   margin-top: 65px;
-  border-radius: 18px;
-  background: #173b63;
+  border-radius: var(--radius-lg);
+  background: var(--navy-600);
 }
 
 .specialCopy {
@@ -513,12 +499,12 @@
 .specialCopy h2 {
   margin: 14px 0 18px;
   color: #fff;
-  font-size: 2rem;
+  font-size: var(--text-2xl);
 }
 
 .specialCopy p {
   color: #d1dfea;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   line-height: 1.9;
   white-space: pre-line;
 }
@@ -538,18 +524,18 @@
 }
 
 .messagePanel {
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   padding: 38px;
-  background: #edf3f8;
+  background: var(--surface-strong);
 }
 
 .messagePanel h2 {
   margin: 12px 0 18px;
-  font-size: 2rem;
+  font-size: var(--text-2xl);
 }
 
 .messagePanel p {
-  color: #62788b;
+  color: var(--muted);
   line-height: 1.9;
   white-space: pre-line;
 }
@@ -575,8 +561,8 @@
   display: flex;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #e0e8ef;
-  border-radius: 17px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   background: #fff;
   flex-direction: column;
 }
@@ -597,24 +583,24 @@
 
 .projectCopy h2 {
   margin: 0 0 14px;
-  font-size: 1.65rem;
+  font-size: var(--text-xl);
   line-height: 1.35;
 }
 
 .projectSummary,
 .projectBody {
-  color: #687d8f;
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.85;
 }
 
 .projectContacts {
   width: 100%;
   margin-top: 15px;
-  border-top: 1px solid #e0e8ef;
+  border-top: 1px solid var(--line);
   padding-top: 15px;
-  color: #62788b;
-  font-size: 0.78rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
 }
 
 .projectCopy > a {
@@ -633,7 +619,7 @@
   align-items: center;
   justify-content: center;
   min-height: 170px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 24px;
   background: #f3f6f8;
   text-align: center;
@@ -649,13 +635,13 @@
 .sponsor small {
   display: block;
   margin-top: 8px;
-  color: #687d8f;
+  color: var(--muted);
 }
 
 .contributionBody {
   max-width: 820px;
   color: #526f83;
-  font-size: 1rem;
+  font-size: var(--text-base);
   line-height: 1.95;
 }
 
@@ -667,7 +653,7 @@
 
 .donationInfo h2 {
   margin-top: 0;
-  font-size: 1.6rem;
+  font-size: var(--text-xl);
 }
 
 .contributionCards {
@@ -678,25 +664,25 @@
 }
 
 .contributionCard {
-  border: 1px solid #e0e8ef;
-  border-radius: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 30px;
   background: #fff;
 }
 
 .contributionCard h2 {
   margin: 0 0 15px;
-  font-size: 1.65rem;
+  font-size: var(--text-xl);
 }
 
 .contributionCard p {
-  color: #687d8f;
-  font-size: 0.88rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
   line-height: 1.85;
 }
 
 .contributionCard a {
-  font-size: 0.82rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
@@ -746,9 +732,6 @@
     height: 240px;
   }
 
-  .coverFallback {
-    min-height: 200px;
-  }
 
   .introGrid,
   .reading,

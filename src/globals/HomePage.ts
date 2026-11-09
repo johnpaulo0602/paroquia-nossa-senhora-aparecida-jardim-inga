@@ -21,7 +21,15 @@ export const HomePage: GlobalConfig = {
         { name: 'title', label: 'Título', type: 'text' },
         { name: 'description', label: 'Descrição', type: 'textarea' },
         { name: 'url', label: 'URL', type: 'text' },
-        { name: 'icon', label: 'Ícone', type: 'text' },
+        {
+          name: 'icon',
+          label: 'Ícone',
+          type: 'text',
+          admin: {
+            description:
+              'Nome de um ícone Lucide: clock, cross, church, book-open, droplet, flame, heart-handshake, users, phone, map-pin, waves, crown, calendar-days. Nomes desconhecidos usam o ícone padrão.',
+          },
+        },
       ],
     },
     { name: 'communicationTitle', label: 'Título de comunicação', type: 'text' },

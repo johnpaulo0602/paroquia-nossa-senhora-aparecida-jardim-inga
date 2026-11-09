@@ -6,6 +6,7 @@ import { RichText } from '@/components/site/RichText'
 import styles from './life.module.css'
 import { MediaPanel } from './MediaPanel'
 import { PrayerCallout } from './PrayerCallout'
+import { Icon } from '@/components/site/Icon'
 
 const weekdays: Record<string, string> = {
   sunday: 'Domingo',
@@ -30,7 +31,7 @@ export function PastoralDetail({ pastoral }: { pastoral: Pastoral }) {
   return (
     <>
       <Link className={styles.backLink} href="/vida/pastorais">
-        <span aria-hidden="true">←</span> Todas as pastorais
+        <Icon name="arrowLeft" /> Todas as pastorais
       </Link>
       <div className={styles.detailHero}>
         <figure>
@@ -55,7 +56,7 @@ export function PastoralDetail({ pastoral }: { pastoral: Pastoral }) {
             </p>
           )}
           <Link className="button" href="/secretaria">
-            Quero participar <span aria-hidden="true">↗</span>
+            Quero participar <Icon name="arrow" />
           </Link>
         </div>
       </div>
@@ -68,7 +69,7 @@ export function PastoralDetail({ pastoral }: { pastoral: Pastoral }) {
               <ul className={styles.activityList}>
                 {activities.map((activity, index) => (
                   <li key={activity.id ?? index}>
-                    <span aria-hidden="true">✓</span>
+                    <Icon name="check" />
                     <div>
                       <strong>{activity.title}</strong>
                       {activity.description ? <p>{activity.description}</p> : null}
@@ -148,7 +149,7 @@ export function PastoralDetail({ pastoral }: { pastoral: Pastoral }) {
             </section>
           ) : null}
           <Link className="button" href="/secretaria">
-            Fale com a secretaria <span aria-hidden="true">↗</span>
+            Fale com a secretaria <Icon name="arrow" />
           </Link>
         </aside>
       </div>

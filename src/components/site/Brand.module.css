@@ -34,22 +34,22 @@
 }
 
 .words small {
-  font-size: 0.5rem;
+  font-size: var(--text-xs);
   letter-spacing: 0.22em;
   line-height: 1.7;
   text-transform: uppercase;
 }
 
 .words strong {
-  font-size: 0.95rem;
+  font-size: var(--text-base);
   font-weight: 600;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--tracking-tight);
   line-height: 1.3;
 }
 
 .words em {
   margin-top: 4px;
-  font-size: 0.5rem;
+  font-size: var(--text-sm);
   font-style: normal;
   letter-spacing: 0.1em;
 }
@@ -65,10 +65,36 @@
   }
 
   .words strong {
-    font-size: 0.82rem;
+    font-size: var(--text-sm);
   }
 
   .words {
     max-width: 165px;
+  }
+}
+
+/* Header on small screens: one line, smaller mark (the footer keeps the full lockup). */
+@media (max-width: 1280px) {
+  .compact .words small,
+  .compact .words em {
+    display: none;
+  }
+
+  .compact {
+    gap: 10px;
+  }
+
+  .compact .symbol {
+    width: 56px;
+    height: 28px;
+  }
+
+  .compact .words {
+    max-width: 160px;
+  }
+
+  .compact .words strong {
+    font-size: var(--text-sm);
+    line-height: 1.2;
   }
 }

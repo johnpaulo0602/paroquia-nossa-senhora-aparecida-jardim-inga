@@ -5,6 +5,8 @@ import type { Event } from '@/payload-types'
 
 import { communityForEvent } from './content'
 import styles from './events.module.css'
+import { Icon } from '@/components/site/Icon'
+import { OriginBadge } from '@/components/site/OriginBadge'
 
 export function EventCard({ event }: { event: Event }) {
   const date = getParishDateParts(event.startsAt)
@@ -30,16 +32,18 @@ export function EventCard({ event }: { event: Event }) {
           </Link>
         </h3>
         <p>
-          {formatParishTime(event.startsAt)} · {community?.name || event.locationText || 'Local a confirmar'}
+          {formatParishTime(event.startsAt)} ·{' '}
+          {community?.name || event.locationText || 'Local a confirmar'}
         </p>
         {event.summary && <p className={styles.eventSummary}>{event.summary}</p>}
+        <OriginBadge origin={event.origin} />
       </div>
       <Link
         className={styles.eventArrow}
         href={`/eventos/${encodeURIComponent(event.slug)}`}
         aria-label={`Ver detalhes de ${event.title || 'evento paroquial'}`}
       >
-        →
+        <Icon name="arrow" />
       </Link>
     </article>
   )

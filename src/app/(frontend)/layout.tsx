@@ -6,6 +6,8 @@ import { Header } from '@/components/site/Header'
 import { getCMS } from '@/lib/payload'
 import type { Navigation, SiteSetting } from '@/payload-types'
 
+import { poppins } from './fonts'
+import './tokens.css'
 import './styles.css'
 
 export const dynamic = 'force-dynamic'
@@ -50,7 +52,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   }
 
   return (
-    <html lang="pt-BR">
+    <html className={poppins.variable} lang="pt-BR">
       <body>
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo

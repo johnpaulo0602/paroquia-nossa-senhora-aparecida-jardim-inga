@@ -9,6 +9,7 @@ import { MediaImage } from '@/components/site/MediaImage'
 import { SmartLink } from '@/components/site/SmartLink'
 
 import styles from './HeroCarousel.module.css'
+import { Icon } from '@/components/site/Icon'
 
 export type HeroSlide = {
   id: number | string
@@ -74,8 +75,8 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
           <span className="eyebrow">{slide.eyebrow}</span>
           <h1>{slide.title}</h1>
           <p>{slide.summary}</p>
-          <SmartLink className={styles.heroButton} external={slide.external} href={slide.href}>
-            {slide.ctaLabel} <span aria-hidden="true">↗</span>
+          <SmartLink icon className={styles.heroButton} external={slide.external} href={slide.href}>
+            {slide.ctaLabel}
           </SmartLink>
         </div>
       </div>
@@ -98,14 +99,14 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
               onClick={() => selectSlide(activeIndex - 1)}
               type="button"
             >
-              <span aria-hidden="true">←</span>
+              <Icon name="arrowLeft" />
             </button>
             <button
               aria-label="Próximo destaque"
               onClick={() => selectSlide(activeIndex + 1)}
               type="button"
             >
-              <span aria-hidden="true">→</span>
+              <Icon name="arrow" />
             </button>
           </div>
         </div>

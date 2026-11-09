@@ -4,7 +4,13 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 
 import { PostCard } from '@/components/communication/PostCard'
-import { isMedia, postCategoryLabels, postFormatLabels, safeExternalUrl, videoEmbedUrl } from '@/components/communication/content'
+import {
+  isMedia,
+  postCategoryLabels,
+  postFormatLabels,
+  safeExternalUrl,
+  videoEmbedUrl,
+} from '@/components/communication/content'
 import { MediaImage } from '@/components/site/MediaImage'
 import { RichText } from '@/components/site/RichText'
 import { formatParishDate } from '@/lib/dates'
@@ -12,6 +18,7 @@ import { getCMS } from '@/lib/payload'
 import type { Post } from '@/payload-types'
 
 import styles from '@/components/communication/communication.module.css'
+import { Icon } from '@/components/site/Icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,7 +52,9 @@ export default async function PostPage({ params }: PageProps) {
   const payload = await getCMS()
   const manuallyRelated = (post.relatedPosts || []).filter(
     (related): related is Post =>
-      typeof related === 'object' && related.id !== post.id && related.editorialAreas.includes('communication'),
+      typeof related === 'object' &&
+      related.id !== post.id &&
+      related.editorialAreas.includes('communication'),
   )
   const relatedResult = await payload.find({
     collection: 'posts',
@@ -81,7 +90,7 @@ export default async function PostPage({ params }: PageProps) {
       <div className="container">
         <article className={styles.article}>
           <Link className={styles.backLink} href="/comunicacao">
-            ← Comunicação da paróquia
+            <Icon name="arrowLeft" /> Comunicação da paróquia
           </Link>
           <header className={styles.articleHeader}>
             <span className="eyebrow">
@@ -126,7 +135,9 @@ export default async function PostPage({ params }: PageProps) {
                         sizes="(max-width: 700px) 100vw, 420px"
                       />
                       {(item.caption || image.credit) && (
-                        <figcaption>{[item.caption, image.credit].filter(Boolean).join(' · ')}</figcaption>
+                        <figcaption>
+                          {[item.caption, image.credit].filter(Boolean).join(' · ')}
+                        </figcaption>
                       )}
                     </figure>
                   )
@@ -152,7 +163,7 @@ export default async function PostPage({ params }: PageProps) {
               ) : (
                 <p>
                   <a href={videoUrl} target="_blank" rel="noopener noreferrer">
-                    Assistir ao vídeo na fonte externa ↗
+                    Assistir ao vídeo na fonte externa <Icon name="external" />
                   </a>
                 </p>
               )}
@@ -164,7 +175,7 @@ export default async function PostPage({ params }: PageProps) {
               Fonte:{' '}
               {sourceUrl ? (
                 <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
-                  {post.sourceName || 'Publicação original'} ↗
+                  {post.sourceName || 'Publicação original'} <Icon name="external" />
                 </a>
               ) : (
                 post.sourceName

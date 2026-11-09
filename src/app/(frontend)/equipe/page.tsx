@@ -3,17 +3,13 @@ import Link from 'next/link'
 
 import { Callout } from '@/components/institutional/Callout'
 import styles from '@/components/institutional/pages.module.css'
-import {
-  asMedia,
-  asPerson,
-  emailHref,
-  phoneHref,
-} from '@/components/institutional/utils'
+import { asMedia, asPerson, emailHref, phoneHref } from '@/components/institutional/utils'
 import { MediaImage } from '@/components/site/MediaImage'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 import { getCMS } from '@/lib/payload'
 import type { Person } from '@/payload-types'
+import { Icon } from '@/components/site/Icon'
 
 export const metadata: Metadata = {
   title: 'Estrutura da paróquia',
@@ -26,12 +22,18 @@ function PersonContactLinks({ person }: { person: Person }) {
   return (
     <div className={styles.personLinks}>
       {authorized && person.publicEmail && (
-        <a href={emailHref(person.publicEmail)}>E-mail público ↗</a>
+        <a href={emailHref(person.publicEmail)}>
+          E-mail público <Icon name="arrow" />
+        </a>
       )}
       {authorized && person.publicPhone && (
-        <a href={phoneHref(person.publicPhone)}>Telefone público ↗</a>
+        <a href={phoneHref(person.publicPhone)}>
+          Telefone público <Icon name="arrow" />
+        </a>
       )}
-      <Link href="/secretaria">Contato pela secretaria ↗</Link>
+      <Link href="/secretaria">
+        Contato pela secretaria <Icon name="arrow" />
+      </Link>
     </div>
   )
 }

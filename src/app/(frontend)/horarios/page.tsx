@@ -9,6 +9,8 @@ import { activeDuring, getCMS } from '@/lib/payload'
 import { resolveCelebrationsForDate } from '@/lib/schedule'
 
 import styles from '@/components/schedule/schedule.module.css'
+import { Icon } from '@/components/site/Icon'
+import { OriginBadge } from '@/components/site/OriginBadge'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,6 +32,16 @@ const weekdays: { value: Weekday; label: string }[] = [
   { value: 'saturday', label: 'Sábado' },
 ]
 
+const weekdayShort: Record<Weekday, string> = {
+  sunday: 'Dom',
+  monday: 'Seg',
+  tuesday: 'Ter',
+  wednesday: 'Qua',
+  thursday: 'Qui',
+  friday: 'Sex',
+  saturday: 'Sáb',
+}
+
 const weekdayLabels = Object.fromEntries(weekdays.map((day) => [day.value, day.label])) as Record<Weekday, string>
 const celebrationLabels = { mass: 'Santa Missa', confession: 'Confissão', adoration: 'Adoração', other: 'Celebração' }
 const exceptionLabels = { cancellation: 'Cancelamento', change: 'Horário alterado', extra: 'Celebração extra' }
@@ -45,6 +57,8 @@ export default async function SchedulePage({ searchParams }: { searchParams: Sea
   const community = first(query.comunidade) || ''
   const requestedDay = first(query.dia)
   const day = weekdays.some((item) => item.value === requestedDay) ? (requestedDay as Weekday) : ''
+  // The list shows two weeks by default; ?periodo=6 extends it to the six-week horizon.
+  const extended = first(query.periodo) === '6'
   const now = new Date()
   const parts = getParishDateParts(now)
   const today = `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`
@@ -123,6 +137,38 @@ export default async function SchedulePage({ searchParams }: { searchParams: Sea
   const occurrences = dates
     .flatMap((date) => resolveCelebrationsForDate(rules, exceptions, date).map((item) => ({ ...item, date })))
     .filter((item) => !day || weekdays[dateAtNoon(item.date).getUTCDay()].value === day)
+  const nowTime = `${String(parts.hour).padStart(2, '0')}:${String(parts.minute).padStart(2, '0')}`
+  const next = occurrences.find((item) => item.date > today || item.time > nowTime)
+  const tomorrow = dates[1]
+  const relativeDay = (date: string) =>
+    date === today ? 'Hoje' : date === tomorrow ? 'Amanhã' : weekdayLabels[weekdays[dateAtNoon(date).getUTCDay()].value]
+  const listUntil = dates[extended ? 42 : 13]
+  const grouped = occurrences
+    .filter((item) => item.date <= listUntil && (item.date > today || item.time > nowTime))
+    .reduce<{ date: string; items: typeof occurrences }[]>((groups, item) => {
+      const last = groups.at(-1)
+      if (last?.date === item.date) last.items.push(item)
+      else groups.push({ date: item.date, items: [item] })
+      return groups
+    }, [])
+  const filterHref = (changes: { comunidade?: string; dia?: string }) => {
+    const params = new URLSearchParams()
+    const nextCommunity = changes.comunidade ?? community
+    const nextDay = changes.dia ?? day
+    if (nextCommunity) params.set('comunidade', nextCommunity)
+    if (nextDay) params.set('dia', nextDay)
+    if (extended) params.set('periodo', '6')
+    const search = params.toString()
+    return search ? `/horarios?${search}` : '/horarios'
+  }
+  const periodHref = (() => {
+    const params = new URLSearchParams()
+    if (community) params.set('comunidade', community)
+    if (day) params.set('dia', day)
+    if (!extended) params.set('periodo', '6')
+    const search = params.toString()
+    return `/horarios${search ? `?${search}` : ''}#upcoming-title`
+  })()
   const visibleExceptions = exceptions.filter(
     (exception) => !day || weekdays[dateAtNoon(exception.date.slice(0, 10)).getUTCDay()].value === day,
   )
@@ -134,9 +180,75 @@ export default async function SchedulePage({ searchParams }: { searchParams: Sea
       <div className="container">
         <PageHeader
           eyebrow="Encontre sua celebração"
-          title="Missas e celebrações"
-          intro="Consulte os horários da matriz e das comunidades. Em datas especiais, a programação pode mudar."
+          title="Missas e horários"
+          intro="Horários da matriz e das comunidades, no horário de Brasília."
         />
+
+        {next ? (
+          <section aria-labelledby="next-title" className={styles.nextCard}>
+            <div>
+              <p className={styles.nextLabel} id="next-title">
+                Próxima celebração · {relativeDay(next.date)}
+                {next.date !== today &&
+                  `, ${formatParishDate(dateAtNoon(next.date), { day: 'numeric', month: 'long' })}`}
+              </p>
+              <p className={styles.nextTitle}>
+                {next.title} · {relationName(next.community) || 'Comunidade'}
+              </p>
+            </div>
+            <time className={styles.nextTime} dateTime={`${next.date}T${next.time}:00-03:00`}>
+              {next.time.replace(':', 'h')}
+            </time>
+          </section>
+        ) : null}
+
+        <nav aria-label="Filtrar horários" className={styles.filters}>
+          <div>
+            <p className={styles.filterLabel} id="filter-community">
+              Onde
+            </p>
+            <ul aria-labelledby="filter-community" className="chips">
+              <li>
+                <Link aria-current={!community ? 'true' : undefined} href={filterHref({ comunidade: '' })}>
+                  Todas
+                </Link>
+              </li>
+              {communities.docs.map((item) => (
+                <li key={item.id}>
+                  <Link
+                    aria-current={community === item.slug ? 'true' : undefined}
+                    href={filterHref({ comunidade: item.slug || '' })}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className={styles.filterLabel} id="filter-day">
+              Quando
+            </p>
+            <ul aria-labelledby="filter-day" className="chips">
+              <li>
+                <Link aria-current={!day ? 'true' : undefined} href={filterHref({ dia: '' })}>
+                  Todos os dias
+                </Link>
+              </li>
+              {weekdays.map((item) => (
+                <li key={item.value}>
+                  <Link
+                    aria-current={day === item.value ? 'true' : undefined}
+                    aria-label={item.label}
+                    href={filterHref({ dia: item.value })}
+                  >
+                    {weekdayShort[item.value]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
 
         {notices.docs.length > 0 && (
           <div className={styles.notices}>
@@ -149,54 +261,64 @@ export default async function SchedulePage({ searchParams }: { searchParams: Sea
           </div>
         )}
 
-        <form className={styles.filters} action="/horarios" method="get">
-          <div>
-            <label htmlFor="schedule-community">Onde você quer participar?</label>
-            <select id="schedule-community" name="comunidade" defaultValue={community}>
-              <option value="">Todas as comunidades</option>
-              {communities.docs.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="schedule-day">Dia da semana</label>
-            <select id="schedule-day" name="dia" defaultValue={day}>
-              <option value="">Todos os dias</option>
-              {weekdays.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-            </select>
-          </div>
-          <button className="button button-secondary" type="submit">Filtrar horários</button>
-        </form>
-
         <section className={styles.section} aria-labelledby="upcoming-title">
           <div className={styles.sectionHeading}>
             <h2 id="upcoming-title">Próximas celebrações</h2>
-            <p>Próximos 42 dias · horário de Brasília</p>
+            <p>{extended ? 'Próximas 6 semanas' : 'Próximas 2 semanas'}</p>
           </div>
-          {occurrences.length ? (
-            <ul className={styles.occurrenceList}>
-              {occurrences.map((item) => {
-                const weekday = weekdays[dateAtNoon(item.date).getUTCDay()].value
-                const exceptionType = item.exception?.exceptionType
-                return (
-                  <li className={styles.occurrence} key={`${item.id}-${item.date}`}>
-                    <time className={styles.occurrenceDate} dateTime={`${item.date}T${item.time}:00-03:00`}>
-                      <strong>{weekdayLabels[weekday]}</strong>
-                      {formatParishDate(dateAtNoon(item.date), { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </time>
-                    <span className={styles.time}>{item.time.replace(':', 'h')}</span>
-                    <div className={styles.occurrenceBody}>
-                      <strong>{item.title}</strong>
-                      <span>{celebrationLabels[item.celebrationType]} · {relationName(item.community) || 'Comunidade'}</span>
-                      {exceptionType && <span className={styles.badge}>{exceptionLabels[exceptionType]}</span>}
-                      {item.exception?.reason && <p className={styles.reason}>{item.exception.reason}</p>}
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
+          {grouped.length ? (
+            <div className={styles.dayGroups}>
+              {grouped.map((group) => (
+                <section aria-labelledby={`dia-${group.date}`} className={styles.dayGroup} key={group.date}>
+                  <h3 className={styles.dayHeading} id={`dia-${group.date}`}>
+                    {relativeDay(group.date)}
+                    <span>
+                      {formatParishDate(dateAtNoon(group.date), { day: 'numeric', month: 'long' })}
+                    </span>
+                  </h3>
+                  <ul className={styles.occurrenceList}>
+                    {group.items.map((item) => {
+                      const exceptionType = item.exception?.exceptionType
+                      return (
+                        <li className={styles.occurrence} key={`${item.id}-${item.date}`}>
+                          <time className={styles.time} dateTime={`${item.date}T${item.time}:00-03:00`}>
+                            {item.time.replace(':', 'h')}
+                          </time>
+                          <div className={styles.occurrenceBody}>
+                            <strong>{item.title}</strong>
+                            <span>
+                              {item.title === celebrationLabels[item.celebrationType]
+                                ? ''
+                                : `${celebrationLabels[item.celebrationType]} · `}
+                              {relationName(item.community) || 'Comunidade'}
+                            </span>
+                            {(exceptionType || item.origin) && (
+                              <span className={styles.tags}>
+                                {exceptionType && (
+                                  <span className={styles.badge}>{exceptionLabels[exceptionType]}</span>
+                                )}
+                                <OriginBadge origin={item.origin} />
+                              </span>
+                            )}
+                            {item.exception?.reason && <p className={styles.reason}>{item.exception.reason}</p>}
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </section>
+              ))}
+            </div>
           ) : (
-            <p className={styles.empty}>Nenhuma celebração cadastrada para esta seleção nos próximos 42 dias. Escolha outro dia ou consulte a secretaria.</p>
+            <p className={styles.empty}>
+              Nenhuma celebração para esta seleção no período. Escolha outro dia ou outra comunidade, ou fale
+              com a secretaria.
+            </p>
           )}
+          <Link className={`button-secondary ${styles.periodLink}`} href={periodHref}>
+            {extended ? 'Mostrar só as próximas 2 semanas' : 'Ver as próximas 6 semanas'}
+            {!extended && <Icon name="arrow" />}
+          </Link>
         </section>
 
         {visibleExceptions.length > 0 && (
@@ -275,7 +397,7 @@ export default async function SchedulePage({ searchParams }: { searchParams: Sea
             <p>Use os canais públicos da secretaria para receber informações sobre celebrações e atendimento.</p>
           </div>
           <div className={styles.contactLinks}>
-            {whatsapp && <a className="button" href={`https://wa.me/${whatsapp}?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>}
+            {whatsapp && <a className="button" href={`https://wa.me/${whatsapp}?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">WhatsApp <Icon name="external" /></a>}
             {settings.phone && <a className="button button-secondary" href={`tel:${settings.phone.replace(/[^+\d]/g, '')}`}>Ligar</a>}
             {settings.email && <a className="button button-secondary" href={`mailto:${settings.email}`}>E-mail</a>}
             <Link className="button button-secondary" href="/contato">Todos os contatos</Link>
