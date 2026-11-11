@@ -1,6 +1,6 @@
 import { cache } from 'react'
 
-import { activeDuring, getCMS } from '@/lib/payload'
+import { getCMS } from '@/lib/payload'
 
 const publicRead = {
   overrideAccess: false,
@@ -85,31 +85,16 @@ export const getReflectionBySlug = cache(async (slug: string) => {
 export const getClergy = cache(async () => {
   const payload = await getCMS()
   const { docs } = await payload.find({
-    collection: 'team-assignments',
+    collection: 'people',
     ...publicRead,
     where: {
-      and: [{ roleType: { equals: 'clergy' } }, { current: { equals: true } }, activeDuring()],
+      and: [{ roleType: { equals: 'clergy' } }, { current: { equals: true } }],
     },
     sort: 'order',
     limit: 20,
   })
 
   return docs
-})
-
-export const getPastorumContent = cache(async () => {
-  const payload = await getCMS()
-  return payload.findGlobal({ slug: 'pastorum-page', ...publicRead })
-})
-
-export const getSpiritualityContent = cache(async () => {
-  const payload = await getCMS()
-  return payload.findGlobal({ slug: 'spirituality-page', ...publicRead })
-})
-
-export const getTitheWallContent = cache(async () => {
-  const payload = await getCMS()
-  return payload.findGlobal({ slug: 'tithe-wall-page', ...publicRead })
 })
 
 export const getLifeSiteSettings = cache(async () => {

@@ -1,5 +1,6 @@
 import { FormRequestError, formResponse, handleFormAction } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 const responseMessage = 'Se o link for válido, a confirmação da inscrição será registrada.'
 
@@ -8,7 +9,7 @@ export async function GET(request: Request): Promise<Response> {
     request,
     {
       route: 'newsletter-confirmar',
-      enabled: process.env.NEWSLETTER_ENABLED === 'true',
+      enabled: featureEnabled('NEWSLETTER_ENABLED'),
       disabledMessage: 'A confirmação da newsletter está temporariamente desativada.',
     },
     async () => {

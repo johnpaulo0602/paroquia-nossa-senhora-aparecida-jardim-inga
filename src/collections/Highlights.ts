@@ -1,30 +1,16 @@
 import { APIError } from 'payload'
-import type {
-  CollectionBeforeChangeHook,
-  CollectionConfig,
-  TextFieldSingleValidation,
-} from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
-
-const validateExternalUrl: TextFieldSingleValidation = (value) => {
-  if (!value) return true
-
-  try {
-    const url = new URL(value)
-    if (url.protocol === 'http:' || url.protocol === 'https:') return true
-  } catch {
-    return 'Informe uma URL externa válida com http ou https.'
-  }
-
-  return 'Informe uma URL externa válida com http ou https.'
-}
+import { externalLinkField, sitePageField } from '@/fields/links'
 
 const validateDestination: CollectionBeforeChangeHook = ({ data }) => {
   let destination: unknown
@@ -49,7 +35,7 @@ const validateDestination: CollectionBeforeChangeHook = ({ data }) => {
     destination === null ||
     (typeof destination === 'string' && destination.trim() === '')
   ) {
-    throw new APIError('Preencha o destino correspondente ao tipo selecionado.', 400)
+    throw new APIError('Escolha para onde o botão do banner leva.', 400)
   }
 
   return data
@@ -57,11 +43,14 @@ const validateDestination: CollectionBeforeChangeHook = ({ data }) => {
 
 export const Highlights: CollectionConfig = {
   slug: 'highlights',
-  labels: { singular: 'Destaque', plural: 'Destaques' },
+  labels: { singular: 'Banner', plural: 'Banners do carrossel' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'destinationType', 'placement', 'order', 'startsAt', 'endsAt'],
-    group: 'Conteúdo',
+    defaultColumns: ['title', 'placement', 'order', 'startsAt', 'endsAt', '_status'],
+    group: 'Notícias e avisos',
+    hidden: hiddenUnless(...contentRoles),
+    description:
+      'As imagens grandes que passam no topo da página inicial e da página Notícias.',
   },
   access: {
     read: readPublicContent,
@@ -74,45 +63,55 @@ export const Highlights: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'Título do banner',
       type: 'text',
     },
     {
       name: 'eyebrow',
-      label: 'Chamada superior',
+      label: 'Texto pequeno acima do título',
       type: 'text',
+      admin: { placeholder: 'Ex.: Festa da padroeira' },
     },
     {
       name: 'summary',
-      label: 'Resumo',
+      label: 'Frase de apoio',
       type: 'textarea',
+      admin: { description: 'Uma ou duas linhas abaixo do título.' },
     },
     {
       name: 'image',
-      label: 'Imagem',
+      label: 'Imagem de fundo',
       type: 'upload',
       relationTo: 'media',
+      admin: { description: 'Prefira imagens largas (paisagem), com pelo menos 1600 pixels de largura.' },
     },
     {
-      name: 'ctaLabel',
-      label: 'Texto do botão',
-      type: 'text',
-    },
-    {
-      name: 'destinationType',
-      label: 'Tipo de destino',
-      type: 'select',
-      required: true,
-      options: [
-        { label: 'Publicação', value: 'post' },
-        { label: 'Evento', value: 'event' },
-        { label: 'Página interna', value: 'internal' },
-        { label: 'Endereço externo', value: 'external' },
+      type: 'row',
+      fields: [
+        {
+          name: 'ctaLabel',
+          label: 'Texto do botão',
+          type: 'text',
+          admin: { width: '50%', placeholder: 'Ex.: Saiba mais' },
+        },
+        {
+          name: 'destinationType',
+          label: 'Para onde o botão leva?',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Uma notícia', value: 'post' },
+            { label: 'Um evento', value: 'event' },
+            { label: 'Uma página do site', value: 'internal' },
+            { label: 'Outro site', value: 'external' },
+          ],
+          admin: { width: '50%' },
+        },
       ],
     },
     {
       name: 'post',
-      label: 'Publicação de destino',
+      label: 'Qual notícia?',
       type: 'relationship',
       relationTo: 'posts',
       admin: {
@@ -121,58 +120,55 @@ export const Highlights: CollectionConfig = {
     },
     {
       name: 'event',
-      label: 'Evento de destino',
+      label: 'Qual evento?',
       type: 'relationship',
       relationTo: 'events',
       admin: {
         condition: (data) => data.destinationType === 'event',
       },
     },
-    {
-      name: 'internalPath',
-      label: 'Caminho interno',
-      type: 'text',
-      admin: {
-        description: 'Caminho da página interna, por exemplo: /agenda.',
-        condition: (data) => data.destinationType === 'internal',
-      },
-    },
-    {
-      name: 'externalUrl',
-      label: 'URL externa',
-      type: 'text',
-      validate: validateExternalUrl,
-      admin: {
-        condition: (data) => data.destinationType === 'external',
-      },
-    },
+    sitePageField((data) => data.destinationType === 'internal'),
+    externalLinkField((data) => data.destinationType === 'external'),
     {
       name: 'placement',
-      label: 'Locais de exibição',
+      label: 'Onde o banner aparece?',
       type: 'select',
       hasMany: true,
       required: true,
+      defaultValue: ['home'],
       options: [
         { label: 'Página inicial', value: 'home' },
-        { label: 'Comunicação', value: 'communication' },
+        { label: 'Página Notícias', value: 'communication' },
       ],
-    },
-    {
-      name: 'order',
-      label: 'Ordem',
-      type: 'number',
-      required: true,
-      defaultValue: 0,
+      admin: { position: 'sidebar' },
     },
     {
       name: 'startsAt',
-      label: 'Início da exibição',
+      label: 'Mostrar a partir de',
       type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: { pickerAppearance: 'dayAndTime', displayFormat: 'dd/MM/yyyy HH:mm' },
+        description: 'Deixe em branco para mostrar desde já.',
+      },
     },
     {
       name: 'endsAt',
-      label: 'Fim da exibição',
+      label: 'Mostrar até',
       type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: { pickerAppearance: 'dayAndTime', displayFormat: 'dd/MM/yyyy HH:mm' },
+        description: 'Deixe em branco para não ter data de saída.',
+      },
+    },
+    {
+      name: 'order',
+      label: 'Posição no carrossel',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      admin: { position: 'sidebar', description: 'Número menor aparece primeiro.' },
     },
     ...editorialFields(),
   ],

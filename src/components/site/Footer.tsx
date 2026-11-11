@@ -1,47 +1,16 @@
-import type { Navigation, SiteSetting } from '@/payload-types'
+import type { SiteSetting } from '@/payload-types'
 
 import { Brand } from './Brand'
 import { Icon } from './Icon'
+import { footerGroups as groups } from './navigation'
 import { SmartLink } from './SmartLink'
 import styles from './Footer.module.css'
 
 type FooterProps = {
-  navigation: Navigation | null
   settings: SiteSetting | null
 }
 
-const fallbackGroups: NonNullable<Navigation['footerGroups']> = [
-  {
-    label: 'A paróquia',
-    links: [
-      { label: 'Nossa história', url: '/paroquia' },
-      { label: 'Nossa padroeira', url: '/padroeira' },
-      { label: 'Comunidades', url: '/comunidades' },
-      { label: 'Secretaria', url: '/secretaria' },
-    ],
-  },
-  {
-    label: 'Participe',
-    links: [
-      { label: 'Missas e confissões', url: '/horarios' },
-      { label: 'Agenda paroquial', url: '/agenda' },
-      { label: 'Sacramentos', url: '/vida' },
-      { label: 'Pastorais e movimentos', url: '/vida/pastorais' },
-    ],
-  },
-  {
-    label: 'Comunicação',
-    links: [
-      { label: 'Notícias e artigos', url: '/comunicacao' },
-      { label: 'Projetos e parcerias', url: '/projetos' },
-      { label: 'Dízimo e doações', url: '/contribuir' },
-      { label: 'Fale conosco', url: '/contato' },
-    ],
-  },
-]
-
-export function Footer({ navigation, settings }: FooterProps) {
-  const groups = navigation?.footerGroups?.length ? navigation.footerGroups : fallbackGroups
+export function Footer({ settings }: FooterProps) {
   const name = settings?.name || 'Paróquia Nossa Senhora Aparecida'
 
   return (
@@ -85,12 +54,12 @@ export function Footer({ navigation, settings }: FooterProps) {
             </div>
           </div>
           {groups.map((group) => (
-            <nav aria-label={group.label} className={styles.navGroup} key={group.id || group.label}>
+            <nav aria-label={group.label} className={styles.navGroup} key={group.label}>
               <h3>{group.label}</h3>
               {group.links?.map(
                 (link) =>
                   link.url && (
-                    <SmartLink external={link.external} href={link.url} key={link.id || link.url}>
+                    <SmartLink external={link.external} href={link.url} key={link.url}>
                       {link.label}
                       {link.external && (
                         <>

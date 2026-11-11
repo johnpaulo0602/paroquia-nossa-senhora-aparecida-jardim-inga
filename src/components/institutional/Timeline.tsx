@@ -1,13 +1,12 @@
-import { MediaImage } from '@/components/site/MediaImage'
-import { RichText } from '@/components/site/RichText'
-import type { Milestone } from '@/payload-types'
+import { StaticPicture } from '@/components/site/StaticPicture'
+import type { TimelineEntry } from '@/content/types'
 
 import styles from './Timeline.module.css'
-import { asMedia, safeExternalUrl } from './utils'
+import { safeExternalUrl } from './utils'
 import { Icon } from '@/components/site/Icon'
 
 type TimelineProps = {
-  items: Milestone[]
+  items: TimelineEntry[]
   label: string
   idPrefix: string
   emptyMessage: string
@@ -23,7 +22,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
           {items.map((item) => (
             <li key={item.id}>
               <a href={`#${idPrefix}-${item.id}`}>
-                {item.displayLabel} · {item.title}
+                {item.label} · {item.title}
               </a>
             </li>
           ))}
@@ -31,7 +30,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
       </nav>
       <ol className={styles.timeline} aria-label={`Linha do tempo: ${label}`}>
         {items.map((item) => {
-          const image = asMedia(item.image)
+          const image = item.image
           const sourceUrl = safeExternalUrl(item.sourceUrl)
 
           return (
@@ -40,7 +39,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
               <article className={styles.card}>
                 {image ? (
                   <figure className={styles.media}>
-                    <MediaImage
+                    <StaticPicture
                       image={image}
                       alt={image.alt || item.title}
                       className={styles.image}
@@ -53,9 +52,13 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
                     )}
                   </figure>
                 ) : null}
-                <span className={styles.date}>{item.displayLabel}</span>
+                <span className={styles.date}>{item.label}</span>
                 <h2>{item.title}</h2>
-                <RichText content={item.body} className={styles.body} />
+                <div className={styles.body}>
+                  {item.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
                 {item.sourceName && !sourceUrl && (
                   <small className={styles.source}>Fonte: {item.sourceName}</small>
                 )}

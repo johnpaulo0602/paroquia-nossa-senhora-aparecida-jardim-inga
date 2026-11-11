@@ -8,6 +8,7 @@ import {
   retentionDate,
 } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 const subjects = ['sacraments', 'participation', 'partnerships', 'communication', 'other'] as const
 const relations = ['parishioner', 'visitor', 'interested'] as const
@@ -17,7 +18,7 @@ export async function POST(request: Request): Promise<Response> {
     request,
     {
       route: 'contato',
-      enabled: process.env.CONTACT_FORM_ENABLED === 'true',
+      enabled: featureEnabled('CONTACT_FORM_ENABLED'),
       disabledMessage: 'O formulário de contato está temporariamente desativado.',
       honeypotMessage: 'Mensagem recebida.',
     },

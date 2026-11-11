@@ -2,7 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
@@ -13,7 +15,10 @@ export const Sponsors: CollectionConfig = {
   labels: { singular: 'Patrocinador', plural: 'Patrocinadores' },
   admin: {
     useAsTitle: 'name',
-    group: 'Institucional',
+    defaultColumns: ['name', 'approved', 'project', '_status'],
+    group: 'A paróquia',
+    hidden: hiddenUnless(...contentRoles),
+    description: 'Empresas e pessoas que apoiam a paróquia. Só aparecem no site depois de aprovadas.',
   },
   access: {
     read: readPublicContent,
@@ -41,7 +46,7 @@ export const Sponsors: CollectionConfig = {
   fields: [
     {
       name: 'name',
-      label: 'Nome',
+      label: 'Nome do patrocinador',
       type: 'text',
       required: true,
     },
@@ -54,37 +59,43 @@ export const Sponsors: CollectionConfig = {
     },
     {
       name: 'url',
-      label: 'URL',
+      label: 'Site do patrocinador',
+      admin: { placeholder: 'https://' },
       type: 'text',
     },
     {
       name: 'startsAt',
-      label: 'Início',
+      label: 'Apoia desde',
+      admin: { position: 'sidebar', date: { displayFormat: 'dd/MM/yyyy' } },
       type: 'date',
     },
     {
       name: 'endsAt',
-      label: 'Término',
+      label: 'Apoia até',
+      admin: { position: 'sidebar', date: { displayFormat: 'dd/MM/yyyy' } },
       type: 'date',
     },
     {
       name: 'project',
-      label: 'Projeto',
+      label: 'Apoia qual projeto?',
+      admin: { description: 'Deixe em branco se apoia a paróquia em geral.' },
       type: 'relationship',
       relationTo: 'projects',
     },
     {
       name: 'approved',
-      label: 'Aprovado',
+      label: 'Aprovado pela paróquia',
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        description: 'O frontend deve exibir publicamente somente patrocinadores aprovados.',
+        position: 'sidebar',
+        description: 'Só patrocinadores aprovados aparecem no site.',
       },
     },
     {
       name: 'order',
-      label: 'Ordem',
+      label: 'Posição na lista',
+      admin: { position: 'sidebar', description: 'Número menor aparece primeiro.' },
       type: 'number',
       defaultValue: 0,
     },

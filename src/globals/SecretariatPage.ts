@@ -1,29 +1,32 @@
 import type { GlobalConfig } from 'payload'
 
 import { isAdminOrEditor } from '@/access'
+import { previewURL } from '@/lib/preview'
 
 export const SecretariatPage: GlobalConfig = {
   slug: 'secretariat-page',
-  label: 'Página da secretaria',
+  label: 'Página Secretaria',
   admin: {
-    group: 'Páginas',
+    group: 'Páginas do site',
+    description: 'Textos da página Secretaria paroquial. O horário e os contatos vêm de Dados da paróquia.',
+    livePreview: { url: () => previewURL('/secretaria') },
   },
   access: {
     read: () => true,
     update: isAdminOrEditor,
   },
   fields: [
-    { name: 'title', label: 'Título', type: 'text' },
-    { name: 'intro', label: 'Introdução', type: 'textarea' },
-    { name: 'specialCelebrationsTitle', label: 'Título das celebrações especiais', type: 'text' },
+    { name: 'title', label: 'Título da página', type: 'text' },
+    { name: 'intro', label: 'Texto de abertura', type: 'textarea' },
+    { name: 'specialCelebrationsTitle', label: 'Celebrações especiais: título', type: 'text' },
     {
       name: 'specialCelebrationsBody',
-      label: 'Texto das celebrações especiais',
+      label: 'Celebrações especiais: texto',
       type: 'textarea',
     },
     {
       name: 'specialCelebrationsImage',
-      label: 'Imagem das celebrações especiais',
+      label: 'Celebrações especiais: imagem',
       type: 'upload',
       relationTo: 'media',
     },

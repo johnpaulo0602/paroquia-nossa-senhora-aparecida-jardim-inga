@@ -7,6 +7,7 @@ import {
   retentionDate,
 } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 const responseMessage = 'Se os dados forem localizados, o cancelamento será registrado.'
 
@@ -15,7 +16,7 @@ export async function POST(request: Request): Promise<Response> {
     request,
     {
       route: 'newsletter-cancelar',
-      enabled: process.env.NEWSLETTER_ENABLED === 'true',
+      enabled: featureEnabled('NEWSLETTER_ENABLED'),
       disabledMessage: 'O cancelamento da newsletter está temporariamente desativado.',
       honeypotMessage: responseMessage,
     },

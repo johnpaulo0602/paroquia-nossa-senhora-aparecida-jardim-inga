@@ -1,6 +1,8 @@
 import { APIError } from 'payload'
 import type { Access, CollectionBeforeChangeHook, FieldAccess } from 'payload'
 
+import { featureEnabled } from '../lib/features'
+
 type Role = 'admin' | 'editor' | 'contributor' | 'secretary'
 type RequestUser = { role?: Role } | null | undefined
 
@@ -34,7 +36,7 @@ export const readPublicContent: Access = ({ req }) => {
   if (req.user) return true
 
   const published = { _status: { equals: 'published' } }
-  if (process.env.SHOW_DEMO_CONTENT === 'true' || process.env.NODE_ENV === 'development') {
+  if (featureEnabled('SHOW_DEMO_CONTENT') || process.env.NODE_ENV === 'development') {
     return published
   }
 
@@ -52,3 +54,15 @@ export const enforcePublishPermission: CollectionBeforeChangeHook = ({ data, req
 
   return data
 }
+
+/**
+ * `admin.hidden` helper: shows a collection in the panel menu only to the given roles.
+ * It only declutters the menu; the access functions above are what protect the data.
+ */
+export const hiddenUnless =
+  (...roles: Role[]) =>
+  ({ user }: { user: unknown }): boolean =>
+    !hasRole(user as RequestUser, roles)
+
+export const contentRoles: Role[] = ['admin', 'editor', 'contributor']
+export const serviceRoles: Role[] = ['admin', 'secretary']

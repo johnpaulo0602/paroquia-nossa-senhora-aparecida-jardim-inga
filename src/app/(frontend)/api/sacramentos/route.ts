@@ -12,6 +12,7 @@ import {
   retentionDate,
 } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 const requestTypes = ['baptism', 'marriage'] as const
 const baptismTextFields = [
@@ -106,7 +107,7 @@ export async function POST(request: Request): Promise<Response> {
     request,
     {
       route: 'sacramentos',
-      enabled: process.env.SACRAMENT_FORM_ENABLED === 'true',
+      enabled: featureEnabled('SACRAMENT_FORM_ENABLED'),
       disabledMessage: 'O formulário de solicitação de sacramentos está temporariamente desativado.',
       honeypotMessage: 'Solicitação recebida. Nenhuma data foi reservada.',
     },

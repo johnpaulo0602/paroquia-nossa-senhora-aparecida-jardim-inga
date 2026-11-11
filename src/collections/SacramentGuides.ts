@@ -3,7 +3,9 @@ import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
@@ -11,10 +13,14 @@ import { editorialFields } from '@/fields/editorial'
 
 export const SacramentGuides: CollectionConfig = {
   slug: 'sacrament-guides',
-  labels: { singular: 'Guia de sacramento', plural: 'Guias de sacramentos' },
+  labels: { singular: 'Sacramento', plural: 'Sacramentos' },
   admin: {
     useAsTitle: 'title',
-    group: 'Vida cristã',
+    defaultColumns: ['title', 'guideType', '_status'],
+    group: 'A paróquia',
+    hidden: hiddenUnless(...contentRoles),
+    description:
+      'As orientações das páginas Batismo, Catequese e crisma e Matrimônio: o que é, o que é preciso e com quem falar.',
   },
   access: {
     read: readPublicContent,
@@ -29,14 +35,14 @@ export const SacramentGuides: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'Nome da página',
       type: 'text',
       required: true,
     },
     slugField({ useAsSlug: 'title' }),
     {
       name: 'guideType',
-      label: 'Tipo de guia',
+      label: 'Qual sacramento?',
       type: 'select',
       options: [
         { label: 'Batismo', value: 'baptism' },
@@ -47,23 +53,23 @@ export const SacramentGuides: CollectionConfig = {
     },
     {
       name: 'intro',
-      label: 'Introdução',
+      label: 'Apresentação',
       type: 'richText',
     },
     {
       name: 'sections',
-      label: 'Seções',
+      label: 'Blocos de texto da página',
       type: 'array',
       fields: [
         {
           name: 'title',
-          label: 'Título',
+          label: 'Título do bloco',
           type: 'text',
           required: true,
         },
         {
           name: 'body',
-          label: 'Conteúdo',
+          label: 'Texto',
           type: 'richText',
           required: true,
         },
@@ -71,12 +77,13 @@ export const SacramentGuides: CollectionConfig = {
     },
     {
       name: 'requirements',
-      label: 'Requisitos',
+      label: 'O que é preciso',
+      admin: { description: 'Um item por linha: documentos, idade, cursos, prazos.' },
       type: 'array',
       fields: [
         {
           name: 'text',
-          label: 'Requisito',
+          label: 'Item',
           type: 'richText',
           required: true,
         },
@@ -84,16 +91,17 @@ export const SacramentGuides: CollectionConfig = {
     },
     {
       name: 'contactInfo',
-      label: 'Informações de contato',
+      label: 'Com quem falar',
       type: 'richText',
     },
     {
       name: 'formType',
-      label: 'Tipo de formulário',
+      label: 'Formulário de pedido na página',
+      admin: { position: 'sidebar', description: 'Qual formulário o visitante pode preencher nesta página.' },
       type: 'select',
       defaultValue: 'none',
       options: [
-        { label: 'Nenhum', value: 'none' },
+        { label: 'Nenhum formulário', value: 'none' },
         { label: 'Batismo', value: 'baptism' },
         { label: 'Matrimônio', value: 'marriage' },
       ],
@@ -101,6 +109,7 @@ export const SacramentGuides: CollectionConfig = {
     {
       name: 'updatedAt',
       label: 'Atualizado em',
+      admin: { position: 'sidebar', date: { displayFormat: 'dd/MM/yyyy' } },
       type: 'date',
     },
     ...editorialFields(),

@@ -1,3 +1,5 @@
+import { getSiteURL } from './deploy-env'
+
 const MAX_JSON_BYTES = 32 * 1024
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX_REQUESTS = 5
@@ -98,8 +100,11 @@ const checkOrigin = (request: Request): Response | null => {
   if (!origin) return null
 
   try {
-    const expectedOrigin = new URL(process.env.NEXT_PUBLIC_SITE_URL || '').origin
-    if (new URL(origin).origin === expectedOrigin) return null
+    const requestOrigin = new URL(origin).origin
+    // Same-origin posts are always allowed; the configured site URL covers proxies that
+    // rewrite the request URL.
+    const allowed = [new URL(request.url).origin, new URL(getSiteURL()).origin]
+    if (allowed.includes(requestOrigin)) return null
   } catch {
     return formResponse('Origem não autorizada.', 403)
   }

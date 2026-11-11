@@ -1,32 +1,35 @@
 import { slugField } from 'payload'
-import type { CollectionConfig, TextFieldSingleValidation } from 'payload'
+import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
-
-const validateVideoUrl: TextFieldSingleValidation = (value) => {
-  if (!value) return true
-
-  try {
-    new URL(value)
-    return true
-  } catch {
-    return 'Informe uma URL de vídeo válida.'
-  }
-}
+import { validateWebAddress } from '@/fields/links'
+import { previewURL } from '@/lib/preview'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
-  labels: { singular: 'Publicação', plural: 'Publicações' },
+  labels: { singular: 'Notícia', plural: 'Notícias' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'format', 'editorialAreas', 'publishedAt'],
-    group: 'Conteúdo',
+    defaultColumns: ['title', 'editorialAreas', 'publishedAt', '_status'],
+    group: 'Notícias e avisos',
+    hidden: hiddenUnless(...contentRoles),
+    description:
+      'Notícias, artigos, reflexões, álbuns de fotos e vídeos. Aparecem na página Notícias e, conforme a escolha abaixo, em Espiritualidade ou In Cordibus Pastorum.',
+    livePreview: {
+      url: ({ data }) => {
+        const areas: string[] = Array.isArray(data.editorialAreas) ? data.editorialAreas : []
+        const base = areas.length && !areas.includes('communication') ? '/reflexoes' : '/comunicacao'
+        return previewURL(`${base}/${data.slug}`)
+      },
+    },
   },
   defaultSort: '-publishedAt',
   access: {
@@ -35,7 +38,7 @@ export const Posts: CollectionConfig = {
     update: canEditContent,
     delete: isAdminOrEditor,
   },
-  versions: { drafts: true },
+  versions: { drafts: { autosave: { interval: 800 } } },
   hooks: { beforeChange: [enforcePublishPermission] },
   fields: [
     {
@@ -50,74 +53,68 @@ export const Posts: CollectionConfig = {
       label: 'Resumo',
       type: 'textarea',
       required: true,
-    },
-    {
-      name: 'body',
-      label: 'Conteúdo',
-      type: 'richText',
-      required: true,
-    },
-    {
-      name: 'format',
-      label: 'Formato',
-      type: 'select',
-      required: true,
-      options: [
-        { label: 'Notícia', value: 'news' },
-        { label: 'Artigo', value: 'article' },
-        { label: 'Fotos', value: 'photos' },
-        { label: 'Vídeo', value: 'video' },
-      ],
-    },
-    {
-      name: 'editorialAreas',
-      label: 'Áreas editoriais',
-      type: 'select',
-      hasMany: true,
-      required: true,
-      options: [
-        { label: 'Comunicação', value: 'communication' },
-        { label: 'Espiritualidade', value: 'spirituality' },
-        { label: 'In Cordibus Pastorum', value: 'pastorum' },
-        { label: 'Institucional', value: 'institutional' },
-      ],
-    },
-    {
-      name: 'category',
-      label: 'Categoria',
-      type: 'select',
-      defaultValue: 'general',
-      options: [
-        { label: 'Geral', value: 'general' },
-        { label: 'Igreja no Brasil', value: 'church-brazil' },
-        { label: 'Papa e Vaticano', value: 'pope-vatican' },
-        { label: 'Comunidades e pastorais', value: 'communities-pastorals' },
-        { label: 'Memória da comunidade', value: 'community-memory' },
-      ],
-    },
-    {
-      name: 'publishedAt',
-      label: 'Publicado em',
-      type: 'date',
+      admin: {
+        description: 'Uma ou duas frases. Aparece nos cartões da página Notícias.',
+      },
     },
     {
       name: 'cover',
-      label: 'Imagem de capa',
+      label: 'Imagem principal',
       type: 'upload',
       relationTo: 'media',
     },
     {
+      name: 'body',
+      label: 'Texto',
+      type: 'richText',
+      required: true,
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'format',
+          label: 'Tipo de publicação',
+          type: 'select',
+          required: true,
+          defaultValue: 'news',
+          options: [
+            { label: 'Notícia', value: 'news' },
+            { label: 'Artigo ou reflexão', value: 'article' },
+            { label: 'Álbum de fotos', value: 'photos' },
+            { label: 'Vídeo', value: 'video' },
+          ],
+          admin: { width: '50%' },
+        },
+        {
+          name: 'editorialAreas',
+          label: 'Onde aparece no site?',
+          type: 'select',
+          hasMany: true,
+          required: true,
+          defaultValue: ['communication'],
+          options: [
+            { label: 'Notícias', value: 'communication' },
+            { label: 'Espiritualidade', value: 'spirituality' },
+            { label: 'In Cordibus Pastorum (palavra dos padres)', value: 'pastorum' },
+            { label: 'Institucional', value: 'institutional' },
+          ],
+          admin: { width: '50%', description: 'Pode marcar mais de um lugar.' },
+        },
+      ],
+    },
+    {
       name: 'gallery',
-      label: 'Galeria de fotos',
+      label: 'Fotos do álbum',
+      labels: { singular: 'Foto', plural: 'Fotos' },
       type: 'array',
       admin: {
-        description: 'Fotografias exibidas em publicações no formato Fotos.',
         condition: (data) => data.format === 'photos',
       },
       fields: [
         {
           name: 'image',
-          label: 'Imagem',
+          label: 'Foto',
           type: 'upload',
           relationTo: 'media',
           required: true,
@@ -131,51 +128,91 @@ export const Posts: CollectionConfig = {
     },
     {
       name: 'videoUrl',
-      label: 'URL do vídeo',
+      label: 'Endereço do vídeo',
       type: 'text',
-      validate: validateVideoUrl,
+      validate: validateWebAddress,
       admin: {
-        description: 'Endereço do vídeo para publicações no formato Vídeo.',
+        placeholder: 'https://www.youtube.com/watch?v=...',
+        description: 'Copie o endereço do vídeo no YouTube ou em outro site e cole aqui.',
         condition: (data) => data.format === 'video',
       },
     },
     {
-      name: 'author',
-      label: 'Autor',
-      type: 'relationship',
-      relationTo: 'people',
-      hasMany: false,
+      type: 'collapsible',
+      label: 'Autor, fonte e relacionados (opcional)',
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: 'author',
+          label: 'Quem escreveu',
+          type: 'relationship',
+          relationTo: 'people',
+          hasMany: false,
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'sourceName',
+              label: 'Fonte (se o texto veio de outro lugar)',
+              type: 'text',
+              admin: { width: '50%', placeholder: 'Ex.: CNBB, Vatican News' },
+            },
+            {
+              name: 'sourceUrl',
+              label: 'Endereço da fonte',
+              type: 'text',
+              validate: validateWebAddress,
+              admin: { width: '50%', placeholder: 'https://' },
+            },
+          ],
+        },
+        {
+          name: 'communities',
+          label: 'Comunidades citadas',
+          type: 'relationship',
+          relationTo: 'communities',
+          hasMany: true,
+        },
+        {
+          name: 'pastorals',
+          label: 'Pastorais citadas',
+          type: 'relationship',
+          relationTo: 'pastorals',
+          hasMany: true,
+        },
+        {
+          name: 'relatedPosts',
+          label: 'Leia também',
+          type: 'relationship',
+          relationTo: 'posts',
+          hasMany: true,
+        },
+      ],
     },
     {
-      name: 'sourceName',
-      label: 'Nome da fonte',
-      type: 'text',
+      name: 'publishedAt',
+      label: 'Data da publicação',
+      type: 'date',
+      defaultValue: () => new Date().toISOString(),
+      admin: {
+        position: 'sidebar',
+        date: { pickerAppearance: 'dayAndTime', displayFormat: 'dd/MM/yyyy HH:mm' },
+      },
     },
     {
-      name: 'sourceUrl',
-      label: 'URL da fonte',
-      type: 'text',
-    },
-    {
-      name: 'communities',
-      label: 'Comunidades relacionadas',
-      type: 'relationship',
-      relationTo: 'communities',
-      hasMany: true,
-    },
-    {
-      name: 'pastorals',
-      label: 'Pastorais relacionadas',
-      type: 'relationship',
-      relationTo: 'pastorals',
-      hasMany: true,
-    },
-    {
-      name: 'relatedPosts',
-      label: 'Publicações relacionadas',
-      type: 'relationship',
-      relationTo: 'posts',
-      hasMany: true,
+      name: 'category',
+      label: 'Assunto',
+      type: 'select',
+      defaultValue: 'general',
+      options: [
+        { label: 'Geral', value: 'general' },
+        { label: 'Igreja no Brasil', value: 'church-brazil' },
+        { label: 'Papa e Vaticano', value: 'pope-vatican' },
+        { label: 'Comunidades e pastorais', value: 'communities-pastorals' },
+        { label: 'Memória da comunidade', value: 'community-memory' },
+      ],
+      admin: { position: 'sidebar' },
     },
     ...editorialFields(),
   ],

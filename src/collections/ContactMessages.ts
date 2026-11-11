@@ -1,14 +1,16 @@
 import type { CollectionConfig } from 'payload'
 
-import { canManageService, isAdmin } from '@/access'
+import { canManageService, hiddenUnless, isAdmin, serviceRoles } from '@/access'
 
 export const ContactMessages: CollectionConfig = {
   slug: 'contact-messages',
-  labels: { singular: 'Mensagem de contato', plural: 'Mensagens de contato' },
+  labels: { singular: 'Mensagem do Fale conosco', plural: 'Fale conosco' },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'subject', 'status', 'createdAt'],
-    group: 'Atendimento privado',
+    group: 'Mensagens recebidas',
+    hidden: hiddenUnless(...serviceRoles),
+    description: 'Mensagens enviadas pelos visitantes na página Contato.',
   },
   access: {
     create: () => false,
@@ -19,7 +21,7 @@ export const ContactMessages: CollectionConfig = {
   fields: [
     {
       name: 'name',
-      label: 'Nome',
+      label: 'Nome de quem escreveu',
       type: 'text',
       required: true,
     },
@@ -44,7 +46,7 @@ export const ContactMessages: CollectionConfig = {
     },
     {
       name: 'relation',
-      label: 'Relação com a paróquia',
+      label: 'Quem é a pessoa?',
       type: 'select',
       required: true,
       options: [
@@ -61,7 +63,7 @@ export const ContactMessages: CollectionConfig = {
     },
     {
       name: 'status',
-      label: 'Situação',
+      label: 'Andamento',
       type: 'select',
       required: true,
       defaultValue: 'new',
@@ -74,20 +76,24 @@ export const ContactMessages: CollectionConfig = {
     },
     {
       name: 'consent',
-      label: 'Consentimento para tratamento dos dados',
+      label: 'A pessoa autorizou o uso dos dados para a resposta',
       type: 'checkbox',
       required: true,
     },
     {
       name: 'internalNotes',
-      label: 'Observações internas',
+      label: 'Anotações da secretaria',
       type: 'textarea',
     },
     {
       name: 'retentionUntil',
-      label: 'Retenção até',
+      label: 'Guardar até',
       type: 'date',
-      admin: { description: 'Data limite para retenção dos dados.' },
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Até quando estes dados pessoais podem ficar guardados (LGPD).',
+      },
     },
   ],
   timestamps: true,

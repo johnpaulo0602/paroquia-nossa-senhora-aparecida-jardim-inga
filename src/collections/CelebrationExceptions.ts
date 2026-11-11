@@ -3,11 +3,14 @@ import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
+import { timeField } from '@/fields/time'
 
 const validateException: CollectionBeforeChangeHook = ({ data, originalDoc }) => {
   const exceptionType = 'exceptionType' in data ? data.exceptionType : originalDoc?.exceptionType
@@ -15,11 +18,11 @@ const validateException: CollectionBeforeChangeHook = ({ data, originalDoc }) =>
   const celebration = 'celebration' in data ? data.celebration : originalDoc?.celebration
 
   if (exceptionType === 'change' && !newTime) {
-    throw new APIError('Informe o novo horário para uma alteração de celebração.', 400)
+    throw new APIError('Escolha o novo horário da celebração.', 400)
   }
 
   if (exceptionType === 'extra' && celebration) {
-    throw new APIError('Uma celebração extra não pode apontar para uma celebração existente.', 400)
+    throw new APIError('Uma celebração extra não substitui um horário fixo: deixe o campo "Qual horário fixo muda?" em branco.', 400)
   }
 
   return data
@@ -27,10 +30,14 @@ const validateException: CollectionBeforeChangeHook = ({ data, originalDoc }) =>
 
 export const CelebrationExceptions: CollectionConfig = {
   slug: 'celebration-exceptions',
-  labels: { singular: 'Exceção de celebração', plural: 'Exceções de celebrações' },
+  labels: { singular: 'Mudança ou cancelamento', plural: 'Mudanças e cancelamentos' },
   admin: {
     useAsTitle: 'title',
-    group: 'Agenda e comunidades',
+    defaultColumns: ['title', 'date', 'exceptionType', 'community'],
+    group: 'Missas e agenda',
+    hidden: hiddenUnless(...contentRoles),
+    description:
+      'Quando, em um dia específico, uma missa é cancelada, muda de horário ou há uma celebração extra.',
   },
   access: {
     read: readPublicContent,
@@ -45,54 +52,55 @@ export const CelebrationExceptions: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'O que acontece?',
       type: 'text',
       required: true,
+      admin: { placeholder: 'Ex.: Missa das 19h cancelada por causa da festa da padroeira' },
     },
     {
       name: 'celebration',
-      label: 'Celebração',
+      label: 'Qual horário fixo muda?',
       type: 'relationship',
       relationTo: 'celebrations',
+      admin: {
+        description: 'Deixe em branco se for uma celebração extra.',
+        condition: (data) => data.exceptionType !== 'extra',
+      },
     },
     {
       name: 'community',
-      label: 'Comunidade',
+      label: 'Em qual igreja ou comunidade?',
       type: 'relationship',
       relationTo: 'communities',
       required: true,
     },
     {
       name: 'date',
-      label: 'Data',
+      label: 'Em que dia?',
       type: 'date',
       required: true,
+      admin: { date: { displayFormat: 'dd/MM/yyyy' } },
     },
     {
       name: 'exceptionType',
-      label: 'Tipo de exceção',
+      label: 'Tipo de mudança',
       type: 'select',
+      required: true,
+      defaultValue: 'cancellation',
       options: [
-        { label: 'Cancelamento', value: 'cancellation' },
-        { label: 'Alteração', value: 'change' },
-        { label: 'Extra', value: 'extra' },
+        { label: 'A celebração foi cancelada', value: 'cancellation' },
+        { label: 'A celebração mudou de horário', value: 'change' },
+        { label: 'Celebração extra neste dia', value: 'extra' },
       ],
     },
-    {
+    timeField({
       name: 'newTime',
       label: 'Novo horário',
-      type: 'text',
-      validate: (value: string | null | undefined) => {
-        if (!value) return true
-        return (
-          /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value) ||
-          'Informe o horário no formato HH:mm (24 horas).'
-        )
-      },
-    },
+      condition: (data) => data.exceptionType !== 'cancellation',
+    }),
     {
       name: 'reason',
-      label: 'Motivo',
+      label: 'Explicação para os fiéis',
       type: 'textarea',
     },
     ...editorialFields(),

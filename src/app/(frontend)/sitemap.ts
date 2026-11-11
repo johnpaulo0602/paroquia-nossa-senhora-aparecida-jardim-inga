@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import { getCMS } from '@/lib/payload'
+import { getSiteURL } from '@/lib/deploy-env'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +29,7 @@ const staticRoutes = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  const baseUrl = getSiteURL()
   const payload = await getCMS()
   const [posts, events, communities, pastorals] = await Promise.all([
     payload.find({ collection: 'posts', limit: 1000, overrideAccess: false, draft: false }),

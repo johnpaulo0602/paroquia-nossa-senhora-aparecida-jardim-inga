@@ -3,18 +3,21 @@ import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
+import { timeField } from '@/fields/time'
 
 const validateDateRange: CollectionBeforeChangeHook = ({ data, originalDoc }) => {
   const validFrom = 'validFrom' in data ? data.validFrom : originalDoc?.validFrom
   const validTo = 'validTo' in data ? data.validTo : originalDoc?.validTo
 
   if (validFrom && validTo && new Date(validTo).getTime() < new Date(validFrom).getTime()) {
-    throw new APIError('A data final não pode ser anterior à data inicial.', 400)
+    throw new APIError('A data "Vale até" precisa ser depois de "Vale a partir de".', 400)
   }
 
   return data
@@ -22,10 +25,14 @@ const validateDateRange: CollectionBeforeChangeHook = ({ data, originalDoc }) =>
 
 export const Celebrations: CollectionConfig = {
   slug: 'celebrations',
-  labels: { singular: 'Celebração', plural: 'Celebrações' },
+  labels: { singular: 'Horário de missa', plural: 'Missas e horários' },
   admin: {
     useAsTitle: 'title',
-    group: 'Agenda e comunidades',
+    defaultColumns: ['title', 'community', 'weekday', 'time', 'active'],
+    group: 'Missas e agenda',
+    hidden: hiddenUnless(...contentRoles),
+    description:
+      'Os horários fixos de cada semana: missas, confissões e adoração. Para uma mudança em um dia específico, use "Mudanças e cancelamentos".',
   },
   access: {
     read: readPublicContent,
@@ -40,14 +47,16 @@ export const Celebrations: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'Nome da celebração',
       type: 'text',
       required: true,
+      admin: { placeholder: 'Ex.: Missa dominical, Confissões, Adoração ao Santíssimo' },
     },
     {
       name: 'celebrationType',
-      label: 'Tipo de celebração',
+      label: 'Tipo',
       type: 'select',
+      defaultValue: 'mass',
       options: [
         { label: 'Santa Missa', value: 'mass' },
         { label: 'Confissão', value: 'confession' },
@@ -57,7 +66,7 @@ export const Celebrations: CollectionConfig = {
     },
     {
       name: 'community',
-      label: 'Comunidade',
+      label: 'Em qual igreja ou comunidade?',
       type: 'relationship',
       relationTo: 'communities',
       required: true,
@@ -77,39 +86,39 @@ export const Celebrations: CollectionConfig = {
         { label: 'Sábado', value: 'saturday' },
       ],
     },
+    timeField({ name: 'time', label: 'Horário', required: true }),
     {
-      name: 'time',
-      label: 'Horário',
-      type: 'text',
-      required: true,
-      validate: (value: string | null | undefined) => {
-        if (!value) return true
-        return (
-          /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value) ||
-          'Informe o horário no formato HH:mm (24 horas).'
-        )
+      name: 'validFrom',
+      label: 'Vale a partir de',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Deixe em branco se o horário já está valendo.',
       },
     },
     {
-      name: 'validFrom',
-      label: 'Início da validade',
-      type: 'date',
-    },
-    {
       name: 'validTo',
-      label: 'Fim da validade',
+      label: 'Vale até',
       type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Deixe em branco se não tem data para acabar.',
+      },
     },
     {
       name: 'notes',
-      label: 'Observações',
+      label: 'Observação para os fiéis',
       type: 'textarea',
+      admin: { placeholder: 'Ex.: Com bênção das crianças no primeiro domingo do mês' },
     },
     {
       name: 'active',
-      label: 'Ativa',
+      label: 'Mostrar no site',
       type: 'checkbox',
       defaultValue: true,
+      admin: { position: 'sidebar' },
     },
     ...editorialFields(),
   ],

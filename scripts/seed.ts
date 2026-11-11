@@ -15,7 +15,6 @@ import type {
   RequiredDataFromCollectionSlug,
 } from 'payload'
 
-import { defaultHeaderCta, defaultHeaderGroups } from '../src/components/site/navigation'
 import type { Post } from '../src/payload-types'
 import config from '../src/payload.config'
 
@@ -522,7 +521,7 @@ async function seedPeopleAndPastorals(payload: Payload) {
       mediaType: 'illustration',
       caption: 'Fotografia a incluir após autorização.',
     })
-    const person = await upsert(payload, 'people', 'slug', member.slug, {
+    await upsert(payload, 'people', 'slug', member.slug, {
       ...demonstration,
       name: member.name,
       slug: member.slug,
@@ -531,17 +530,12 @@ async function seedPeopleAndPastorals(payload: Payload) {
       biography: null,
       photo,
       publicContactAuthorized: false,
-      internalNotes: `seed:person:${member.slug}`,
-    })
-    await upsert(payload, 'team-assignments', 'internalNotes', `seed:team:${member.slug}`, {
-      ...demonstration,
-      person: person.id,
       roleTitle: member.role,
       roleType: member.roleType,
       area: 'Paróquia Nossa Senhora Aparecida — Jardim Ingá',
       order: index,
       current: true,
-      internalNotes: `seed:team:${member.slug}`,
+      internalNotes: `seed:person:${member.slug}`,
     })
   }
 
@@ -886,232 +880,6 @@ async function seedHighlights(
   }
 }
 
-async function seedMilestones(payload: Payload) {
-  const parishSource = {
-    sourceName: 'Diocese de Luziânia',
-    sourceUrl: 'https://diocesedeluziania.com.br/about/',
-  }
-  const patronSource = {
-    sourceName: 'Santuário Nacional / A12',
-    sourceUrl: 'https://www.a12.com/santuario/historia-de-nossa-senhora-aparecida-1717',
-  }
-  const sanctuarySource = {
-    sourceName: 'Santuário Nacional / A12',
-    sourceUrl: 'https://www.a12.com/devotos-mirins/historia-do-santuario-nacional',
-  }
-  const milestones: Array<{
-    id: string
-    context: 'parish' | 'patron'
-    title: string
-    paragraphs: string[]
-    datePrecision: 'exact' | 'year' | 'period' | 'text'
-    displayLabel: string
-    order: number
-    exactDate?: string
-    year?: number
-    periodLabel?: string
-    sourceName?: string
-    sourceUrl?: string
-    image?: MediaSpec
-  }> = [
-    {
-      id: 'parish-criacao',
-      context: 'parish',
-      title: 'Criação da paróquia',
-      paragraphs: [
-        'O histórico da Diocese de Luziânia registra a criação da Paróquia Nossa Senhora Aparecida, no Jardim Ingá, em 1997.',
-        'Este marco se refere à criação da paróquia. A data de inauguração do edifício atual ainda precisa ser documentada.',
-      ],
-      datePrecision: 'year',
-      year: 1997,
-      displayLabel: '1997',
-      order: 0,
-      ...parishSource,
-    },
-    {
-      id: 'parish-primeiros-passos',
-      context: 'parish',
-      title: 'Os primeiros passos da comunidade',
-      paragraphs: [
-        'Espaço reservado para contar como a comunidade começou a se reunir, com depoimentos e registros dos primeiros paroquianos.',
-      ],
-      datePrecision: 'text',
-      displayLabel: 'Data a confirmar',
-      order: 1,
-    },
-    {
-      id: 'parish-construcao',
-      context: 'parish',
-      title: 'A construção da nossa matriz',
-      paragraphs: [
-        'Inserir aqui as datas da construção, as etapas da obra e a história das pessoas que ajudaram a erguer a igreja.',
-      ],
-      datePrecision: 'text',
-      displayLabel: 'Data a confirmar',
-      order: 2,
-    },
-    {
-      id: 'parish-comunidades',
-      context: 'parish',
-      title: 'Uma fé que alcança novos lugares',
-      paragraphs: [
-        'Este espaço receberá a história das capelas, das pastorais e dos grupos que passaram a integrar a vida paroquial.',
-      ],
-      datePrecision: 'text',
-      displayLabel: 'Data a confirmar',
-      order: 3,
-    },
-    {
-      id: 'parish-camiseta-2025',
-      context: 'parish',
-      title: 'Um registro da devoção à padroeira',
-      paragraphs: [
-        'O acervo do projeto inclui a divulgação da camiseta da padroeira de 2025. A arte traz Nossa Senhora Aparecida e o desenho da igreja matriz.',
-        'Este é um registro do material de divulgação; não confirma o calendário ou a realização de atividades daquele ano.',
-      ],
-      datePrecision: 'year',
-      year: 2025,
-      displayLabel: '2025',
-      order: 4,
-      sourceName: 'Acervo fornecido para o protótipo',
-      image: {
-        file: 'assets/camiseta-2025.jpg',
-        alt: 'Arte de divulgação da camiseta da padroeira de 2025, com frente e verso',
-        credit: 'Arte de divulgação de 2025 fornecida para o projeto; não é oferta vigente.',
-        mediaType: 'artwork',
-      },
-    },
-    {
-      id: 'parish-hoje',
-      context: 'parish',
-      title: 'Uma história que continua',
-      paragraphs: [
-        'A matriz e cinco capelas compõem a Paróquia Nossa Senhora Aparecida, conforme o diretório da Diocese de Luziânia.',
-        'A história será completada com documentos, fotografias e relatos da comunidade. Cada novo registro ajudará a preservar a memória da paróquia.',
-      ],
-      datePrecision: 'text',
-      displayLabel: 'Hoje',
-      order: 5,
-      sourceName: 'Diretório da Diocese de Luziânia',
-      sourceUrl: 'https://diocesedeluziania.com.br/paroquias/paroquia-nossa-senhora-aparecida-2/',
-      image: {
-        file: 'assets/matriz-atual.jpg',
-        alt: 'Fotografia da fachada azul da matriz Nossa Senhora Aparecida',
-        credit: 'Fotografia fornecida para o protótipo; data do registro não informada.',
-        mediaType: 'photograph',
-      },
-    },
-    {
-      id: 'patron-encontro-1717',
-      context: 'patron',
-      title: 'O encontro nas águas',
-      paragraphs: [
-        'A tradição de Aparecida começa com três pescadores no Rio Paraíba do Sul, na região de Guaratinguetá, em São Paulo. A pequena imagem encontrada nas redes passa a reunir os fiéis em oração.',
-      ],
-      datePrecision: 'year',
-      year: 1717,
-      displayLabel: '1717',
-      order: 0,
-      ...patronSource,
-    },
-    {
-      id: 'patron-devocao',
-      context: 'patron',
-      title: 'Uma devoção que cresce',
-      paragraphs: [
-        'Das orações em família às capelas e romarias, a devoção se expande. A imagem torna-se referência de fé para um número crescente de peregrinos.',
-      ],
-      datePrecision: 'period',
-      periodLabel: 'Séculos XVIII e XIX',
-      displayLabel: 'Séculos XVIII e XIX',
-      order: 1,
-      ...patronSource,
-    },
-    {
-      id: 'patron-coroacao-1904',
-      context: 'patron',
-      title: 'A coroação da imagem',
-      paragraphs: [
-        'A coroação solene da imagem acontece na Basílica Histórica, em Aparecida. A celebração marca uma nova etapa no reconhecimento da devoção mariana no país.',
-      ],
-      datePrecision: 'exact',
-      exactDate: '1904-09-08T12:00:00-03:00',
-      displayLabel: '8 de setembro de 1904',
-      order: 2,
-      ...sanctuarySource,
-      image: {
-        file: 'assets/editorial/banner-aparecida.png',
-        alt: 'Representação artística de Nossa Senhora Aparecida coroada',
-        credit: 'Ilustração gerada por IA; não retrata a cerimônia de 1904.',
-        mediaType: 'illustration',
-      },
-    },
-    {
-      id: 'patron-padroeira-1930',
-      context: 'patron',
-      title: 'Padroeira do Brasil',
-      paragraphs: [
-        'O Papa Pio XI proclama Nossa Senhora da Conceição Aparecida padroeira principal do Brasil, reconhecendo uma devoção presente em muitas comunidades brasileiras.',
-      ],
-      datePrecision: 'year',
-      year: 1930,
-      displayLabel: '1930',
-      order: 3,
-      ...sanctuarySource,
-    },
-    {
-      id: 'patron-basilica-1980',
-      context: 'patron',
-      title: 'A dedicação da nova Basílica',
-      paragraphs: [
-        'João Paulo II dedica a nova Basílica de Aparecida. O templo acolhe peregrinos que chegam para celebrar, agradecer e rezar diante da padroeira.',
-      ],
-      datePrecision: 'year',
-      year: 1980,
-      displayLabel: '1980',
-      order: 4,
-      ...sanctuarySource,
-    },
-    {
-      id: 'patron-comunidade-hoje',
-      context: 'patron',
-      title: 'A Mãe Aparecida na nossa comunidade',
-      paragraphs: [
-        'No Jardim Ingá, Nossa Senhora Aparecida dá nome à nossa paróquia e faz parte da identidade da comunidade. A memória da devoção local será completada com a equipe paroquial.',
-      ],
-      datePrecision: 'text',
-      displayLabel: 'Hoje',
-      order: 5,
-      image: {
-        file: 'assets/matriz-atual.jpg',
-        alt: 'Fachada da Paróquia Nossa Senhora Aparecida no Jardim Ingá',
-        credit: 'Fotografia fornecida para o projeto; data do registro não informada.',
-        mediaType: 'photograph',
-      },
-    },
-  ]
-
-  for (const milestone of milestones) {
-    const image = milestone.image ? await upsertMedia(payload, milestone.image) : undefined
-    await upsert(payload, 'milestones', 'internalNotes', `seed:milestone:${milestone.id}`, {
-      ...demonstration,
-      context: milestone.context,
-      title: milestone.title,
-      body: richText(milestone.paragraphs),
-      datePrecision: milestone.datePrecision,
-      exactDate: milestone.exactDate,
-      year: milestone.year,
-      periodLabel: milestone.periodLabel,
-      displayLabel: milestone.displayLabel,
-      order: milestone.order,
-      image,
-      sourceName: milestone.sourceName,
-      sourceUrl: milestone.sourceUrl,
-      internalNotes: `seed:milestone:${milestone.id}`,
-    })
-  }
-}
-
 async function seedProjectsAndSponsors(payload: Payload) {
   const projects = [
     {
@@ -1204,35 +972,10 @@ async function seedGlobals(payload: Payload) {
     credit: 'Fotografia fornecida pelo usuário para o protótipo.',
     mediaType: 'photograph',
   })
-  const facade = await upsertMedia(payload, {
-    file: 'assets/fachada.png',
-    alt: 'Vista da fachada azul da igreja matriz Nossa Senhora Aparecida',
-    credit: 'Fotografia fornecida pelo usuário para o projeto.',
-    mediaType: 'photograph',
-    caption: 'Imagem de referência da matriz; não representa a fachada em 1997.',
-  })
-  const patronArt = await upsertMedia(payload, {
-    file: 'assets/editorial/banner-aparecida.png',
-    alt: 'Ilustração de Nossa Senhora Aparecida com coroa e manto azul',
-    credit: 'Representação artística gerada por IA para o protótipo.',
-    mediaType: 'illustration',
-  })
   const matrixArt = await upsertMedia(payload, {
     file: 'assets/editorial/banner-matriz.png',
     alt: 'Interpretação artística da fachada da igreja matriz',
     credit: 'Ilustração gerada por IA para o protótipo.',
-    mediaType: 'illustration',
-  })
-  const prayerArt = await upsertMedia(payload, {
-    file: 'assets/editorial/banner-oracao-paz.png',
-    alt: 'Ilustração de oração e paz',
-    credit: 'Ilustração gerada por IA para o protótipo.',
-    mediaType: 'illustration',
-  })
-  const teamPlaceholder = await upsertMedia(payload, {
-    file: 'assets/equipe-placeholder.png',
-    alt: 'Fotografia do sacerdote a incluir',
-    credit: 'Imagem genérica fornecida pelo usuário; não é retrato de um sacerdote.',
     mediaType: 'illustration',
   })
 
@@ -1289,60 +1032,8 @@ async function seedGlobals(payload: Payload) {
     ),
   })
 
-  await updateGlobal(payload, 'navigation', {
-    headerGroups: defaultHeaderGroups,
-    headerCta: defaultHeaderCta,
-    footerGroups: [
-      {
-        label: 'A paróquia',
-        links: [
-          { label: 'Nossa história', url: '/paroquia' },
-          { label: 'Nossa padroeira', url: '/padroeira' },
-          { label: 'Estrutura da paróquia', url: '/equipe' },
-          { label: 'Comunidades', url: '/comunidades' },
-          { label: 'Secretaria', url: '/secretaria' },
-        ],
-      },
-      {
-        label: 'Participe',
-        links: [
-          { label: 'Missas e confissões', url: '/horarios' },
-          { label: 'Agenda paroquial', url: '/agenda' },
-          { label: 'Sacramentos', url: '/vida' },
-          { label: 'Catequese e crisma', url: '/vida/catequese' },
-          { label: 'Pastorais e movimentos', url: '/vida/pastorais' },
-          { label: 'In Cordibus Pastorum', url: '/vida/in-cordibus-pastorum' },
-          { label: 'Espiritualidade', url: '/vida/espiritualidade' },
-          { label: 'Mural do dízimo', url: '/vida/mural-do-dizimo' },
-        ],
-      },
-      {
-        label: 'Comunicação',
-        links: [
-          { label: 'Notícias e artigos', url: '/comunicacao' },
-          { label: 'Projetos e parcerias', url: '/projetos' },
-          {
-            label: 'Instagram',
-            url: 'https://www.instagram.com/nsaaparecidajdinga/',
-            external: true,
-          },
-          {
-            label: 'Facebook',
-            url: 'https://www.facebook.com/MatrizAparecidaJardiminga/',
-            external: true,
-          },
-          { label: 'Dízimo e doações', url: '/contribuir' },
-          {
-            label: 'Diocese de Luziânia',
-            url: 'https://diocesedeluziania.com.br/',
-            external: true,
-          },
-        ],
-      },
-    ],
-  })
-
   await updateGlobal(payload, 'home-page', {
+    _status: 'published',
     serviceLinks: [
       {
         title: 'Missas e confissões',
@@ -1422,55 +1113,6 @@ async function seedGlobals(payload: Payload) {
     showFaith: true,
   })
 
-  await updateGlobal(payload, 'history-page', {
-    eyebrow: 'Nossa Senhora Aparecida · Jardim Ingá',
-    title: 'A história da nossa paróquia.',
-    intro: 'Memórias de fé, encontros e vida em comunidade.',
-    cover: facade,
-    coverCaption: 'Imagem de referência da matriz. Não representa a fachada em 1997.',
-    contributionTitle: 'Você tem uma história para compartilhar?',
-    contributionBody:
-      'Fotografias antigas, documentos e lembranças podem ajudar a contar a trajetória da nossa comunidade. Converse com a secretaria para saber como colaborar.',
-  })
-
-  await updateGlobal(payload, 'patron-page', {
-    eyebrow: 'Festa da padroeira · 12 de outubro',
-    title: 'Nossa Senhora Aparecida',
-    intro: 'A história de uma devoção que une gerações.',
-    cover: patronArt,
-    coverCaption: 'Representação artística gerada para o protótipo.',
-    readingTitle: 'Uma história de fé para continuar lendo.',
-    readingBody: 'Conheça a trajetória da devoção e do Santuário Nacional nas publicações do A12.',
-    readingUrl: 'https://www.a12.com/santuario/historia-de-nossa-senhora-aparecida-1717',
-    facts: [
-      {
-        title: 'Uma imagem encontrada nas águas',
-        body: 'A devoção remonta ao encontro da imagem no Rio Paraíba do Sul, em 1717.',
-        icon: 'waves',
-      },
-      {
-        title: 'A coroa faz parte da história',
-        body: 'A coroação solene de 1904 é um dos marcos da devoção à padroeira.',
-        icon: 'crown',
-      },
-      {
-        title: '12 de outubro',
-        body: 'A festa de Nossa Senhora Aparecida é celebrada em todo o Brasil nesta data.',
-        icon: 'calendar-days',
-      },
-    ],
-    sources: [
-      {
-        label: 'A12 · história da devoção',
-        url: 'https://www.a12.com/santuario/historia-de-nossa-senhora-aparecida-1717',
-      },
-      {
-        label: 'Santuário Nacional · linha do tempo',
-        url: 'https://www.a12.com/devotos-mirins/historia-do-santuario-nacional',
-      },
-    ],
-  })
-
   await updateGlobal(payload, 'secretariat-page', {
     title: 'Secretaria paroquial',
     intro: 'Atendimento, celebrações e os canais para falar com a equipe.',
@@ -1487,82 +1129,6 @@ async function seedGlobals(payload: Payload) {
     formIntro:
       'O atendimento é feito diretamente pela secretaria, pelo WhatsApp, telefone ou e-mail.',
   })
-
-  await updateGlobal(payload, 'contribution-page', {
-    title: 'Sua participação faz a comunidade.',
-    intro:
-      'Há muitas formas de contribuir: participar de uma pastoral, oferecer seu tempo e apoiar a missão paroquial.',
-    body: richText([
-      'Seja dizimista: converse com a secretaria sobre a pastoral do dízimo e as formas de participação.',
-      'Ofereça seu tempo: conheça as pastorais e procure a secretaria para saber onde servir.',
-      'Apoie uma campanha: a secretaria informa as campanhas em andamento.',
-    ]),
-    donationNotice:
-      'Para doar, fale com a secretaria paroquial.',
-  })
-
-  await updateGlobal(payload, 'spirituality-page', {
-    title: 'Cultive sua espiritualidade',
-    intro: 'Um convite à oração, à escuta da Palavra e ao cuidado com a vida.',
-    heroImage: prayerArt,
-    heroTitle: 'A fé também habita os pequenos momentos.',
-    heroBody:
-      'Encontre tempo para silenciar, agradecer e rezar. Aqui reunimos caminhos simples para sua oração pessoal e comunitária.',
-    practices: [
-      {
-        title: 'Escute a Palavra',
-        body: 'Leia o Evangelho do dia com calma e escolha uma palavra para levar consigo.',
-        icon: 'book-open',
-      },
-      {
-        title: 'Apresente sua vida',
-        body: 'Agradeça, partilhe suas preocupações com Deus e recorde quem precisa de oração.',
-        icon: 'heart',
-      },
-      {
-        title: 'Transforme em cuidado',
-        body: 'Escolha um gesto de reconciliação, acolhimento ou serviço para viver hoje.',
-        icon: 'hand-heart',
-      },
-    ],
-  })
-
-  await updateGlobal(payload, 'pastorum-page', {
-    title: 'In Cordibus Pastorum',
-    intro: 'Formação, escuta e reflexões para caminhar na fé com a nossa comunidade.',
-    image: teamPlaceholder,
-    sectionTitle: 'Uma presença que acolhe e orienta.',
-    sectionBody:
-      'Mensagens, homilias e reflexões dos sacerdotes da paróquia, Pe. Inaldo José Salustiano e Pe. Cláudio Eduardo de Faria, para caminhar na fé com a comunidade.',
-  })
-
-  await updateGlobal(payload, 'tithe-wall-page', {
-    title: 'Mural do dízimo',
-    intro: 'Gratidão, partilha e compromisso com a vida da comunidade.',
-    birthdaysTitle: 'Aniversariantes do mês',
-    birthdaysIntro:
-      'Uma lembrança carinhosa para quem partilha a caminhada conosco. Nenhum aniversariante está cadastrado; nomes somente poderão ser publicados com autorização.',
-    titheTitle: 'Dízimo é cuidado com a nossa missão.',
-    titheBody: richText([
-      'A participação no dízimo expressa gratidão e corresponsabilidade pela comunidade. É uma contribuição livre e consciente que ajuda a sustentar a evangelização e o serviço ao próximo.',
-      'A secretaria poderá orientar sobre cadastro e formas de contribuição aprovadas pela paróquia.',
-    ]),
-    reasons: [
-      'Agradecer pelos dons recebidos',
-      'Cuidar da casa da comunidade',
-      'Apoiar a evangelização',
-      'Colaborar com a formação na fé',
-      'Fortalecer o serviço ao próximo',
-      'Participar de uma missão comum',
-      'Cultivar a generosidade',
-      'Valorizar o trabalho comunitário',
-      'Exercitar um compromisso livre e consciente',
-      'Ajudar a comunidade a planejar seus cuidados',
-    ].map((title) => ({ title })),
-    interestTitle: 'Tenho interesse em ser dizimista',
-    interestBody:
-      'Procure a secretaria paroquial para receber orientações sobre como se tornar dizimista.',
-  })
 }
 
 async function main() {
@@ -1577,11 +1143,10 @@ async function main() {
     const postIds = await seedPosts(payload, prototype.posts, communityIds)
     await seedEvents(payload, communityIds)
     await seedHighlights(payload, prototype.slides, postIds)
-    await seedMilestones(payload)
     await seedProjectsAndSponsors(payload)
     await seedGlobals(payload)
     console.info(
-      '[seed] Conteúdo de desenvolvimento sincronizado: 14 publicações, 4 destaques, 6 comunidades, 10 missas sem divergências, 3 eventos fictícios, 12 marcos, 6 pastorais, 3 guias, 3 projetos e 7 patrocinadores não aprovados.',
+      '[seed] Conteúdo de desenvolvimento sincronizado: 14 publicações, 4 destaques, 6 comunidades, 10 missas sem divergências, 3 eventos fictícios, 8 pessoas da equipe, 6 pastorais, 3 guias, 3 projetos e 7 patrocinadores não aprovados.',
     )
   } finally {
     await payload.db.destroy?.()

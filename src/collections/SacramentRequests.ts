@@ -1,14 +1,17 @@
 import type { CollectionConfig, CollectionSlug } from 'payload'
 
-import { canManageService, isAdmin } from '@/access'
+import { canManageService, hiddenUnless, isAdmin, serviceRoles } from '@/access'
 
 export const SacramentRequests: CollectionConfig = {
   slug: 'sacrament-requests',
-  labels: { singular: 'Solicitação de sacramento', plural: 'Solicitações de sacramentos' },
+  labels: { singular: 'Pedido de sacramento', plural: 'Pedidos de sacramentos' },
   admin: {
     useAsTitle: 'applicantName',
     defaultColumns: ['requestType', 'applicantName', 'preferredDate', 'status', 'createdAt'],
-    group: 'Atendimento privado',
+    group: 'Mensagens recebidas',
+    hidden: hiddenUnless(...serviceRoles),
+    description:
+      'Pedidos de batismo e casamento enviados pelo site. O pedido não reserva data: a secretaria confirma com a família.',
   },
   access: {
     create: () => false,
@@ -19,7 +22,7 @@ export const SacramentRequests: CollectionConfig = {
   fields: [
     {
       name: 'requestType',
-      label: 'Tipo de sacramento',
+      label: 'Sacramento pedido',
       type: 'select',
       required: true,
       options: [
@@ -29,7 +32,7 @@ export const SacramentRequests: CollectionConfig = {
     },
     {
       name: 'applicantName',
-      label: 'Nome do solicitante',
+      label: 'Nome de quem pediu',
       type: 'text',
       required: true,
     },
@@ -47,7 +50,7 @@ export const SacramentRequests: CollectionConfig = {
     },
     {
       name: 'preferredDate',
-      label: 'Data de preferência',
+      label: 'Data que a família prefere',
       type: 'date',
       admin: {
         description:
@@ -56,24 +59,27 @@ export const SacramentRequests: CollectionConfig = {
     },
     {
       name: 'community',
-      label: 'Comunidade',
+      label: 'Igreja ou comunidade',
       type: 'relationship',
       relationTo: 'communities' as CollectionSlug,
     },
     {
       name: 'payload',
-      label: 'Dados complementares',
+      label: 'Outras respostas do formulário',
       type: 'json',
-      admin: { description: 'Demais campos validados pelo endpoint customizado.' },
+      admin: {
+        readOnly: true,
+        description: 'Respostas extras do formulário, guardadas como o visitante enviou.',
+      },
     },
     {
       name: 'notes',
-      label: 'Observações do solicitante',
+      label: 'Recado de quem pediu',
       type: 'textarea',
     },
     {
       name: 'status',
-      label: 'Situação',
+      label: 'Andamento',
       type: 'select',
       required: true,
       defaultValue: 'new',
@@ -88,20 +94,24 @@ export const SacramentRequests: CollectionConfig = {
     },
     {
       name: 'consent',
-      label: 'Consentimento para tratamento dos dados',
+      label: 'A pessoa autorizou o uso dos dados para o atendimento',
       type: 'checkbox',
       required: true,
     },
     {
       name: 'internalNotes',
-      label: 'Observações internas',
+      label: 'Anotações da secretaria',
       type: 'textarea',
     },
     {
       name: 'retentionUntil',
-      label: 'Retenção até',
+      label: 'Guardar até',
       type: 'date',
-      admin: { description: 'Data limite para retenção dos dados.' },
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Até quando estes dados pessoais podem ficar guardados (LGPD).',
+      },
     },
   ],
   timestamps: true,

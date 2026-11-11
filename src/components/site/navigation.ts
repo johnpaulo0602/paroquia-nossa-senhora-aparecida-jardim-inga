@@ -1,14 +1,15 @@
-import type { Navigation } from '@/payload-types'
+export type NavLink = { label: string; url: string; external?: boolean }
+export type NavGroup = { label: string; links: NavLink[] }
 
 /**
- * Default main menu. Used by the header when the CMS has no navigation yet, and by the
- * seed script, so both stay in sync.
+ * Site menus. They live in code, not in the CMS: a wrong link here breaks navigation for
+ * every visitor, and the structure changes only when pages are added or removed.
  *
  * Rules: Mass times and the calendar are direct links (the most common tasks), a group
  * with one destination is a link (never a one-item dropdown), and no page appears in two
  * groups.
  */
-export const defaultHeaderGroups: NonNullable<Navigation['headerGroups']> = [
+export const headerGroups: NavGroup[] = [
   {
     label: 'A paróquia',
     links: [
@@ -44,4 +45,53 @@ export const defaultHeaderGroups: NonNullable<Navigation['headerGroups']> = [
   { label: 'Contato', links: [{ label: 'Contato', url: '/contato' }] },
 ]
 
-export const defaultHeaderCta = { label: 'Quero doar', url: '/contribuir' }
+export const headerCta: NavLink = { label: 'Quero doar', url: '/contribuir' }
+
+export const footerGroups: NavGroup[] = [
+  {
+    label: 'A paróquia',
+    links: [
+      { label: 'Nossa história', url: '/paroquia' },
+      { label: 'Nossa padroeira', url: '/padroeira' },
+      { label: 'Estrutura da paróquia', url: '/equipe' },
+      { label: 'Comunidades', url: '/comunidades' },
+      { label: 'Secretaria', url: '/secretaria' },
+    ],
+  },
+  {
+    label: 'Participe',
+    links: [
+      { label: 'Missas e confissões', url: '/horarios' },
+      { label: 'Agenda paroquial', url: '/agenda' },
+      { label: 'Sacramentos', url: '/vida' },
+      { label: 'Catequese e crisma', url: '/vida/catequese' },
+      { label: 'Pastorais e movimentos', url: '/vida/pastorais' },
+      { label: 'In Cordibus Pastorum', url: '/vida/in-cordibus-pastorum' },
+      { label: 'Espiritualidade', url: '/vida/espiritualidade' },
+      { label: 'Mural do dízimo', url: '/vida/mural-do-dizimo' },
+    ],
+  },
+  {
+    label: 'Comunicação',
+    links: [
+      { label: 'Notícias e artigos', url: '/comunicacao' },
+      { label: 'Projetos e parcerias', url: '/projetos' },
+      {
+        label: 'Instagram',
+        url: 'https://www.instagram.com/nsaaparecidajdinga/',
+        external: true,
+      },
+      {
+        label: 'Facebook',
+        url: 'https://www.facebook.com/MatrizAparecidaJardiminga/',
+        external: true,
+      },
+      { label: 'Dízimo e doações', url: '/contribuir' },
+      {
+        label: 'Diocese de Luziânia',
+        url: 'https://diocesedeluziania.com.br/',
+        external: true,
+      },
+    ],
+  },
+]

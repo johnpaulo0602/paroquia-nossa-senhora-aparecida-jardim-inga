@@ -3,18 +3,26 @@ import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
+import { timeField } from '@/fields/time'
+import { previewURL } from '@/lib/preview'
 
 export const Pastorals: CollectionConfig = {
   slug: 'pastorals',
-  labels: { singular: 'Pastoral', plural: 'Pastorais' },
+  labels: { singular: 'Pastoral ou movimento', plural: 'Pastorais e movimentos' },
   admin: {
     useAsTitle: 'title',
-    group: 'Vida cristã',
+    defaultColumns: ['title', 'active', '_status'],
+    group: 'A paróquia',
+    hidden: hiddenUnless(...contentRoles),
+    description: 'Cada pastoral, movimento ou grupo tem a sua página no site.',
+    livePreview: { url: ({ data }) => previewURL(`/pastorais/${data.slug}`) },
   },
   access: {
     read: readPublicContent,
@@ -22,14 +30,14 @@ export const Pastorals: CollectionConfig = {
     update: canEditContent,
     delete: isAdminOrEditor,
   },
-  versions: { drafts: true },
+  versions: { drafts: { autosave: { interval: 800 } } },
   hooks: {
     beforeChange: [enforcePublishPermission],
   },
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'Nome da pastoral ou movimento',
       type: 'text',
       required: true,
     },
@@ -37,36 +45,38 @@ export const Pastorals: CollectionConfig = {
     {
       name: 'mission',
       label: 'Missão',
+      admin: { description: 'O que a pastoral faz e por quê.' },
       type: 'richText',
     },
     {
       name: 'activities',
-      label: 'Atividades',
+      label: 'O que a pastoral faz',
       type: 'array',
       fields: [
         {
           name: 'title',
-          label: 'Título',
+          label: 'Atividade',
           type: 'text',
           required: true,
         },
         {
           name: 'description',
-          label: 'Descrição',
+          label: 'Explicação',
           type: 'textarea',
         },
       ],
     },
     {
       name: 'coordinators',
-      label: 'Coordenadores',
+      label: 'Quem coordena',
+      admin: { description: 'Escolha entre as pessoas cadastradas em Clero e equipe.' },
       type: 'relationship',
       relationTo: 'people',
       hasMany: true,
     },
     {
       name: 'meetingInfo',
-      label: 'Informações de encontros',
+      label: 'Dias e horários dos encontros',
       type: 'array',
       fields: [
         {
@@ -83,14 +93,7 @@ export const Pastorals: CollectionConfig = {
             { label: 'Sábado', value: 'saturday' },
           ],
         },
-        {
-          name: 'time',
-          label: 'Horário',
-          type: 'text',
-          validate: (value: string | null | undefined) =>
-            !value || /^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? true : 'Use o formato HH:mm.',
-          admin: { description: 'Formato HH:mm.' },
-        },
+        timeField({ name: 'time', label: 'Horário' }),
         {
           name: 'location',
           label: 'Local',
@@ -105,36 +108,39 @@ export const Pastorals: CollectionConfig = {
     },
     {
       name: 'requirements',
-      label: 'Requisitos',
+      label: 'O que é preciso para participar',
       type: 'richText',
     },
     {
       name: 'cover',
-      label: 'Imagem de capa',
+      label: 'Imagem da pastoral',
       type: 'upload',
       relationTo: 'media',
     },
     {
       name: 'communities',
-      label: 'Comunidades',
+      label: 'Em quais comunidades atua',
       type: 'relationship',
       relationTo: 'communities',
       hasMany: true,
     },
     {
       name: 'contactViaSecretariat',
-      label: 'Contato pela secretaria',
+      label: 'O contato é feito pela secretaria',
+      admin: { position: 'sidebar' },
       type: 'checkbox',
       defaultValue: true,
     },
     {
       name: 'order',
-      label: 'Ordem',
+      label: 'Posição na lista',
+      admin: { position: 'sidebar', description: 'Número menor aparece primeiro.' },
       type: 'number',
     },
     {
       name: 'active',
-      label: 'Ativa',
+      label: 'Mostrar no site',
+      admin: { position: 'sidebar' },
       type: 'checkbox',
       defaultValue: true,
     },

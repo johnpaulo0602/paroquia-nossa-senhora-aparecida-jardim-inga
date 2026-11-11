@@ -1,6 +1,6 @@
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
-import { authenticatedField, isAdminOrEditor } from '@/access'
+import { authenticatedField, contentRoles, hiddenUnless, isAdminOrEditor } from '@/access'
 import { makeBlurDataURL } from '@/lib/blur'
 
 /** Regenerates the blur preview whenever a file is uploaded or replaced. */
@@ -13,11 +13,13 @@ const generateBlur: CollectionBeforeChangeHook = async ({ data, req }) => {
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  labels: { singular: 'Mídia', plural: 'Mídias' },
+  labels: { singular: 'Imagem', plural: 'Imagens' },
   admin: {
     useAsTitle: 'alt',
-    defaultColumns: ['alt', 'mediaType', 'usageAuthorized'],
-    group: 'Conteúdo',
+    defaultColumns: ['filename', 'alt', 'credit'],
+    group: 'Imagens',
+    hidden: hiddenUnless(...contentRoles),
+    description: 'Todas as fotos e artes usadas no site. Para enviar, só a descrição é obrigatória.',
   },
   access: {
     read: () => true,
@@ -31,49 +33,70 @@ export const Media: CollectionConfig = {
   fields: [
     {
       name: 'alt',
-      label: 'Descrição alternativa',
+      label: 'O que aparece na imagem?',
       type: 'text',
       required: true,
-    },
-    {
-      name: 'caption',
-      label: 'Legenda',
-      type: 'text',
+      admin: {
+        placeholder: 'Ex.: Fiéis na procissão da padroeira em frente à matriz',
+        description:
+          'Uma frase curta. É lida em voz alta para quem não enxerga e ajuda o site a aparecer no Google.',
+      },
     },
     {
       name: 'credit',
-      label: 'Crédito ou autoria',
+      label: 'Quem fez a foto ou a arte?',
       type: 'text',
+      admin: { placeholder: 'Ex.: Pastoral da Comunicação' },
     },
     {
-      name: 'source',
-      label: 'Fonte ou origem',
-      type: 'text',
-    },
-    {
-      name: 'mediaType',
-      label: 'Tipo de imagem',
-      type: 'select',
-      required: true,
-      defaultValue: 'photograph',
-      options: [
-        { label: 'Fotografia', value: 'photograph' },
-        { label: 'Ilustração', value: 'illustration' },
-        { label: 'Documento', value: 'document' },
-        { label: 'Arte de divulgação', value: 'artwork' },
+      type: 'collapsible',
+      label: 'Mais informações (opcional)',
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: 'caption',
+          label: 'Legenda',
+          type: 'text',
+          admin: { description: 'Texto mostrado abaixo da imagem em algumas páginas.' },
+        },
+        {
+          name: 'usageAuthorized',
+          label: 'As pessoas que aparecem autorizaram o uso da imagem',
+          type: 'checkbox',
+          defaultValue: false,
+        },
+        {
+          name: 'recordedAt',
+          label: 'Quando a foto foi feita',
+          type: 'date',
+          admin: { date: { displayFormat: 'dd/MM/yyyy' } },
+        },
+        {
+          name: 'mediaType',
+          label: 'Tipo de imagem',
+          type: 'select',
+          required: true,
+          defaultValue: 'photograph',
+          options: [
+            { label: 'Fotografia', value: 'photograph' },
+            { label: 'Ilustração', value: 'illustration' },
+            { label: 'Documento', value: 'document' },
+            { label: 'Arte de divulgação', value: 'artwork' },
+          ],
+        },
+        {
+          name: 'source',
+          label: 'De onde veio a imagem',
+          type: 'text',
+        },
+        {
+          name: 'internalNotes',
+          label: 'Anotações internas',
+          type: 'textarea',
+          access: { read: authenticatedField },
+          admin: { description: 'Não aparece no site.' },
+        },
       ],
-    },
-    {
-      name: 'recordedAt',
-      label: 'Data do registro',
-      type: 'date',
-      admin: { description: 'Deixe em branco se a data for desconhecida.' },
-    },
-    {
-      name: 'usageAuthorized',
-      label: 'Uso autorizado',
-      type: 'checkbox',
-      defaultValue: false,
     },
     {
       name: 'blurData',
@@ -84,12 +107,6 @@ export const Media: CollectionConfig = {
         hidden: true,
         description: 'Gerada automaticamente no upload; usada enquanto a imagem carrega.',
       },
-    },
-    {
-      name: 'internalNotes',
-      label: 'Observações internas',
-      type: 'textarea',
-      access: { read: authenticatedField },
     },
   ],
   upload: {

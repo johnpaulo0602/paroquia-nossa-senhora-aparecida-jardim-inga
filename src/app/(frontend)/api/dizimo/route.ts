@@ -7,13 +7,14 @@ import {
   retentionDate,
 } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 export async function POST(request: Request): Promise<Response> {
   return handleJsonForm(
     request,
     {
       route: 'dizimo',
-      enabled: process.env.TITHE_FORM_ENABLED === 'true',
+      enabled: featureEnabled('TITHE_FORM_ENABLED'),
       disabledMessage: 'O formulário de interesse no dízimo está temporariamente desativado.',
       honeypotMessage: 'Solicitação recebida.',
     },

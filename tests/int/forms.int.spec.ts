@@ -62,11 +62,11 @@ describe('endpoints públicos de atendimento', () => {
     await cleanupTestRecords()
   })
 
-  it('retorna 503 por padrão quando os canais estão desativados', async () => {
-    delete process.env.CONTACT_FORM_ENABLED
-    delete process.env.SACRAMENT_FORM_ENABLED
-    delete process.env.TITHE_FORM_ENABLED
-    delete process.env.NEWSLETTER_ENABLED
+  it('retorna 503 quando os canais são desativados por variável de ambiente', async () => {
+    process.env.CONTACT_FORM_ENABLED = 'false'
+    process.env.SACRAMENT_FORM_ENABLED = 'false'
+    process.env.TITHE_FORM_ENABLED = 'false'
+    process.env.NEWSLETTER_ENABLED = 'false'
 
     const resContato = await postContato(
       jsonRequest('http://localhost:3000/api/contato', {

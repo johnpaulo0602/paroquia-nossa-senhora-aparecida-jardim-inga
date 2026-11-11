@@ -3,7 +3,9 @@ import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
@@ -14,7 +16,10 @@ export const Projects: CollectionConfig = {
   labels: { singular: 'Projeto', plural: 'Projetos' },
   admin: {
     useAsTitle: 'title',
-    group: 'Institucional',
+    defaultColumns: ['title', 'active', '_status'],
+    group: 'A paróquia',
+    hidden: hiddenUnless(...contentRoles),
+    description: 'Projetos sociais e parcerias mostrados na página Projetos e parcerias.',
   },
   access: {
     read: readPublicContent,
@@ -42,7 +47,7 @@ export const Projects: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      label: 'Título',
+      label: 'Nome do projeto',
       type: 'text',
       required: true,
     },
@@ -54,43 +59,48 @@ export const Projects: CollectionConfig = {
     },
     {
       name: 'body',
-      label: 'Descrição',
+      label: 'Descrição completa',
       type: 'richText',
     },
     {
       name: 'startsAt',
-      label: 'Início',
+      label: 'Começa em',
+      admin: { position: 'sidebar', date: { displayFormat: 'dd/MM/yyyy' } },
       type: 'date',
     },
     {
       name: 'endsAt',
-      label: 'Término',
+      label: 'Termina em',
+      admin: { position: 'sidebar', date: { displayFormat: 'dd/MM/yyyy' } },
       type: 'date',
     },
     {
       name: 'cover',
-      label: 'Imagem de capa',
+      label: 'Imagem do projeto',
       type: 'upload',
       relationTo: 'media',
     },
     {
       name: 'institutionalContacts',
-      label: 'Contatos institucionais',
+      label: 'Com quem falar sobre o projeto',
       type: 'richText',
     },
     {
       name: 'ctaLabel',
-      label: 'Texto do botão de ação',
+      label: 'Texto do botão',
+      admin: { placeholder: 'Ex.: Quero apoiar' },
       type: 'text',
     },
     {
       name: 'order',
-      label: 'Ordem',
+      label: 'Posição na lista',
+      admin: { position: 'sidebar', description: 'Número menor aparece primeiro.' },
       type: 'number',
     },
     {
       name: 'active',
-      label: 'Ativo',
+      label: 'Mostrar no site',
+      admin: { position: 'sidebar' },
       type: 'checkbox',
       defaultValue: true,
     },

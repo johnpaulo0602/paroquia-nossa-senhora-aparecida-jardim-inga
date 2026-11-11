@@ -1,14 +1,16 @@
 import type { CollectionConfig } from 'payload'
 
-import { canManageService, isAdmin } from '@/access'
+import { canManageService, hiddenUnless, isAdmin, serviceRoles } from '@/access'
 
 export const TitheInterests: CollectionConfig = {
   slug: 'tithe-interests',
-  labels: { singular: 'Interesse no dízimo', plural: 'Interesses no dízimo' },
+  labels: { singular: 'Interessado no dízimo', plural: 'Interessados no dízimo' },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'status', 'createdAt'],
-    group: 'Atendimento privado',
+    group: 'Mensagens recebidas',
+    hidden: hiddenUnless(...serviceRoles),
+    description: 'Pessoas que pediram contato para se tornarem dizimistas.',
   },
   access: {
     create: () => false,
@@ -31,13 +33,13 @@ export const TitheInterests: CollectionConfig = {
     },
     {
       name: 'consent',
-      label: 'Consentimento para tratamento dos dados',
+      label: 'A pessoa autorizou o uso dos dados para o contato',
       type: 'checkbox',
       required: true,
     },
     {
       name: 'status',
-      label: 'Situação',
+      label: 'Andamento',
       type: 'select',
       required: true,
       defaultValue: 'new',
@@ -50,14 +52,18 @@ export const TitheInterests: CollectionConfig = {
     },
     {
       name: 'internalNotes',
-      label: 'Observações internas',
+      label: 'Anotações da secretaria',
       type: 'textarea',
     },
     {
       name: 'retentionUntil',
-      label: 'Retenção até',
+      label: 'Guardar até',
       type: 'date',
-      admin: { description: 'Data limite para retenção dos dados.' },
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Até quando estes dados pessoais podem ficar guardados (LGPD).',
+      },
     },
   ],
   timestamps: true,

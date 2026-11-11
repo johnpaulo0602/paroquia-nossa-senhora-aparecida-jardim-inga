@@ -3,11 +3,14 @@ import type { CollectionConfig } from 'payload'
 
 import {
   canEditContent,
+  contentRoles,
   enforcePublishPermission,
+  hiddenUnless,
   isAdminOrEditor,
   readPublicContent,
 } from '@/access'
 import { editorialFields } from '@/fields/editorial'
+import { previewURL } from '@/lib/preview'
 
 const validateURL = (value: string | null | undefined): true | string => {
   if (!value) return true
@@ -27,7 +30,11 @@ export const Communities: CollectionConfig = {
   labels: { singular: 'Comunidade', plural: 'Comunidades' },
   admin: {
     useAsTitle: 'name',
-    group: 'Agenda e comunidades',
+    defaultColumns: ['name', 'type', 'region', 'active'],
+    group: 'A paróquia',
+    hidden: hiddenUnless(...contentRoles),
+    description: 'A matriz e as capelas. Cada uma tem a sua página no site.',
+    livePreview: { url: ({ data }) => previewURL(`/comunidades/${data.slug}`) },
   },
   access: {
     read: readPublicContent,
@@ -35,21 +42,21 @@ export const Communities: CollectionConfig = {
     update: canEditContent,
     delete: isAdminOrEditor,
   },
-  versions: { drafts: true },
+  versions: { drafts: { autosave: { interval: 800 } } },
   hooks: {
     beforeChange: [enforcePublishPermission],
   },
   fields: [
     {
       name: 'name',
-      label: 'Nome',
+      label: 'Nome da comunidade',
       type: 'text',
       required: true,
     },
     slugField({ useAsSlug: 'name' }),
     {
       name: 'type',
-      label: 'Tipo',
+      label: 'É a matriz ou uma capela?',
       type: 'select',
       options: [
         { label: 'Matriz', value: 'matrix' },
@@ -58,55 +65,64 @@ export const Communities: CollectionConfig = {
     },
     {
       name: 'region',
-      label: 'Região',
+      label: 'Bairro ou região',
+      admin: { placeholder: 'Ex.: Jardim Ingá' },
       type: 'text',
     },
     {
       name: 'description',
-      label: 'Descrição',
+      label: 'Sobre a comunidade',
       type: 'richText',
     },
     {
       name: 'address',
-      label: 'Endereço',
+      label: 'Endereço completo',
       type: 'textarea',
     },
     {
       name: 'mapUrl',
-      label: 'URL do mapa',
+      label: 'Link do Google Maps',
+      admin: {
+        placeholder: 'https://maps.app.goo.gl/...',
+        description: 'No Google Maps, toque em Compartilhar, copie o link e cole aqui.',
+      },
       type: 'text',
       validate: validateURL,
     },
     {
       name: 'cover',
-      label: 'Imagem de capa',
+      label: 'Foto da igreja',
       type: 'upload',
       relationTo: 'media',
     },
     {
       name: 'publicPhone',
-      label: 'Telefone público',
+      label: 'Telefone',
+      admin: { placeholder: '(61) 3000-0000' },
       type: 'text',
     },
     {
       name: 'publicEmail',
-      label: 'E-mail público',
+      label: 'E-mail',
       type: 'text',
     },
     {
       name: 'publicWhatsapp',
-      label: 'WhatsApp público',
+      label: 'WhatsApp',
+      admin: { placeholder: '(61) 90000-0000' },
       type: 'text',
     },
     {
       name: 'order',
-      label: 'Ordem',
+      label: 'Posição na lista',
+      admin: { position: 'sidebar', description: 'Número menor aparece primeiro.' },
       type: 'number',
       defaultValue: 0,
     },
     {
       name: 'active',
-      label: 'Ativa',
+      label: 'Mostrar no site',
+      admin: { position: 'sidebar' },
       type: 'checkbox',
       defaultValue: true,
     },

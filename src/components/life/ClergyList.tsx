@@ -1,23 +1,18 @@
-import type { Person, TeamAssignment } from '@/payload-types'
+import type { Person } from '@/payload-types'
 
 import styles from './life.module.css'
 
-export function ClergyList({ assignments }: { assignments: TeamAssignment[] }) {
-  const clergy = assignments.filter(
-    (assignment): assignment is TeamAssignment & { person: Person } =>
-      typeof assignment.person === 'object' && assignment.person !== null,
-  )
-
-  if (clergy.length === 0) {
+export function ClergyList({ people }: { people: Person[] }) {
+  if (people.length === 0) {
     return <p>A equipe sacerdotal será apresentada aqui após a publicação dos registros.</p>
   }
 
   return (
     <ul className={styles.clergyList} aria-label="Equipe sacerdotal">
-      {clergy.map((assignment) => (
-        <li key={assignment.id}>
-          <strong>{assignment.person.name}</strong>
-          <span>{assignment.roleTitle}</span>
+      {people.map((person) => (
+        <li key={person.id}>
+          <strong>{person.name}</strong>
+          {person.roleTitle && <span>{person.roleTitle}</span>}
         </li>
       ))}
     </ul>

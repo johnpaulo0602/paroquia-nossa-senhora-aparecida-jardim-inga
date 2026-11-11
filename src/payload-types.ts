@@ -67,18 +67,14 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
     posts: Post;
     highlights: Highlight;
     notices: Notice;
-    communities: Community;
     celebrations: Celebration;
     'celebration-exceptions': CelebrationException;
     events: Event;
-    milestones: Milestone;
+    communities: Community;
     people: Person;
-    'team-assignments': TeamAssignment;
     pastorals: Pastoral;
     'sacrament-guides': SacramentGuide;
     projects: Project;
@@ -87,6 +83,8 @@ export interface Config {
     'sacrament-requests': SacramentRequest;
     'tithe-interests': TitheInterest;
     'newsletter-subscribers': NewsletterSubscriber;
+    media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,18 +92,14 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     highlights: HighlightsSelect<false> | HighlightsSelect<true>;
     notices: NoticesSelect<false> | NoticesSelect<true>;
-    communities: CommunitiesSelect<false> | CommunitiesSelect<true>;
     celebrations: CelebrationsSelect<false> | CelebrationsSelect<true>;
     'celebration-exceptions': CelebrationExceptionsSelect<false> | CelebrationExceptionsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
-    milestones: MilestonesSelect<false> | MilestonesSelect<true>;
+    communities: CommunitiesSelect<false> | CommunitiesSelect<true>;
     people: PeopleSelect<false> | PeopleSelect<true>;
-    'team-assignments': TeamAssignmentsSelect<false> | TeamAssignmentsSelect<true>;
     pastorals: PastoralsSelect<false> | PastoralsSelect<true>;
     'sacrament-guides': SacramentGuidesSelect<false> | SacramentGuidesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -114,6 +108,8 @@ export interface Config {
     'sacrament-requests': SacramentRequestsSelect<false> | SacramentRequestsSelect<true>;
     'tithe-interests': TitheInterestsSelect<false> | TitheInterestsSelect<true>;
     'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -124,30 +120,16 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    'site-settings': SiteSetting;
-    navigation: Navigation;
     'home-page': HomePage;
-    'history-page': HistoryPage;
-    'patron-page': PatronPage;
     'secretariat-page': SecretariatPage;
     'contact-page': ContactPage;
-    'contribution-page': ContributionPage;
-    'spirituality-page': SpiritualityPage;
-    'pastorum-page': PastorumPage;
-    'tithe-wall-page': TitheWallPage;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
-    navigation: NavigationSelect<false> | NavigationSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
-    'history-page': HistoryPageSelect<false> | HistoryPageSelect<true>;
-    'patron-page': PatronPageSelect<false> | PatronPageSelect<true>;
     'secretariat-page': SecretariatPageSelect<false> | SecretariatPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
-    'contribution-page': ContributionPageSelect<false> | ContributionPageSelect<true>;
-    'spirituality-page': SpiritualityPageSelect<false> | SpiritualityPageSelect<true>;
-    'pastorum-page': PastorumPageSelect<false> | PastorumPageSelect<true>;
-    'tithe-wall-page': TitheWallPageSelect<false> | TitheWallPageSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -178,54 +160,106 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Notícias, artigos, reflexões, álbuns de fotos e vídeos. Aparecem na página Notícias e, conforme a escolha abaixo, em Espiritualidade ou In Cordibus Pastorum.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "posts".
  */
-export interface User {
+export interface Post {
   id: number;
-  name?: string | null;
-  role: 'admin' | 'editor' | 'contributor' | 'secretary';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Uma ou duas frases. Aparece nos cartões da página Notícias.
+   */
+  summary: string;
+  cover?: (number | null) | Media;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  format: 'news' | 'article' | 'photos' | 'video';
+  /**
+   * Pode marcar mais de um lugar.
+   */
+  editorialAreas: ('communication' | 'spirituality' | 'pastorum' | 'institutional')[];
+  gallery?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  /**
+   * Copie o endereço do vídeo no YouTube ou em outro site e cole aqui.
+   */
+  videoUrl?: string | null;
+  author?: (number | null) | Person;
+  sourceName?: string | null;
+  sourceUrl?: string | null;
+  communities?: (number | Community)[] | null;
+  pastorals?: (number | Pastoral)[] | null;
+  relatedPosts?: (number | Post)[] | null;
+  publishedAt?: string | null;
+  category?: ('general' | 'church-brazil' | 'pope-vatican' | 'communities-pastorals' | 'community-memory') | null;
+  /**
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
+   */
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
+  reviewedAt?: string | null;
+  /**
+   * Não aparece no site.
+   */
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
+ * Todas as fotos e artes usadas no site. Para enviar, só a descrição é obrigatória.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
-  alt: string;
-  caption?: string | null;
-  credit?: string | null;
-  source?: string | null;
-  mediaType: 'photograph' | 'illustration' | 'document' | 'artwork';
   /**
-   * Deixe em branco se a data for desconhecida.
+   * Uma frase curta. É lida em voz alta para quem não enxerga e ajuda o site a aparecer no Google.
    */
-  recordedAt?: string | null;
+  alt: string;
+  credit?: string | null;
+  /**
+   * Texto mostrado abaixo da imagem em algumas páginas.
+   */
+  caption?: string | null;
   usageAuthorized?: boolean | null;
+  recordedAt?: string | null;
+  mediaType: 'photograph' | 'illustration' | 'document' | 'artwork';
+  source?: string | null;
+  /**
+   * Não aparece no site.
+   */
+  internalNotes?: string | null;
   /**
    * Gerada automaticamente no upload; usada enquanto a imagem carrega.
    */
   blurData?: string | null;
-  internalNotes?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -266,73 +300,8 @@ export interface Media {
   };
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
- */
-export interface Post {
-  id: number;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  summary: string;
-  body: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  format: 'news' | 'article' | 'photos' | 'video';
-  editorialAreas: ('communication' | 'spirituality' | 'pastorum' | 'institutional')[];
-  category?: ('general' | 'church-brazil' | 'pope-vatican' | 'communities-pastorals' | 'community-memory') | null;
-  publishedAt?: string | null;
-  cover?: (number | null) | Media;
-  /**
-   * Fotografias exibidas em publicações no formato Fotos.
-   */
-  gallery?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Endereço do vídeo para publicações no formato Vídeo.
-   */
-  videoUrl?: string | null;
-  author?: (number | null) | Person;
-  sourceName?: string | null;
-  sourceUrl?: string | null;
-  communities?: (number | Community)[] | null;
-  pastorals?: (number | Pastoral)[] | null;
-  relatedPosts?: (number | Post)[] | null;
-  /**
-   * Demonstrações ficam fora do portal institucional.
-   */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
-  reviewedAt?: string | null;
-  /**
-   * Não aparece no site nem na API pública.
-   */
-  internalNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
+ * Padres, diáconos e pessoas da equipe. Quem estiver marcado como "Mostrar no site" aparece na página Clero e equipe.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "people".
  */
@@ -344,6 +313,15 @@ export interface Person {
    */
   generateSlug?: boolean | null;
   slug: string;
+  roleTitle?: string | null;
+  /**
+   * O clero aparece em destaque no topo da página.
+   */
+  roleType?: ('clergy' | 'administration' | 'pastoral' | 'service') | null;
+  photo?: (number | null) | Media;
+  /**
+   * Opcional. Um texto curto de apresentação.
+   */
   biography?: {
     root: {
       type: string;
@@ -359,21 +337,29 @@ export interface Person {
     };
     [k: string]: unknown;
   } | null;
-  photo?: (number | null) | Media;
+  area?: string | null;
   publicEmail?: string | null;
   publicPhone?: string | null;
   /**
-   * Autoriza a divulgação do e-mail e do telefone públicos. Sem esta autorização, os contatos ficam disponíveis apenas para usuários autenticados.
+   * Sem esta autorização, o site mostra apenas o contato da secretaria.
    */
   publicContactAuthorized?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * Desmarque quando a pessoa deixar a função.
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  current?: boolean | null;
+  /**
+   * Número menor aparece primeiro.
+   */
+  order?: number | null;
+  /**
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
+   */
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -381,6 +367,8 @@ export interface Person {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * A matriz e as capelas. Cada uma tem a sua página no site.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "communities".
  */
@@ -410,21 +398,27 @@ export interface Community {
     [k: string]: unknown;
   } | null;
   address?: string | null;
+  /**
+   * No Google Maps, toque em Compartilhar, copie o link e cole aqui.
+   */
   mapUrl?: string | null;
   cover?: (number | null) | Media;
   publicPhone?: string | null;
   publicEmail?: string | null;
   publicWhatsapp?: string | null;
+  /**
+   * Número menor aparece primeiro.
+   */
   order?: number | null;
   active?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -432,6 +426,8 @@ export interface Community {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Cada pastoral, movimento ou grupo tem a sua página no site.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pastorals".
  */
@@ -443,6 +439,9 @@ export interface Pastoral {
    */
   generateSlug?: boolean | null;
   slug: string;
+  /**
+   * O que a pastoral faz e por quê.
+   */
   mission?: {
     root: {
       type: string;
@@ -465,14 +464,93 @@ export interface Pastoral {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Escolha entre as pessoas cadastradas em Clero e equipe.
+   */
   coordinators?: (number | Person)[] | null;
   meetingInfo?:
     | {
         weekday?: ('sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday') | null;
-        /**
-         * Formato HH:mm.
-         */
-        time?: string | null;
+        time?:
+          | (
+              | '05:00'
+              | '05:15'
+              | '05:30'
+              | '05:45'
+              | '06:00'
+              | '06:15'
+              | '06:30'
+              | '06:45'
+              | '07:00'
+              | '07:15'
+              | '07:30'
+              | '07:45'
+              | '08:00'
+              | '08:15'
+              | '08:30'
+              | '08:45'
+              | '09:00'
+              | '09:15'
+              | '09:30'
+              | '09:45'
+              | '10:00'
+              | '10:15'
+              | '10:30'
+              | '10:45'
+              | '11:00'
+              | '11:15'
+              | '11:30'
+              | '11:45'
+              | '12:00'
+              | '12:15'
+              | '12:30'
+              | '12:45'
+              | '13:00'
+              | '13:15'
+              | '13:30'
+              | '13:45'
+              | '14:00'
+              | '14:15'
+              | '14:30'
+              | '14:45'
+              | '15:00'
+              | '15:15'
+              | '15:30'
+              | '15:45'
+              | '16:00'
+              | '16:15'
+              | '16:30'
+              | '16:45'
+              | '17:00'
+              | '17:15'
+              | '17:30'
+              | '17:45'
+              | '18:00'
+              | '18:15'
+              | '18:30'
+              | '18:45'
+              | '19:00'
+              | '19:15'
+              | '19:30'
+              | '19:45'
+              | '20:00'
+              | '20:15'
+              | '20:30'
+              | '20:45'
+              | '21:00'
+              | '21:15'
+              | '21:30'
+              | '21:45'
+              | '22:00'
+              | '22:15'
+              | '22:30'
+              | '22:45'
+              | '23:00'
+              | '23:15'
+              | '23:30'
+              | '23:45'
+            )
+          | null;
         location?: string | null;
         id?: string | null;
       }[]
@@ -510,16 +588,19 @@ export interface Pastoral {
   cover?: (number | null) | Media;
   communities?: (number | Community)[] | null;
   contactViaSecretariat?: boolean | null;
+  /**
+   * Número menor aparece primeiro.
+   */
   order?: number | null;
   active?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -527,6 +608,8 @@ export interface Pastoral {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * As imagens grandes que passam no topo da página inicial e da página Notícias.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "highlights".
  */
@@ -534,29 +617,67 @@ export interface Highlight {
   id: number;
   title?: string | null;
   eyebrow?: string | null;
+  /**
+   * Uma ou duas linhas abaixo do título.
+   */
   summary?: string | null;
+  /**
+   * Prefira imagens largas (paisagem), com pelo menos 1600 pixels de largura.
+   */
   image?: (number | null) | Media;
   ctaLabel?: string | null;
   destinationType: 'post' | 'event' | 'internal' | 'external';
   post?: (number | null) | Post;
   event?: (number | null) | Event;
+  internalPath?:
+    | (
+        | '/'
+        | '/comunicacao'
+        | '/agenda'
+        | '/horarios'
+        | '/secretaria'
+        | '/contato'
+        | '/paroquia'
+        | '/padroeira'
+        | '/equipe'
+        | '/comunidades'
+        | '/vida'
+        | '/vida/batismo'
+        | '/vida/catequese'
+        | '/vida/matrimonio'
+        | '/vida/pastorais'
+        | '/vida/in-cordibus-pastorum'
+        | '/vida/espiritualidade'
+        | '/vida/mural-do-dizimo'
+        | '/projetos'
+        | '/contribuir'
+      )
+    | null;
   /**
-   * Caminho da página interna, por exemplo: /agenda.
+   * Copie o endereço da barra do navegador e cole aqui.
    */
-  internalPath?: string | null;
   externalUrl?: string | null;
   placement: ('home' | 'communication')[];
-  order: number;
+  /**
+   * Deixe em branco para mostrar desde já.
+   */
   startsAt?: string | null;
+  /**
+   * Deixe em branco para não ter data de saída.
+   */
   endsAt?: string | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * Número menor aparece primeiro.
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  order: number;
+  /**
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
+   */
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -564,6 +685,8 @@ export interface Highlight {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Festas, encontros, retiros e reuniões. Aparecem na página Agenda.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
@@ -575,6 +698,9 @@ export interface Event {
    */
   generateSlug?: boolean | null;
   slug: string;
+  /**
+   * Uma ou duas frases. Aparece nos cartões da Agenda.
+   */
   summary?: string | null;
   body?: {
     root: {
@@ -612,15 +738,18 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   registrationUrl?: string | null;
+  /**
+   * Marque para tirar o evento do site sem apagar.
+   */
   archived?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -628,15 +757,20 @@ export interface Event {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Recados curtos mostrados em uma faixa no topo das páginas escolhidas.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notices".
  */
 export interface Notice {
   id: number;
   /**
-   * Identifica o aviso no painel administrativo.
+   * Serve para você encontrar o aviso depois. Não aparece no site.
    */
   title?: string | null;
+  /**
+   * Curto e direto: aparece em uma faixa no topo da página.
+   */
   body?: {
     root: {
       type: string;
@@ -652,24 +786,56 @@ export interface Notice {
     };
     [k: string]: unknown;
   } | null;
-  destinationType?: ('none' | 'internal' | 'external') | null;
-  /**
-   * Caminho da página interna, por exemplo: /agenda.
-   */
-  internalPath?: string | null;
-  externalUrl?: string | null;
   contexts?: ('home' | 'communication' | 'agenda' | 'schedules' | 'secretariat' | 'contact')[] | null;
+  destinationType?: ('none' | 'internal' | 'external') | null;
+  internalPath?:
+    | (
+        | '/'
+        | '/comunicacao'
+        | '/agenda'
+        | '/horarios'
+        | '/secretaria'
+        | '/contato'
+        | '/paroquia'
+        | '/padroeira'
+        | '/equipe'
+        | '/comunidades'
+        | '/vida'
+        | '/vida/batismo'
+        | '/vida/catequese'
+        | '/vida/matrimonio'
+        | '/vida/pastorais'
+        | '/vida/in-cordibus-pastorum'
+        | '/vida/espiritualidade'
+        | '/vida/mural-do-dizimo'
+        | '/projetos'
+        | '/contribuir'
+      )
+    | null;
+  /**
+   * Copie o endereço da barra do navegador e cole aqui.
+   */
+  externalUrl?: string | null;
+  /**
+   * Deixe em branco para mostrar desde já.
+   */
   startsAt?: string | null;
+  /**
+   * Depois desta data o aviso sai do site sozinho.
+   */
   endsAt?: string | null;
+  /**
+   * Número menor aparece primeiro.
+   */
   order?: number | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -677,6 +843,8 @@ export interface Notice {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Os horários fixos de cada semana: missas, confissões e adoração. Para uma mudança em um dia específico, use "Mudanças e cancelamentos".
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "celebrations".
  */
@@ -686,19 +854,101 @@ export interface Celebration {
   celebrationType?: ('mass' | 'confession' | 'adoration' | 'other') | null;
   community: number | Community;
   weekday: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
-  time: string;
+  time:
+    | '05:00'
+    | '05:15'
+    | '05:30'
+    | '05:45'
+    | '06:00'
+    | '06:15'
+    | '06:30'
+    | '06:45'
+    | '07:00'
+    | '07:15'
+    | '07:30'
+    | '07:45'
+    | '08:00'
+    | '08:15'
+    | '08:30'
+    | '08:45'
+    | '09:00'
+    | '09:15'
+    | '09:30'
+    | '09:45'
+    | '10:00'
+    | '10:15'
+    | '10:30'
+    | '10:45'
+    | '11:00'
+    | '11:15'
+    | '11:30'
+    | '11:45'
+    | '12:00'
+    | '12:15'
+    | '12:30'
+    | '12:45'
+    | '13:00'
+    | '13:15'
+    | '13:30'
+    | '13:45'
+    | '14:00'
+    | '14:15'
+    | '14:30'
+    | '14:45'
+    | '15:00'
+    | '15:15'
+    | '15:30'
+    | '15:45'
+    | '16:00'
+    | '16:15'
+    | '16:30'
+    | '16:45'
+    | '17:00'
+    | '17:15'
+    | '17:30'
+    | '17:45'
+    | '18:00'
+    | '18:15'
+    | '18:30'
+    | '18:45'
+    | '19:00'
+    | '19:15'
+    | '19:30'
+    | '19:45'
+    | '20:00'
+    | '20:15'
+    | '20:30'
+    | '20:45'
+    | '21:00'
+    | '21:15'
+    | '21:30'
+    | '21:45'
+    | '22:00'
+    | '22:15'
+    | '22:30'
+    | '22:45'
+    | '23:00'
+    | '23:15'
+    | '23:30'
+    | '23:45';
+  /**
+   * Deixe em branco se o horário já está valendo.
+   */
   validFrom?: string | null;
+  /**
+   * Deixe em branco se não tem data para acabar.
+   */
   validTo?: string | null;
   notes?: string | null;
   active?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -706,26 +956,110 @@ export interface Celebration {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Quando, em um dia específico, uma missa é cancelada, muda de horário ou há uma celebração extra.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "celebration-exceptions".
  */
 export interface CelebrationException {
   id: number;
   title: string;
+  /**
+   * Deixe em branco se for uma celebração extra.
+   */
   celebration?: (number | null) | Celebration;
   community: number | Community;
   date: string;
-  exceptionType?: ('cancellation' | 'change' | 'extra') | null;
-  newTime?: string | null;
+  exceptionType: 'cancellation' | 'change' | 'extra';
+  newTime?:
+    | (
+        | '05:00'
+        | '05:15'
+        | '05:30'
+        | '05:45'
+        | '06:00'
+        | '06:15'
+        | '06:30'
+        | '06:45'
+        | '07:00'
+        | '07:15'
+        | '07:30'
+        | '07:45'
+        | '08:00'
+        | '08:15'
+        | '08:30'
+        | '08:45'
+        | '09:00'
+        | '09:15'
+        | '09:30'
+        | '09:45'
+        | '10:00'
+        | '10:15'
+        | '10:30'
+        | '10:45'
+        | '11:00'
+        | '11:15'
+        | '11:30'
+        | '11:45'
+        | '12:00'
+        | '12:15'
+        | '12:30'
+        | '12:45'
+        | '13:00'
+        | '13:15'
+        | '13:30'
+        | '13:45'
+        | '14:00'
+        | '14:15'
+        | '14:30'
+        | '14:45'
+        | '15:00'
+        | '15:15'
+        | '15:30'
+        | '15:45'
+        | '16:00'
+        | '16:15'
+        | '16:30'
+        | '16:45'
+        | '17:00'
+        | '17:15'
+        | '17:30'
+        | '17:45'
+        | '18:00'
+        | '18:15'
+        | '18:30'
+        | '18:45'
+        | '19:00'
+        | '19:15'
+        | '19:30'
+        | '19:45'
+        | '20:00'
+        | '20:15'
+        | '20:30'
+        | '20:45'
+        | '21:00'
+        | '21:15'
+        | '21:30'
+        | '21:45'
+        | '22:00'
+        | '22:15'
+        | '22:30'
+        | '22:45'
+        | '23:00'
+        | '23:15'
+        | '23:30'
+        | '23:45'
+      )
+    | null;
   reason?: string | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -733,83 +1067,8 @@ export interface CelebrationException {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "milestones".
- */
-export interface Milestone {
-  id: number;
-  context?: ('parish' | 'patron') | null;
-  title: string;
-  body: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  datePrecision: 'exact' | 'year' | 'period' | 'text';
-  exactDate?: string | null;
-  year?: number | null;
-  periodLabel?: string | null;
-  /**
-   * Ex.: Data a confirmar, Hoje, Séculos XVIII e XIX.
-   */
-  displayLabel: string;
-  order: number;
-  image?: (number | null) | Media;
-  sourceName?: string | null;
-  sourceUrl?: string | null;
-  /**
-   * Demonstrações ficam fora do portal institucional.
-   */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
-  reviewedAt?: string | null;
-  /**
-   * Não aparece no site nem na API pública.
-   */
-  internalNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-assignments".
- */
-export interface TeamAssignment {
-  id: number;
-  person: number | Person;
-  roleTitle: string;
-  roleType?: ('clergy' | 'administration' | 'pastoral' | 'service') | null;
-  area?: string | null;
-  startsAt?: string | null;
-  endsAt?: string | null;
-  order?: number | null;
-  current?: boolean | null;
-  /**
-   * Demonstrações ficam fora do portal institucional.
-   */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
-  reviewedAt?: string | null;
-  /**
-   * Não aparece no site nem na API pública.
-   */
-  internalNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
+ * As orientações das páginas Batismo, Catequese e crisma e Matrimônio: o que é, o que é preciso e com quem falar.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sacrament-guides".
  */
@@ -858,6 +1117,9 @@ export interface SacramentGuide {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Um item por linha: documentos, idade, cursos, prazos.
+   */
   requirements?:
     | {
         text: {
@@ -893,22 +1155,27 @@ export interface SacramentGuide {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Qual formulário o visitante pode preencher nesta página.
+   */
   formType?: ('none' | 'baptism' | 'marriage') | null;
   updatedAt: string;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Projetos sociais e parcerias mostrados na página Projetos e parcerias.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
  */
@@ -955,16 +1222,19 @@ export interface Project {
     [k: string]: unknown;
   } | null;
   ctaLabel?: string | null;
+  /**
+   * Número menor aparece primeiro.
+   */
   order?: number | null;
   active?: boolean | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -972,6 +1242,8 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Empresas e pessoas que apoiam a paróquia. Só aparecem no site depois de aprovadas.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sponsors".
  */
@@ -982,20 +1254,26 @@ export interface Sponsor {
   url?: string | null;
   startsAt?: string | null;
   endsAt?: string | null;
+  /**
+   * Deixe em branco se apoia a paróquia em geral.
+   */
   project?: (number | null) | Project;
   /**
-   * O frontend deve exibir publicamente somente patrocinadores aprovados.
+   * Só patrocinadores aprovados aparecem no site.
    */
   approved?: boolean | null;
+  /**
+   * Número menor aparece primeiro.
+   */
   order?: number | null;
   /**
-   * Demonstrações ficam fora do portal institucional.
+   * O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".
    */
-  origin: 'official' | 'research' | 'archive' | 'demonstration';
-  verification: 'pending' | 'reviewed' | 'approved';
+  origin?: ('official' | 'research' | 'archive' | 'demonstration') | null;
+  verification?: ('pending' | 'reviewed' | 'approved') | null;
   reviewedAt?: string | null;
   /**
-   * Não aparece no site nem na API pública.
+   * Não aparece no site.
    */
   internalNotes?: string | null;
   updatedAt: string;
@@ -1003,6 +1281,8 @@ export interface Sponsor {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Mensagens enviadas pelos visitantes na página Contato.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-messages".
  */
@@ -1017,13 +1297,15 @@ export interface ContactMessage {
   consent: boolean;
   internalNotes?: string | null;
   /**
-   * Data limite para retenção dos dados.
+   * Até quando estes dados pessoais podem ficar guardados (LGPD).
    */
   retentionUntil?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Pedidos de batismo e casamento enviados pelo site. O pedido não reserva data: a secretaria confirma com a família.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sacrament-requests".
  */
@@ -1039,7 +1321,7 @@ export interface SacramentRequest {
   preferredDate?: string | null;
   community?: (number | null) | Community;
   /**
-   * Demais campos validados pelo endpoint customizado.
+   * Respostas extras do formulário, guardadas como o visitante enviou.
    */
   payload?:
     | {
@@ -1055,13 +1337,15 @@ export interface SacramentRequest {
   consent: boolean;
   internalNotes?: string | null;
   /**
-   * Data limite para retenção dos dados.
+   * Até quando estes dados pessoais podem ficar guardados (LGPD).
    */
   retentionUntil?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Pessoas que pediram contato para se tornarem dizimistas.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tithe-interests".
  */
@@ -1073,13 +1357,15 @@ export interface TitheInterest {
   status: 'new' | 'in_progress' | 'contacted' | 'archived';
   internalNotes?: string | null;
   /**
-   * Data limite para retenção dos dados.
+   * Até quando estes dados pessoais podem ficar guardados (LGPD).
    */
   retentionUntil?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * E-mails de quem pediu para receber as novidades da paróquia.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletter-subscribers".
  */
@@ -1093,11 +1379,41 @@ export interface NewsletterSubscriber {
   unsubscribeToken?: string | null;
   source?: string | null;
   /**
-   * Data limite para retenção dos dados.
+   * Até quando estes dados pessoais podem ficar guardados (LGPD).
    */
   retentionUntil?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Quem pode entrar no painel e o que cada pessoa pode fazer.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  role: 'admin' | 'editor' | 'contributor' | 'secretary';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1124,14 +1440,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -1142,10 +1450,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'notices';
         value: number | Notice;
-      } | null)
-    | ({
-        relationTo: 'communities';
-        value: number | Community;
       } | null)
     | ({
         relationTo: 'celebrations';
@@ -1160,16 +1464,12 @@ export interface PayloadLockedDocument {
         value: number | Event;
       } | null)
     | ({
-        relationTo: 'milestones';
-        value: number | Milestone;
+        relationTo: 'communities';
+        value: number | Community;
       } | null)
     | ({
         relationTo: 'people';
         value: number | Person;
-      } | null)
-    | ({
-        relationTo: 'team-assignments';
-        value: number | TeamAssignment;
       } | null)
     | ({
         relationTo: 'pastorals';
@@ -1202,6 +1502,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'newsletter-subscribers';
         value: number | NewsletterSubscriber;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1247,92 +1555,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  resetPasswordRequestedAt?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  caption?: T;
-  credit?: T;
-  source?: T;
-  mediaType?: T;
-  recordedAt?: T;
-  usageAuthorized?: T;
-  blurData?: T;
-  internalNotes?: T;
-  _objectKey?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        card?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        hero?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1340,12 +1562,10 @@ export interface PostsSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   summary?: T;
+  cover?: T;
   body?: T;
   format?: T;
   editorialAreas?: T;
-  category?: T;
-  publishedAt?: T;
-  cover?: T;
   gallery?:
     | T
     | {
@@ -1360,6 +1580,8 @@ export interface PostsSelect<T extends boolean = true> {
   communities?: T;
   pastorals?: T;
   relatedPosts?: T;
+  publishedAt?: T;
+  category?: T;
   origin?: T;
   verification?: T;
   reviewedAt?: T;
@@ -1384,9 +1606,9 @@ export interface HighlightsSelect<T extends boolean = true> {
   internalPath?: T;
   externalUrl?: T;
   placement?: T;
-  order?: T;
   startsAt?: T;
   endsAt?: T;
+  order?: T;
   origin?: T;
   verification?: T;
   reviewedAt?: T;
@@ -1402,40 +1624,13 @@ export interface HighlightsSelect<T extends boolean = true> {
 export interface NoticesSelect<T extends boolean = true> {
   title?: T;
   body?: T;
+  contexts?: T;
   destinationType?: T;
   internalPath?: T;
   externalUrl?: T;
-  contexts?: T;
   startsAt?: T;
   endsAt?: T;
   order?: T;
-  origin?: T;
-  verification?: T;
-  reviewedAt?: T;
-  internalNotes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "communities_select".
- */
-export interface CommunitiesSelect<T extends boolean = true> {
-  name?: T;
-  generateSlug?: T;
-  slug?: T;
-  type?: T;
-  region?: T;
-  description?: T;
-  address?: T;
-  mapUrl?: T;
-  cover?: T;
-  publicPhone?: T;
-  publicEmail?: T;
-  publicWhatsapp?: T;
-  order?: T;
-  active?: T;
   origin?: T;
   verification?: T;
   reviewedAt?: T;
@@ -1514,21 +1709,23 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "milestones_select".
+ * via the `definition` "communities_select".
  */
-export interface MilestonesSelect<T extends boolean = true> {
-  context?: T;
-  title?: T;
-  body?: T;
-  datePrecision?: T;
-  exactDate?: T;
-  year?: T;
-  periodLabel?: T;
-  displayLabel?: T;
+export interface CommunitiesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  type?: T;
+  region?: T;
+  description?: T;
+  address?: T;
+  mapUrl?: T;
+  cover?: T;
+  publicPhone?: T;
+  publicEmail?: T;
+  publicWhatsapp?: T;
   order?: T;
-  image?: T;
-  sourceName?: T;
-  sourceUrl?: T;
+  active?: T;
   origin?: T;
   verification?: T;
   reviewedAt?: T;
@@ -1545,32 +1742,16 @@ export interface PeopleSelect<T extends boolean = true> {
   name?: T;
   generateSlug?: T;
   slug?: T;
-  biography?: T;
+  roleTitle?: T;
+  roleType?: T;
   photo?: T;
+  biography?: T;
+  area?: T;
   publicEmail?: T;
   publicPhone?: T;
   publicContactAuthorized?: T;
-  origin?: T;
-  verification?: T;
-  reviewedAt?: T;
-  internalNotes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-assignments_select".
- */
-export interface TeamAssignmentsSelect<T extends boolean = true> {
-  person?: T;
-  roleTitle?: T;
-  roleType?: T;
-  area?: T;
-  startsAt?: T;
-  endsAt?: T;
-  order?: T;
   current?: T;
+  order?: T;
   origin?: T;
   verification?: T;
   reviewedAt?: T;
@@ -1767,6 +1948,92 @@ export interface NewsletterSubscribersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  credit?: T;
+  caption?: T;
+  usageAuthorized?: T;
+  recordedAt?: T;
+  mediaType?: T;
+  source?: T;
+  internalNotes?: T;
+  blurData?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1806,47 +2073,472 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Os títulos e textos de cada parte da página inicial. As notícias, os eventos e os banners que aparecem nela são cadastrados nos seus próprios menus.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  serviceLinks?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        /**
+         * Para uma página deste site, use o final do endereço (ex.: /horarios). Para outro site, cole o endereço completo.
+         */
+        url?: string | null;
+        icon?:
+          | (
+              | 'cross'
+              | 'clock'
+              | 'church'
+              | 'book-open'
+              | 'droplet'
+              | 'flame'
+              | 'heart'
+              | 'heart-handshake'
+              | 'users'
+              | 'phone'
+              | 'mail'
+              | 'message-circle'
+              | 'map-pin'
+              | 'calendar-days'
+            )
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  showCommunication?: boolean | null;
+  communicationTitle?: string | null;
+  communicationIntro?: string | null;
+  participationTitle?: string | null;
+  participationBody?: string | null;
+  participationImage?: (number | null) | Media;
+  showAgenda?: boolean | null;
+  showSacraments?: boolean | null;
+  sacramentsTitle?: string | null;
+  sacramentsIntro?: string | null;
+  showCommunities?: boolean | null;
+  communitiesTitle?: string | null;
+  communitiesIntro?: string | null;
+  showProjects?: boolean | null;
+  projectsTitle?: string | null;
+  projectsIntro?: string | null;
+  showSponsors?: boolean | null;
+  sponsorsTitle?: string | null;
+  sponsorsIntro?: string | null;
+  showFaith?: boolean | null;
+  faithTitle?: string | null;
+  faithIntro?: string | null;
+  faithLinks?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        /**
+         * Para uma página deste site, use o final do endereço (ex.: /horarios). Para outro site, cole o endereço completo.
+         */
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Textos da página Secretaria paroquial. O horário e os contatos vêm de Dados da paróquia.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "secretariat-page".
+ */
+export interface SecretariatPage {
+  id: number;
+  title?: string | null;
+  intro?: string | null;
+  specialCelebrationsTitle?: string | null;
+  specialCelebrationsBody?: string | null;
+  specialCelebrationsImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Textos da página Contato. Telefones e endereço vêm de Dados da paróquia.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  title?: string | null;
+  intro?: string | null;
+  formIntro?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Nome, endereço, telefones, redes sociais e horário da secretaria. Estes dados aparecem no rodapé e nas páginas Secretaria e Contato.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
   id: number;
   name: string;
+  /**
+   * Usado onde há pouco espaço, como no menu do celular.
+   */
   shortName?: string | null;
   logo?: (number | null) | Media;
   diocese?: string | null;
   forania?: string | null;
   address?: string | null;
   postalCode?: string | null;
+  /**
+   * No Google Maps, toque em Compartilhar, copie o link e cole aqui.
+   */
+  mapUrl?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
   email?: string | null;
-  mapUrl?: string | null;
   instagramUrl?: string | null;
   facebookUrl?: string | null;
+  /**
+   * Site aberto pelo botão "Liturgia diária" da página Espiritualidade.
+   */
   liturgyUrl?: string | null;
+  /**
+   * Um item por dia. Se a secretaria fecha para o almoço, preencha também a volta e a saída da tarde.
+   */
   secretariatHours?:
     | {
         weekday: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
-        /**
-         * Formato HH:mm.
-         */
-        opensAt?: string | null;
-        /**
-         * Formato HH:mm.
-         */
-        closesAt?: string | null;
-        /**
-         * Formato HH:mm.
-         */
-        secondOpensAt?: string | null;
-        /**
-         * Formato HH:mm.
-         */
-        secondClosesAt?: string | null;
+        opensAt?:
+          | (
+              | '05:00'
+              | '05:15'
+              | '05:30'
+              | '05:45'
+              | '06:00'
+              | '06:15'
+              | '06:30'
+              | '06:45'
+              | '07:00'
+              | '07:15'
+              | '07:30'
+              | '07:45'
+              | '08:00'
+              | '08:15'
+              | '08:30'
+              | '08:45'
+              | '09:00'
+              | '09:15'
+              | '09:30'
+              | '09:45'
+              | '10:00'
+              | '10:15'
+              | '10:30'
+              | '10:45'
+              | '11:00'
+              | '11:15'
+              | '11:30'
+              | '11:45'
+              | '12:00'
+              | '12:15'
+              | '12:30'
+              | '12:45'
+              | '13:00'
+              | '13:15'
+              | '13:30'
+              | '13:45'
+              | '14:00'
+              | '14:15'
+              | '14:30'
+              | '14:45'
+              | '15:00'
+              | '15:15'
+              | '15:30'
+              | '15:45'
+              | '16:00'
+              | '16:15'
+              | '16:30'
+              | '16:45'
+              | '17:00'
+              | '17:15'
+              | '17:30'
+              | '17:45'
+              | '18:00'
+              | '18:15'
+              | '18:30'
+              | '18:45'
+              | '19:00'
+              | '19:15'
+              | '19:30'
+              | '19:45'
+              | '20:00'
+              | '20:15'
+              | '20:30'
+              | '20:45'
+              | '21:00'
+              | '21:15'
+              | '21:30'
+              | '21:45'
+              | '22:00'
+              | '22:15'
+              | '22:30'
+              | '22:45'
+              | '23:00'
+              | '23:15'
+              | '23:30'
+              | '23:45'
+            )
+          | null;
+        closesAt?:
+          | (
+              | '05:00'
+              | '05:15'
+              | '05:30'
+              | '05:45'
+              | '06:00'
+              | '06:15'
+              | '06:30'
+              | '06:45'
+              | '07:00'
+              | '07:15'
+              | '07:30'
+              | '07:45'
+              | '08:00'
+              | '08:15'
+              | '08:30'
+              | '08:45'
+              | '09:00'
+              | '09:15'
+              | '09:30'
+              | '09:45'
+              | '10:00'
+              | '10:15'
+              | '10:30'
+              | '10:45'
+              | '11:00'
+              | '11:15'
+              | '11:30'
+              | '11:45'
+              | '12:00'
+              | '12:15'
+              | '12:30'
+              | '12:45'
+              | '13:00'
+              | '13:15'
+              | '13:30'
+              | '13:45'
+              | '14:00'
+              | '14:15'
+              | '14:30'
+              | '14:45'
+              | '15:00'
+              | '15:15'
+              | '15:30'
+              | '15:45'
+              | '16:00'
+              | '16:15'
+              | '16:30'
+              | '16:45'
+              | '17:00'
+              | '17:15'
+              | '17:30'
+              | '17:45'
+              | '18:00'
+              | '18:15'
+              | '18:30'
+              | '18:45'
+              | '19:00'
+              | '19:15'
+              | '19:30'
+              | '19:45'
+              | '20:00'
+              | '20:15'
+              | '20:30'
+              | '20:45'
+              | '21:00'
+              | '21:15'
+              | '21:30'
+              | '21:45'
+              | '22:00'
+              | '22:15'
+              | '22:30'
+              | '22:45'
+              | '23:00'
+              | '23:15'
+              | '23:30'
+              | '23:45'
+            )
+          | null;
+        secondOpensAt?:
+          | (
+              | '05:00'
+              | '05:15'
+              | '05:30'
+              | '05:45'
+              | '06:00'
+              | '06:15'
+              | '06:30'
+              | '06:45'
+              | '07:00'
+              | '07:15'
+              | '07:30'
+              | '07:45'
+              | '08:00'
+              | '08:15'
+              | '08:30'
+              | '08:45'
+              | '09:00'
+              | '09:15'
+              | '09:30'
+              | '09:45'
+              | '10:00'
+              | '10:15'
+              | '10:30'
+              | '10:45'
+              | '11:00'
+              | '11:15'
+              | '11:30'
+              | '11:45'
+              | '12:00'
+              | '12:15'
+              | '12:30'
+              | '12:45'
+              | '13:00'
+              | '13:15'
+              | '13:30'
+              | '13:45'
+              | '14:00'
+              | '14:15'
+              | '14:30'
+              | '14:45'
+              | '15:00'
+              | '15:15'
+              | '15:30'
+              | '15:45'
+              | '16:00'
+              | '16:15'
+              | '16:30'
+              | '16:45'
+              | '17:00'
+              | '17:15'
+              | '17:30'
+              | '17:45'
+              | '18:00'
+              | '18:15'
+              | '18:30'
+              | '18:45'
+              | '19:00'
+              | '19:15'
+              | '19:30'
+              | '19:45'
+              | '20:00'
+              | '20:15'
+              | '20:30'
+              | '20:45'
+              | '21:00'
+              | '21:15'
+              | '21:30'
+              | '21:45'
+              | '22:00'
+              | '22:15'
+              | '22:30'
+              | '22:45'
+              | '23:00'
+              | '23:15'
+              | '23:30'
+              | '23:45'
+            )
+          | null;
+        secondClosesAt?:
+          | (
+              | '05:00'
+              | '05:15'
+              | '05:30'
+              | '05:45'
+              | '06:00'
+              | '06:15'
+              | '06:30'
+              | '06:45'
+              | '07:00'
+              | '07:15'
+              | '07:30'
+              | '07:45'
+              | '08:00'
+              | '08:15'
+              | '08:30'
+              | '08:45'
+              | '09:00'
+              | '09:15'
+              | '09:30'
+              | '09:45'
+              | '10:00'
+              | '10:15'
+              | '10:30'
+              | '10:45'
+              | '11:00'
+              | '11:15'
+              | '11:30'
+              | '11:45'
+              | '12:00'
+              | '12:15'
+              | '12:30'
+              | '12:45'
+              | '13:00'
+              | '13:15'
+              | '13:30'
+              | '13:45'
+              | '14:00'
+              | '14:15'
+              | '14:30'
+              | '14:45'
+              | '15:00'
+              | '15:15'
+              | '15:30'
+              | '15:45'
+              | '16:00'
+              | '16:15'
+              | '16:30'
+              | '16:45'
+              | '17:00'
+              | '17:15'
+              | '17:30'
+              | '17:45'
+              | '18:00'
+              | '18:15'
+              | '18:30'
+              | '18:45'
+              | '19:00'
+              | '19:15'
+              | '19:30'
+              | '19:45'
+              | '20:00'
+              | '20:15'
+              | '20:30'
+              | '20:45'
+              | '21:00'
+              | '21:15'
+              | '21:30'
+              | '21:45'
+              | '22:00'
+              | '22:15'
+              | '22:30'
+              | '22:45'
+              | '23:00'
+              | '23:15'
+              | '23:30'
+              | '23:45'
+            )
+          | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Aparece na página Dízimo e doações. Informe apenas canais confirmados pela paróquia.
+   */
   donationInfo?: {
     root: {
       type: string;
@@ -1867,352 +2559,6 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navigation".
- */
-export interface Navigation {
-  id: number;
-  headerGroups?:
-    | {
-        label: string;
-        links?:
-          | {
-              label: string;
-              url: string;
-              external?: boolean | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  headerCta?: {
-    label?: string | null;
-    url?: string | null;
-  };
-  footerGroups?:
-    | {
-        label: string;
-        links?:
-          | {
-              label: string;
-              url: string;
-              external?: boolean | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-page".
- */
-export interface HomePage {
-  id: number;
-  serviceLinks?:
-    | {
-        title?: string | null;
-        description?: string | null;
-        url?: string | null;
-        /**
-         * Nome de um ícone Lucide: clock, cross, church, book-open, droplet, flame, heart-handshake, users, phone, map-pin, waves, crown, calendar-days. Nomes desconhecidos usam o ícone padrão.
-         */
-        icon?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  communicationTitle?: string | null;
-  communicationIntro?: string | null;
-  participationTitle?: string | null;
-  participationBody?: string | null;
-  participationImage?: (number | null) | Media;
-  sacramentsTitle?: string | null;
-  sacramentsIntro?: string | null;
-  communitiesTitle?: string | null;
-  communitiesIntro?: string | null;
-  projectsTitle?: string | null;
-  projectsIntro?: string | null;
-  sponsorsTitle?: string | null;
-  sponsorsIntro?: string | null;
-  faithTitle?: string | null;
-  faithIntro?: string | null;
-  faithLinks?:
-    | {
-        title?: string | null;
-        description?: string | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  showCommunication?: boolean | null;
-  showAgenda?: boolean | null;
-  showSacraments?: boolean | null;
-  showCommunities?: boolean | null;
-  showProjects?: boolean | null;
-  showSponsors?: boolean | null;
-  showFaith?: boolean | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "history-page".
- */
-export interface HistoryPage {
-  id: number;
-  eyebrow?: string | null;
-  title?: string | null;
-  intro?: string | null;
-  cover?: (number | null) | Media;
-  coverCaption?: string | null;
-  contributionTitle?: string | null;
-  contributionBody?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "patron-page".
- */
-export interface PatronPage {
-  id: number;
-  eyebrow?: string | null;
-  title?: string | null;
-  intro?: string | null;
-  cover?: (number | null) | Media;
-  coverCaption?: string | null;
-  readingTitle?: string | null;
-  readingBody?: string | null;
-  readingUrl?: string | null;
-  facts?:
-    | {
-        title?: string | null;
-        body?: string | null;
-        /**
-         * Nome de um ícone Lucide: clock, cross, church, book-open, droplet, flame, heart-handshake, users, phone, map-pin, waves, crown, calendar-days. Nomes desconhecidos usam o ícone padrão.
-         */
-        icon?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  sources?:
-    | {
-        label?: string | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "secretariat-page".
- */
-export interface SecretariatPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  specialCelebrationsTitle?: string | null;
-  specialCelebrationsBody?: string | null;
-  specialCelebrationsImage?: (number | null) | Media;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-page".
- */
-export interface ContactPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  formIntro?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contribution-page".
- */
-export interface ContributionPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  donationNotice?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "spirituality-page".
- */
-export interface SpiritualityPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  heroImage?: (number | null) | Media;
-  heroTitle?: string | null;
-  heroBody?: string | null;
-  practices?:
-    | {
-        title?: string | null;
-        body?: string | null;
-        icon?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pastorum-page".
- */
-export interface PastorumPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  image?: (number | null) | Media;
-  sectionTitle?: string | null;
-  sectionBody?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tithe-wall-page".
- */
-export interface TitheWallPage {
-  id: number;
-  title?: string | null;
-  intro?: string | null;
-  birthdaysTitle?: string | null;
-  birthdaysIntro?: string | null;
-  titheTitle?: string | null;
-  titheBody?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  reasons?:
-    | {
-        title?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  interestTitle?: string | null;
-  interestBody?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
- */
-export interface SiteSettingsSelect<T extends boolean = true> {
-  name?: T;
-  shortName?: T;
-  logo?: T;
-  diocese?: T;
-  forania?: T;
-  address?: T;
-  postalCode?: T;
-  phone?: T;
-  whatsapp?: T;
-  email?: T;
-  mapUrl?: T;
-  instagramUrl?: T;
-  facebookUrl?: T;
-  liturgyUrl?: T;
-  secretariatHours?:
-    | T
-    | {
-        weekday?: T;
-        opensAt?: T;
-        closesAt?: T;
-        secondOpensAt?: T;
-        secondClosesAt?: T;
-        id?: T;
-      };
-  donationInfo?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navigation_select".
- */
-export interface NavigationSelect<T extends boolean = true> {
-  headerGroups?:
-    | T
-    | {
-        label?: T;
-        links?:
-          | T
-          | {
-              label?: T;
-              url?: T;
-              external?: T;
-              id?: T;
-            };
-        id?: T;
-      };
-  headerCta?:
-    | T
-    | {
-        label?: T;
-        url?: T;
-      };
-  footerGroups?:
-    | T
-    | {
-        label?: T;
-        links?:
-          | T
-          | {
-              label?: T;
-              url?: T;
-              external?: T;
-              id?: T;
-            };
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-page_select".
  */
 export interface HomePageSelect<T extends boolean = true> {
@@ -2225,19 +2571,26 @@ export interface HomePageSelect<T extends boolean = true> {
         icon?: T;
         id?: T;
       };
+  showCommunication?: T;
   communicationTitle?: T;
   communicationIntro?: T;
   participationTitle?: T;
   participationBody?: T;
   participationImage?: T;
+  showAgenda?: T;
+  showSacraments?: T;
   sacramentsTitle?: T;
   sacramentsIntro?: T;
+  showCommunities?: T;
   communitiesTitle?: T;
   communitiesIntro?: T;
+  showProjects?: T;
   projectsTitle?: T;
   projectsIntro?: T;
+  showSponsors?: T;
   sponsorsTitle?: T;
   sponsorsIntro?: T;
+  showFaith?: T;
   faithTitle?: T;
   faithIntro?: T;
   faithLinks?:
@@ -2248,61 +2601,7 @@ export interface HomePageSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
-  showCommunication?: T;
-  showAgenda?: T;
-  showSacraments?: T;
-  showCommunities?: T;
-  showProjects?: T;
-  showSponsors?: T;
-  showFaith?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "history-page_select".
- */
-export interface HistoryPageSelect<T extends boolean = true> {
-  eyebrow?: T;
-  title?: T;
-  intro?: T;
-  cover?: T;
-  coverCaption?: T;
-  contributionTitle?: T;
-  contributionBody?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "patron-page_select".
- */
-export interface PatronPageSelect<T extends boolean = true> {
-  eyebrow?: T;
-  title?: T;
-  intro?: T;
-  cover?: T;
-  coverCaption?: T;
-  readingTitle?: T;
-  readingBody?: T;
-  readingUrl?: T;
-  facts?:
-    | T
-    | {
-        title?: T;
-        body?: T;
-        icon?: T;
-        id?: T;
-      };
-  sources?:
-    | T
-    | {
-        label?: T;
-        url?: T;
-        id?: T;
-      };
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2335,72 +2634,34 @@ export interface ContactPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contribution-page_select".
+ * via the `definition` "site-settings_select".
  */
-export interface ContributionPageSelect<T extends boolean = true> {
-  title?: T;
-  intro?: T;
-  body?: T;
-  donationNotice?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "spirituality-page_select".
- */
-export interface SpiritualityPageSelect<T extends boolean = true> {
-  title?: T;
-  intro?: T;
-  heroImage?: T;
-  heroTitle?: T;
-  heroBody?: T;
-  practices?:
+export interface SiteSettingsSelect<T extends boolean = true> {
+  name?: T;
+  shortName?: T;
+  logo?: T;
+  diocese?: T;
+  forania?: T;
+  address?: T;
+  postalCode?: T;
+  mapUrl?: T;
+  phone?: T;
+  whatsapp?: T;
+  email?: T;
+  instagramUrl?: T;
+  facebookUrl?: T;
+  liturgyUrl?: T;
+  secretariatHours?:
     | T
     | {
-        title?: T;
-        body?: T;
-        icon?: T;
+        weekday?: T;
+        opensAt?: T;
+        closesAt?: T;
+        secondOpensAt?: T;
+        secondClosesAt?: T;
         id?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pastorum-page_select".
- */
-export interface PastorumPageSelect<T extends boolean = true> {
-  title?: T;
-  intro?: T;
-  image?: T;
-  sectionTitle?: T;
-  sectionBody?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tithe-wall-page_select".
- */
-export interface TitheWallPageSelect<T extends boolean = true> {
-  title?: T;
-  intro?: T;
-  birthdaysTitle?: T;
-  birthdaysIntro?: T;
-  titheTitle?: T;
-  titheBody?: T;
-  reasons?:
-    | T
-    | {
-        title?: T;
-        id?: T;
-      };
-  interestTitle?: T;
-  interestBody?: T;
+  donationInfo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

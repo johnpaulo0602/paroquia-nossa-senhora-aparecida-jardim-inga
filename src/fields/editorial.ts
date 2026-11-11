@@ -1,6 +1,9 @@
-import type { Field } from 'payload'
+import type { Condition, Field } from 'payload'
 
 import { authenticatedField } from '@/access'
+
+/** Review metadata from the prototype phase. Only technical administrators see it. */
+const adminOnly: Condition = (_data, _siblingData, { user }) => user?.role === 'admin'
 
 export const editorialFields = (): Field[] => [
   {
@@ -8,7 +11,7 @@ export const editorialFields = (): Field[] => [
     label: 'Origem do conteúdo',
     type: 'select',
     required: true,
-    defaultValue: 'research',
+    defaultValue: 'official',
     options: [
       { label: 'Informação oficial', value: 'official' },
       { label: 'Pesquisa externa', value: 'research' },
@@ -17,7 +20,9 @@ export const editorialFields = (): Field[] => [
     ],
     admin: {
       position: 'sidebar',
-      description: 'Demonstrações ficam fora do portal institucional.',
+      condition: adminOnly,
+      description:
+        'O conteúdo de demonstração some do site quando SHOW_DEMO_CONTENT é "false".',
     },
   },
   {
@@ -31,22 +36,23 @@ export const editorialFields = (): Field[] => [
       { label: 'Revisado', value: 'reviewed' },
       { label: 'Aprovado pela paróquia', value: 'approved' },
     ],
-    admin: { position: 'sidebar' },
+    admin: { position: 'sidebar', condition: adminOnly },
   },
   {
     name: 'reviewedAt',
     label: 'Revisado em',
     type: 'date',
-    admin: { position: 'sidebar' },
+    admin: { position: 'sidebar', condition: adminOnly },
   },
   {
     name: 'internalNotes',
-    label: 'Observações internas',
+    label: 'Anotações internas',
     type: 'textarea',
     access: { read: authenticatedField },
     admin: {
       position: 'sidebar',
-      description: 'Não aparece no site nem na API pública.',
+      condition: adminOnly,
+      description: 'Não aparece no site.',
     },
   },
 ]

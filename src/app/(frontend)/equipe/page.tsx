@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { Callout } from '@/components/institutional/Callout'
 import styles from '@/components/institutional/pages.module.css'
-import { asMedia, asPerson, emailHref, phoneHref } from '@/components/institutional/utils'
+import { asMedia, emailHref, phoneHref } from '@/components/institutional/utils'
 import { MediaImage } from '@/components/site/MediaImage'
 import { OriginBadge } from '@/components/site/OriginBadge'
 import { PageHeader } from '@/components/site/PageHeader'
@@ -41,8 +41,8 @@ function PersonContactLinks({ person }: { person: Person }) {
 
 export default async function TeamPage() {
   const payload = await getCMS()
-  const assignments = await payload.find({
-    collection: 'team-assignments',
+  const team = await payload.find({
+    collection: 'people',
     where: { current: { equals: true } },
     overrideAccess: false,
     draft: false,
@@ -50,8 +50,8 @@ export default async function TeamPage() {
     sort: 'order',
     limit: 100,
   })
-  const clergy = assignments.docs.filter((assignment) => assignment.roleType === 'clergy')
-  const staff = assignments.docs.filter((assignment) => assignment.roleType !== 'clergy')
+  const clergy = team.docs.filter((person) => person.roleType === 'clergy')
+  const staff = team.docs.filter((person) => person.roleType !== 'clergy')
 
   return (
     <div className="page">
@@ -67,13 +67,11 @@ export default async function TeamPage() {
         <section className={styles.teamSection} aria-label="Clero">
           {clergy.length ? (
             <div className={styles.teamList}>
-              {clergy.map((assignment) => {
-                const person = asPerson(assignment.person)
-                if (!person) return null
+              {clergy.map((person) => {
                 const photo = asMedia(person.photo)
 
                 return (
-                  <article className={styles.teamLead} key={assignment.id}>
+                  <article className={styles.teamLead} key={person.id}>
                     {photo ? (
                       <MediaImage
                         image={photo}
@@ -85,10 +83,10 @@ export default async function TeamPage() {
                       <div className={styles.photoFallback}>Fotografia não publicada.</div>
                     )}
                     <div className={styles.teamLeadCopy}>
-                      <span className="eyebrow">{assignment.roleTitle}</span>
+                      {person.roleTitle && <span className="eyebrow">{person.roleTitle}</span>}
                       <h2>{person.name}</h2>
                       <OriginBadge origin={person.origin} />
-                      {assignment.area && <span className={styles.area}>{assignment.area}</span>}
+                      {person.area && <span className={styles.area}>{person.area}</span>}
                       {person.biography && (
                         <RichText content={person.biography} className={styles.biography} />
                       )}
@@ -99,7 +97,7 @@ export default async function TeamPage() {
               })}
             </div>
           ) : (
-            <p className="notice">Nenhuma atribuição atual do clero foi publicada.</p>
+            <p className="notice">Os sacerdotes da paróquia serão apresentados aqui em breve.</p>
           )}
         </section>
 
@@ -110,13 +108,11 @@ export default async function TeamPage() {
           </div>
           {staff.length ? (
             <div className={styles.teamGrid}>
-              {staff.map((assignment) => {
-                const person = asPerson(assignment.person)
-                if (!person) return null
+              {staff.map((person) => {
                 const photo = asMedia(person.photo)
 
                 return (
-                  <article className={styles.teamCard} key={assignment.id}>
+                  <article className={styles.teamCard} key={person.id}>
                     {photo ? (
                       <MediaImage
                         image={photo}
@@ -128,10 +124,10 @@ export default async function TeamPage() {
                       <div className={styles.photoFallback}>Fotografia não publicada.</div>
                     )}
                     <div className={styles.teamCardCopy}>
-                      <span className="eyebrow">{assignment.roleTitle}</span>
+                      {person.roleTitle && <span className="eyebrow">{person.roleTitle}</span>}
                       <h3>{person.name}</h3>
                       <OriginBadge origin={person.origin} />
-                      {assignment.area && <span className={styles.area}>{assignment.area}</span>}
+                      {person.area && <span className={styles.area}>{person.area}</span>}
                       {person.biography && (
                         <RichText content={person.biography} className={styles.biography} />
                       )}
@@ -142,7 +138,7 @@ export default async function TeamPage() {
               })}
             </div>
           ) : (
-            <p className="notice">Nenhuma atribuição atual da equipe foi publicada nesta área.</p>
+            <p className="notice">A equipe da paróquia será apresentada aqui em breve.</p>
           )}
         </section>
 

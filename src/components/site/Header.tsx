@@ -4,20 +4,18 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 
-import type { Navigation, SiteSetting } from '@/payload-types'
+import type { SiteSetting } from '@/payload-types'
 
 import { Brand } from './Brand'
 import { Icon } from './Icon'
-import { defaultHeaderCta, defaultHeaderGroups } from './navigation'
+import { headerCta as cta, headerGroups as groups, type NavLink } from './navigation'
 import { SmartLink } from './SmartLink'
 import styles from './Header.module.css'
 
 type HeaderProps = {
-  navigation: Navigation | null
   settings: SiteSetting | null
 }
 
-type NavLink = NonNullable<NonNullable<Navigation['headerGroups']>[number]['links']>[number]
 
 
 const isInternal = (link: NavLink) => !link.external && link.url?.startsWith('/')
@@ -35,7 +33,7 @@ const matchesPath = (link: NavLink, pathname: string, exact = false) => {
  */
 type OpenState = { id: string | null; drawer: boolean; pathname: string }
 
-export function Header({ navigation, settings }: HeaderProps) {
+export function Header({ settings }: HeaderProps) {
   const pathname = usePathname()
   const [state, setState] = useState<OpenState>({ id: null, drawer: false, pathname })
   const current = state.pathname === pathname ? state : { id: null, drawer: false, pathname }
@@ -45,10 +43,6 @@ export function Header({ navigation, settings }: HeaderProps) {
   const navRef = useRef<HTMLElement>(null)
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
-  const groups = navigation?.headerGroups?.length ? navigation.headerGroups : defaultHeaderGroups
-  const cta = navigation?.headerCta?.url
-    ? navigation.headerCta
-    : defaultHeaderCta
 
   // The most specific matching URL decides the active section, so a hub link like
   // "/vida" does not also light up its group on every "/vida/*" page.
@@ -163,7 +157,7 @@ export function Header({ navigation, settings }: HeaderProps) {
               const links = group.links?.filter((link) => link.label && link.url) || []
               if (!links.length) return null
 
-              const id = group.id || `grupo-${groupIndex}`
+              const id = `grupo-${groupIndex}`
               const sectionActive = !!activeUrl && links.some((link) => link.url === activeUrl)
 
               // A group with a single destination is a plain link, never a one-item dropdown.
@@ -221,7 +215,7 @@ export function Header({ navigation, settings }: HeaderProps) {
                         aria-current={matchesPath(link, pathname, true) ? 'page' : undefined}
                         external={link.external}
                         href={link.url}
-                        key={link.id || `${link.label}-${link.url}`}
+                        key={`${link.label}-${link.url}`}
                         onClick={closeAll}
                       >
                         {link.label}

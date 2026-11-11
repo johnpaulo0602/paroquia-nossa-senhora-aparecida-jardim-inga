@@ -1,6 +1,10 @@
+// Must stay first: it adjusts DATABASE_URL and storage for the homologation deployment.
+import { getServerURL } from './lib/deploy-env'
+
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { pt } from '@payloadcms/translations/languages/pt'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -13,7 +17,6 @@ import { ContactMessages } from './collections/ContactMessages'
 import { Events } from './collections/Events'
 import { Highlights } from './collections/Highlights'
 import { Media } from './collections/Media'
-import { Milestones } from './collections/Milestones'
 import { NewsletterSubscribers } from './collections/NewsletterSubscribers'
 import { Notices } from './collections/Notices'
 import { Pastorals } from './collections/Pastorals'
@@ -23,20 +26,12 @@ import { Projects } from './collections/Projects'
 import { SacramentGuides } from './collections/SacramentGuides'
 import { SacramentRequests } from './collections/SacramentRequests'
 import { Sponsors } from './collections/Sponsors'
-import { TeamAssignments } from './collections/TeamAssignments'
 import { TitheInterests } from './collections/TitheInterests'
 import { Users } from './collections/Users'
 import { ContactPage } from './globals/ContactPage'
-import { ContributionPage } from './globals/ContributionPage'
-import { HistoryPage } from './globals/HistoryPage'
 import { HomePage } from './globals/HomePage'
-import { Navigation } from './globals/Navigation'
-import { PastorumPage } from './globals/PastorumPage'
-import { PatronPage } from './globals/PatronPage'
 import { SecretariatPage } from './globals/SecretariatPage'
 import { SiteSettings } from './globals/SiteSettings'
-import { SpiritualityPage } from './globals/SpiritualityPage'
-import { TitheWallPage } from './globals/TitheWallPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -46,13 +41,24 @@ const dirname = path.dirname(filename)
 const mediaBucket = process.env.MEDIA_BUCKET
 
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  serverURL: getServerURL(),
   admin: {
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeDashboard: ['/components/admin/Welcome#Welcome'],
+    },
     dateFormat: 'dd/MM/yyyy HH:mm',
+    // Each collection or global that has a public page sets its own preview address.
+    livePreview: {
+      breakpoints: [
+        { name: 'mobile', label: 'Celular', width: 390, height: 844 },
+        { name: 'tablet', label: 'Tablet', width: 820, height: 1180 },
+        { name: 'desktop', label: 'Computador', width: 1440, height: 900 },
+      ],
+    },
     timezones: {
       defaultTimezone: 'America/Sao_Paulo',
     },
@@ -62,41 +68,38 @@ export default buildConfig({
   },
   defaultDepth: 2,
   maxDepth: 3,
+  // The order below is the order of the panel menu.
   collections: [
-    Users,
-    Media,
+    // Notícias e avisos
     Posts,
     Highlights,
     Notices,
-    Communities,
+    // Missas e agenda
     Celebrations,
     CelebrationExceptions,
     Events,
-    Milestones,
+    // A paróquia
+    Communities,
     People,
-    TeamAssignments,
     Pastorals,
     SacramentGuides,
     Projects,
     Sponsors,
+    // Mensagens recebidas
     ContactMessages,
     SacramentRequests,
     TitheInterests,
     NewsletterSubscribers,
+    // Imagens
+    Media,
+    // Configurações
+    Users,
   ],
-  globals: [
-    SiteSettings,
-    Navigation,
-    HomePage,
-    HistoryPage,
-    PatronPage,
-    SecretariatPage,
-    ContactPage,
-    ContributionPage,
-    SpiritualityPage,
-    PastorumPage,
-    TitheWallPage,
-  ],
+  globals: [HomePage, SecretariatPage, ContactPage, SiteSettings],
+  i18n: {
+    supportedLanguages: { pt },
+    fallbackLanguage: 'pt',
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -8,6 +8,7 @@ import {
   retentionDate,
 } from '@/lib/form-server'
 import { getCMS } from '@/lib/payload'
+import { featureEnabled } from '@/lib/features'
 
 const responseMessage =
   'Solicitação recebida. A inscrição só será ativada após confirmação pelo fluxo de double opt-in.'
@@ -17,7 +18,7 @@ export async function POST(request: Request): Promise<Response> {
     request,
     {
       route: 'newsletter',
-      enabled: process.env.NEWSLETTER_ENABLED === 'true',
+      enabled: featureEnabled('NEWSLETTER_ENABLED'),
       disabledMessage: 'A inscrição na newsletter está temporariamente desativada.',
       honeypotMessage: responseMessage,
     },

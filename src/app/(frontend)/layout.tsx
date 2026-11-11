@@ -3,8 +3,9 @@ import type { ReactNode } from 'react'
 
 import { Footer } from '@/components/site/Footer'
 import { Header } from '@/components/site/Header'
-import { getCMS } from '@/lib/payload'
-import type { Navigation, SiteSetting } from '@/payload-types'
+import { LivePreviewListener } from '@/components/site/LivePreviewListener'
+import { getCMS, isPreview } from '@/lib/payload'
+import type { SiteSetting } from '@/payload-types'
 
 import { poppins } from './fonts'
 import './tokens.css'
@@ -27,41 +28,35 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   let settings: SiteSetting | null = null
-  let navigation: Navigation | null = null
 
   if (process.env.DATABASE_URL) {
     try {
       const payload = await getCMS()
-      ;[settings, navigation] = await Promise.all([
-        payload.findGlobal({
-          slug: 'site-settings',
-          depth: 2,
-          draft: false,
-          overrideAccess: false,
-        }),
-        payload.findGlobal({
-          slug: 'navigation',
-          depth: 2,
-          draft: false,
-          overrideAccess: false,
-        }),
-      ])
+      settings = await payload.findGlobal({
+        slug: 'site-settings',
+        depth: 2,
+        draft: false,
+        overrideAccess: false,
+      })
     } catch {
-      // Fallback to default layout navigation/settings when DB is unavailable during image build
+      // Fallback to default settings when the DB is unavailable during the image build
     }
   }
+
+  const preview = await isPreview()
 
   return (
     <html className={poppins.variable} data-scroll-behavior="smooth" lang="pt-BR">
       <body>
+        {preview && <LivePreviewListener />}
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo
         </a>
-        <Header navigation={navigation} settings={settings} />
+        <Header settings={settings} />
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
-        <Footer navigation={navigation} settings={settings} />
+        <Footer settings={settings} />
       </body>
     </html>
   )

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { isAdmin, isAdminOrSelf } from '@/access'
+import { hiddenUnless, isAdmin, isAdminOrSelf } from '@/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -8,7 +8,9 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['name', 'email', 'role'],
-    group: 'Administração',
+    group: 'Configurações',
+    hidden: hiddenUnless('admin'),
+    description: 'Quem pode entrar no painel e o que cada pessoa pode fazer.',
   },
   auth: true,
   access: {
@@ -25,16 +27,16 @@ export const Users: CollectionConfig = {
     },
     {
       name: 'role',
-      label: 'Função',
+      label: 'O que esta pessoa pode fazer?',
       type: 'select',
       required: true,
       defaultValue: 'contributor',
       saveToJWT: true,
       options: [
-        { label: 'Administrador técnico', value: 'admin' },
-        { label: 'Editor — pode publicar', value: 'editor' },
-        { label: 'Colaborador — cria rascunhos', value: 'contributor' },
-        { label: 'Secretaria — atendimento privado', value: 'secretary' },
+        { label: 'Administrador — acesso total', value: 'admin' },
+        { label: 'Editor — escreve e publica', value: 'editor' },
+        { label: 'Colaborador — escreve, mas não publica', value: 'contributor' },
+        { label: 'Secretaria — vê as mensagens recebidas', value: 'secretary' },
       ],
     },
   ],

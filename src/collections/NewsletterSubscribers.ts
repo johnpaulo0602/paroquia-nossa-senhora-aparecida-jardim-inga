@@ -1,14 +1,16 @@
 import type { CollectionConfig } from 'payload'
 
-import { isAdmin } from '@/access'
+import { hiddenUnless, isAdmin } from '@/access'
 
 export const NewsletterSubscribers: CollectionConfig = {
   slug: 'newsletter-subscribers',
-  labels: { singular: 'Assinante da newsletter', plural: 'Assinantes da newsletter' },
+  labels: { singular: 'Inscrito nas novidades', plural: 'Inscritos nas novidades' },
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'status', 'createdAt'],
-    group: 'Atendimento privado',
+    group: 'Mensagens recebidas',
+    hidden: hiddenUnless('admin'),
+    description: 'E-mails de quem pediu para receber as novidades da paróquia.',
   },
   access: {
     create: () => false,
@@ -26,7 +28,7 @@ export const NewsletterSubscribers: CollectionConfig = {
     },
     {
       name: 'status',
-      label: 'Situação',
+      label: 'Situação da inscrição',
       type: 'select',
       required: true,
       defaultValue: 'pending',
@@ -38,18 +40,18 @@ export const NewsletterSubscribers: CollectionConfig = {
     },
     {
       name: 'consent',
-      label: 'Consentimento para tratamento dos dados',
+      label: 'A pessoa autorizou receber e-mails',
       type: 'checkbox',
       required: true,
     },
     {
       name: 'consentAt',
-      label: 'Data do consentimento',
+      label: 'Autorizou em',
       type: 'date',
     },
     {
       name: 'confirmedAt',
-      label: 'Data da confirmação',
+      label: 'Confirmou o e-mail em',
       type: 'date',
     },
     {
@@ -61,14 +63,18 @@ export const NewsletterSubscribers: CollectionConfig = {
     },
     {
       name: 'source',
-      label: 'Origem',
+      label: 'Página onde se inscreveu',
       type: 'text',
     },
     {
       name: 'retentionUntil',
-      label: 'Retenção até',
+      label: 'Guardar até',
       type: 'date',
-      admin: { description: 'Data limite para retenção dos dados.' },
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd/MM/yyyy' },
+        description: 'Até quando estes dados pessoais podem ficar guardados (LGPD).',
+      },
     },
   ],
   timestamps: true,

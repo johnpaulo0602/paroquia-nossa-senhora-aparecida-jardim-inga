@@ -6,6 +6,7 @@ import { ContactCards } from '@/components/institutional/ContactCards'
 import styles from '@/components/institutional/pages.module.css'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
+import { contributionPage } from '@/content/life'
 import { getCMS } from '@/lib/payload'
 import { Icon } from '@/components/site/Icon'
 
@@ -17,20 +18,13 @@ export const metadata: Metadata = {
 
 export default async function ContributePage() {
   const payload = await getCMS()
-  const [page, settings] = await Promise.all([
-    payload.findGlobal({
-      slug: 'contribution-page',
-      overrideAccess: false,
-      draft: false,
-      depth: 2,
-    }),
-    payload.findGlobal({
-      slug: 'site-settings',
-      overrideAccess: false,
-      draft: false,
-      depth: 2,
-    }),
-  ])
+  const page = contributionPage
+  const settings = await payload.findGlobal({
+    slug: 'site-settings',
+    overrideAccess: false,
+    draft: false,
+    depth: 2,
+  })
 
   return (
     <div className="page">
@@ -38,22 +32,16 @@ export default async function ContributePage() {
         <div className={styles.centeredHeader}>
           <PageHeader
             eyebrow="Partilha e corresponsabilidade"
-            title={page.title || 'Sua participação faz a comunidade.'}
-            intro={
-              page.intro ||
-              'Há muitas formas de contribuir com a evangelização, a manutenção dos espaços e o cuidado com o próximo.'
-            }
+            title={page.title}
+            intro={page.intro}
           />
         </div>
 
-        {page.body ? (
-          <RichText content={page.body} className={styles.contributionBody} />
-        ) : (
-          <p className={styles.contributionBody}>
-            A vida paroquial é sustentada pela oração, pelo serviço voluntário e pela partilha dos
-            fiéis. Procure a secretaria para conhecer as formas oficiais de colaboração.
-          </p>
-        )}
+        <div className={styles.contributionBody}>
+          {page.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
 
         {settings.donationInfo && (
           <section className={styles.donationInfo} aria-labelledby="official-donation-info-title">
@@ -63,8 +51,7 @@ export default async function ContributePage() {
         )}
 
         <p className={`notice ${styles.noticeSpace}`}>
-          {page.donationNotice ||
-            'Esta página não realiza cobrança, checkout nem exibe chaves Pix ou contas bancárias sem confirmação oficial da paróquia.'}
+          {page.donationNotice}
         </p>
 
         <section className={styles.contributionCards} aria-label="Formas de participar">

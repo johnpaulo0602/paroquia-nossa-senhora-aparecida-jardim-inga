@@ -186,43 +186,36 @@ sequenceDiagram
 
 ## Conteúdo no Payload
 
-Cada **coleção** descreve um tipo de conteúdo com vários registros (publicações, eventos, pessoas). Cada **global** descreve um documento único (configurações do site, texto de uma página).
+O painel foi organizado para quem não é da área técnica: está em português, os menus e campos usam os mesmos nomes que aparecem no site, e a tela inicial tem atalhos para as tarefas do dia a dia ("Publicar uma notícia", "Avisar mudança de missa").
+
+Cada **coleção** descreve um tipo de conteúdo com vários registros (notícias, eventos, pessoas). Cada **global** descreve um documento único (dados da paróquia, textos de uma página).
 
 ### Coleções
 
-| Grupo no painel | Coleção (slug) | Para que serve |
-| --- | --- | --- |
-| Conteúdo | `posts` | Publicações: notícias e reflexões |
-| Conteúdo | `highlights` | Destaques do carrossel da página inicial |
-| Conteúdo | `notices` | Avisos com período de exibição |
-| Conteúdo | `media` | Imagens, com descrição, crédito, autorização de uso e prévia desfocada |
-| Agenda e comunidades | `communities` | Comunidades da paróquia |
-| Agenda e comunidades | `celebrations` | Celebrações recorrentes (horários de missa) |
-| Agenda e comunidades | `celebration-exceptions` | Cancelamentos e mudanças pontuais de celebrações |
-| Agenda e comunidades | `events` | Eventos com data, local e arquivo `.ics` |
-| Institucional | `people` | Pessoas (clero, equipe, autores) |
-| Institucional | `team-assignments` | Funções que cada pessoa exerce |
-| Institucional | `milestones` | Marcos da história da paróquia |
-| Institucional | `projects` | Projetos |
-| Institucional | `sponsors` | Patrocinadores |
-| Vida cristã | `pastorals` | Pastorais e movimentos |
-| Vida cristã | `sacrament-guides` | Guias de sacramentos (batismo, matrimônio, catequese) |
-| Atendimento privado | `contact-messages` | Mensagens do formulário de contato |
-| Atendimento privado | `sacrament-requests` | Solicitações de sacramentos |
-| Atendimento privado | `tithe-interests` | Interesses no dízimo |
-| Atendimento privado | `newsletter-subscribers` | Assinantes da newsletter |
-| Administração | `users` | Usuários do painel e suas funções |
+| Menu no painel | Nome no painel | Coleção (slug) | Para que serve |
+| --- | --- | --- | --- |
+| Notícias e avisos | Notícias | `posts` | Notícias, artigos, reflexões, álbuns de fotos e vídeos |
+| Notícias e avisos | Banners do carrossel | `highlights` | Imagens grandes do topo da página inicial e de Notícias |
+| Notícias e avisos | Avisos | `notices` | Faixas de recado com período de exibição |
+| Missas e agenda | Missas e horários | `celebrations` | Horários fixos de missas, confissões e adoração |
+| Missas e agenda | Mudanças e cancelamentos | `celebration-exceptions` | Cancelamento, troca de horário ou celebração extra em um dia |
+| Missas e agenda | Eventos | `events` | Eventos com data, local e arquivo `.ics` |
+| A paróquia | Comunidades | `communities` | Matriz e capelas |
+| A paróquia | Clero e equipe | `people` | Padres, equipe e autores, com a função de cada um |
+| A paróquia | Pastorais e movimentos | `pastorals` | Pastorais, movimentos e grupos |
+| A paróquia | Sacramentos | `sacrament-guides` | Orientações de batismo, catequese e matrimônio |
+| A paróquia | Projetos | `projects` | Projetos e parcerias |
+| A paróquia | Patrocinadores | `sponsors` | Patrocinadores (só aparecem depois de aprovados) |
+| Mensagens recebidas | Fale conosco | `contact-messages` | Mensagens do formulário de contato |
+| Mensagens recebidas | Pedidos de sacramentos | `sacrament-requests` | Pedidos de batismo e casamento |
+| Mensagens recebidas | Interessados no dízimo | `tithe-interests` | Pedidos de contato sobre o dízimo |
+| Mensagens recebidas | Inscritos nas novidades | `newsletter-subscribers` | E-mails inscritos na newsletter |
+| Imagens | Imagens | `media` | Fotos e artes; para enviar, só a descrição é obrigatória |
+| Configurações | Usuários | `users` | Quem entra no painel e o que pode fazer |
+
+Cada função vê só os menus que usa: a secretaria vê as mensagens recebidas, colaboradores e editores veem o conteúdo, e só o administrador vê usuários.
 
 Relações entre as coleções (a seta aponta para a coleção referenciada):
-
-<p align="center">
-  <img src="docs/readme/diagramas/colecoes.gif" alt="Diagrama animado das relações: posts referencia people, communities, pastorals e outros posts; highlights aponta para posts e events; events, celebrations, exceptions, pastorals e sacrament-requests apontam para communities; team-assignments e pastorals apontam para people; sponsors aponta para projects" width="860">
-</p>
-
-A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenciada por `posts`, `highlights`, `events`, `communities`, `people`, `pastorals`, `projects`, `sponsors` e `milestones`.
-
-<details>
-<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 flowchart LR
@@ -233,7 +226,6 @@ flowchart LR
     exceptions["celebration-exceptions"]
     communities["communities"]
     people["people"]
-    team["team-assignments"]
     pastorals["pastorals"]
     projects["projects"]
     sponsors["sponsors"]
@@ -251,28 +243,38 @@ flowchart LR
     exceptions --> communities
     pastorals --> people
     pastorals --> communities
-    team --> people
     sponsors --> projects
     requests --> communities
 ```
 
-</details>
+A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenciada por `posts`, `highlights`, `events`, `communities`, `people`, `pastorals`, `projects` e `sponsors`.
 
 ### Globais
 
-| Grupo no painel | Global (slug) | Para que serve |
-| --- | --- | --- |
-| Configuração | `site-settings` | Nome, contatos e dados gerais do site |
-| Configuração | `navigation` | Menus do cabeçalho e do rodapé |
-| Páginas | `home-page` | Página inicial |
-| Páginas | `history-page` | História da paróquia (`/paroquia`) |
-| Páginas | `patron-page` | Padroeira (`/padroeira`) |
-| Páginas | `secretariat-page` | Secretaria (`/secretaria`) |
-| Páginas | `contact-page` | Contato (`/contato`) |
-| Páginas | `contribution-page` | Contribuição (`/contribuir`) |
-| Páginas | `spirituality-page` | Espiritualidade (`/vida/espiritualidade`) |
-| Páginas | `pastorum-page` | In Cordibus Pastorum (`/vida/in-cordibus-pastorum`) |
-| Páginas | `tithe-wall-page` | Mural do dízimo (`/vida/mural-do-dizimo`) |
+| Menu no painel | Nome no painel | Global (slug) | Para que serve |
+| --- | --- | --- | --- |
+| Páginas do site | Página inicial | `home-page` | Títulos e textos de cada seção da página inicial, em abas |
+| Páginas do site | Página Secretaria | `secretariat-page` | Textos de `/secretaria` |
+| Páginas do site | Página Contato | `contact-page` | Textos de `/contato` |
+| Configurações | Dados da paróquia | `site-settings` | Nome, endereço, telefones, redes sociais, horário da secretaria |
+
+### Prévia ao vivo
+
+Notícias, eventos, comunidades, pastorais e as três páginas acima têm um botão de prévia (ícone de olho) na tela de edição. Ele abre a página real ao lado do formulário e atualiza enquanto a pessoa digita; o que está publicado só muda ao clicar em "Publicar alterações".
+
+Como funciona: o painel abre `/preview?path=...`, que confere o login e liga o modo de rascunho do Next.js. Nesse modo, `getCMS()` (`src/lib/payload.ts`) devolve o último rascunho no lugar do conteúdo publicado, em qualquer página. Fora do painel, uma barra avisa que a prévia está ativa e oferece o link para sair.
+
+### O que fica no código, não no CMS
+
+Conteúdo que se escreve uma vez e quase nunca muda fica em arquivos, para o painel ter só o que a equipe edita de fato. Para alterar, edite o arquivo e faça o deploy.
+
+| Conteúdo | Arquivo |
+| --- | --- |
+| História da paróquia e sua linha do tempo (`/paroquia`) | `src/content/history.ts` |
+| Padroeira, linha do tempo, curiosidades e fontes (`/padroeira`) | `src/content/patron.ts` |
+| Dízimo e doações, Espiritualidade, In Cordibus Pastorum, Mural do dízimo | `src/content/life.ts` |
+| Menus do cabeçalho e do rodapé | `src/components/site/navigation.ts` |
+| Imagens dessas páginas | `public/images/` |
 
 ## Fluxo editorial e permissões
 
@@ -306,7 +308,7 @@ O que cada função pode fazer (regras em `src/access/index.ts`):
 | Ler e tratar atendimentos privados | ✅ | — | — | ✅ |
 | Gerenciar usuários | ✅ | — | — | — |
 
-Visitantes sem login só enxergam conteúdo publicado. Conteúdo com origem "demonstração" some do site em produção, a menos que `SHOW_DEMO_CONTENT=true`.
+Visitantes sem login só enxergam conteúdo publicado. Conteúdo com origem "demonstração" aparece enquanto o site é protótipo; defina `SHOW_DEMO_CONTENT=false` para escondê-lo em produção. Os campos de origem e verificação só aparecem para administradores.
 
 ## Formulários públicos
 
@@ -322,9 +324,9 @@ Os registros de atendimento não podem ser criados pela API pública do Payload.
 ```mermaid
 flowchart LR
     f["Formulário no site"] --> r["Rota /api/contato<br/>(ou sacramentos, dizimo, newsletter)"]
-    r --> c{"Formulário ativado<br/>no .env?"}
-    c -- "não" --> off["Resposta: indisponível"]
-    c -- "sim" --> v["Validação, honeypot<br/>e limite de envios por IP"]
+    r --> c{"Formulário desligado<br/>por variável?"}
+    c -- "sim" --> off["Resposta: indisponível"]
+    c -- "não" --> v["Validação, honeypot<br/>e limite de envios por IP"]
     v -- "inválido" --> err["Erro 4xx"]
     v -- "ok" --> p["Payload grava na coleção<br/>de atendimento privado"]
     p --> s["Secretaria acompanha<br/>no painel /admin"]
@@ -332,14 +334,17 @@ flowchart LR
 
 </details>
 
-Os fluxos ficam desativados até a paróquia definir responsáveis, atendimento e retenção. Para ativar:
+Enquanto o site é um protótipo em validação, todos os recursos ficam **ligados por padrão** (`src/lib/features.ts`). Para desligar um deles, defina a variável como `false`:
 
 ```env
-CONTACT_FORM_ENABLED=true
-SACRAMENT_FORM_ENABLED=true
-TITHE_FORM_ENABLED=true
-NEWSLETTER_ENABLED=true
+CONTACT_FORM_ENABLED=false
+SACRAMENT_FORM_ENABLED=false
+TITHE_FORM_ENABLED=false
+NEWSLETTER_ENABLED=false
+SHOW_DEMO_CONTENT=false
 ```
+
+Antes do lançamento oficial, desligue o que a paróquia ainda não aprovou (responsáveis, atendimento e retenção de dados). Hoje as rotas existem e são testadas, mas o site ainda não tem as telas de formulário que as chamam.
 
 Solicitações de sacramento não reservam datas. A newsletter começa como pendente e tem confirmação e descadastro por token; o envio de e-mails exige configurar um provedor real.
 
@@ -438,7 +443,7 @@ Observações:
 
 ## Deploy na Vercel
 
-O arquivo `vercel.json` define o build (`npm run ci`, que aplica as migrações e depois roda `next build`) e a região `cle1`, a mais próxima do banco Neon em `us-east-2`.
+O arquivo `vercel.json` define o build (`npm run ci`, que roda `scripts/ci.mjs`: aplica as migrações e depois o `next build`) e a região `cle1`, a mais próxima do banco Neon em `us-east-2`.
 
 1. Importe o repositório na Vercel.
 2. Em Settings → Environment Variables, cadastre:
@@ -447,11 +452,10 @@ O arquivo `vercel.json` define o build (`npm run ci`, que aplica as migrações 
    | --- | --- |
    | `DATABASE_URL` | URL do banco Neon (pooler) |
    | `PAYLOAD_SECRET` | Segredo longo e aleatório, diferente do usado em desenvolvimento |
-   | `NEXT_PUBLIC_SITE_URL` | URL pública do site, com `https://` |
+   | `NEXT_PUBLIC_SITE_URL` | Opcional. URL pública do site, com `https://`. Sem ela (ou com `localhost`), o site usa o endereço que a própria Vercel informa |
    | `MEDIA_BUCKET` | `uploads` |
    | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `AWS_REGION` | Credenciais do Neon Object Storage (as mesmas que `neon deploy` grava no `.env`) |
-   | `SHOW_DEMO_CONTENT` | `false` |
-   | `CONTACT_FORM_ENABLED` e demais formulários | `true` apenas quando a paróquia definir o atendimento |
+   | `SHOW_DEMO_CONTENT`, `CONTACT_FORM_ENABLED` e demais recursos | Opcionais. Ligados por padrão; use `false` para desligar |
 
 3. Faça o deploy.
 
@@ -460,6 +464,27 @@ Observações:
 - `MEDIA_BUCKET` é obrigatório na Vercel: o disco das funções é somente leitura, então uploads na pasta `media/` não funcionam.
 - Não rode `npm run dev` com push contra o banco de produção: o push grava um registro `dev` em `payload_migrations`, e com ele o `payload migrate` do build para numa pergunta interativa e o deploy trava. Se o `.env` local apontar para o banco de produção, defina `PAYLOAD_DB_PUSH=false` e altere o schema só por migrações (`npm run payload -- migrate:create` e `migrate`).
 - O limite de envios dos formulários fica na memória de cada instância; em ambiente serverless ele não é compartilhado entre instâncias.
+
+### Homologação (branch `homolog`)
+
+A branch `homolog` do Git é o ambiente de validação. Cada push nela gera um deploy de preview na Vercel com banco e arquivos próprios, separados da produção:
+
+- No Neon existe uma branch `homolog`, criada a partir de `production`. Ela herda a senha do banco e as credenciais do bucket; só os endereços mudam.
+- `src/lib/deploy-env.ts` troca esses endereços quando o deploy é da branch `homolog`, usando as mesmas variáveis de ambiente da produção. Nada precisa ser cadastrado na Vercel. Se o deploy não conseguir apontar para o banco de homologação, ele falha em vez de tocar na produção.
+- Previews de qualquer outra branch usam o banco de produção e por isso **não** aplicam migrações (`scripts/ci.mjs`).
+
+Para trabalhar localmente na homologação:
+
+```bash
+git checkout homolog
+neon checkout homolog      # aponta o .env para a branch homolog do Neon
+npm run payload -- migrate
+npm run dev
+```
+
+Para voltar o `.env` à produção: `neon checkout production`. Se a branch do Neon for recriada, atualize os identificadores no topo de `src/lib/deploy-env.ts`.
+
+Para promover a homologação: faça o merge de `homolog` em `main`. O deploy de produção aplica as migrações pendentes, incluindo a que remove do banco as coleções e páginas que passaram para o código.
 
 ## Produção com Docker
 

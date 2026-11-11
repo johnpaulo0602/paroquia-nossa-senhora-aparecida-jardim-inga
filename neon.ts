@@ -13,6 +13,10 @@ export default defineConfig({
       // Default branch: no overrides, uses project defaults
       return {};
     }
+    if (branch.name === "homolog") {
+      // Long-lived staging branch: never auto-expire
+      return {};
+    }
     if (!branch.exists) {
       // New non-default branches: auto-expire
       // Run `neon checkout <name>` to create a new branch with these settings
