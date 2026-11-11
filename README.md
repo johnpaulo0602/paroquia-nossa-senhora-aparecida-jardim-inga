@@ -382,3 +382,4 @@ Teste a restauração periodicamente em ambiente separado antes de depender do b
 ## Pendências institucionais
 
 Antes da publicação oficial, confirme contatos, horários divergentes, equipe, pastorais, história, requisitos de sacramentos, projetos, patrocinadores e canais de doação. Não publique placeholders, exemplos ou dados financeiros sem aprovação. O dossiê completo está em `docs/DOSSIE-DESENVOLVIMENTO-PAROQUIA.md`.
+
