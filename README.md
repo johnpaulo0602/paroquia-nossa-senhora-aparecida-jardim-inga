@@ -25,6 +25,49 @@ Requisitos: Node.js 22.23.4 ou superior compatível, npm e Docker com Compose.
 
 Em desenvolvimento, demonstrações publicadas são visíveis. Em produção, `SHOW_DEMO_CONTENT` deve permanecer `false`.
 
+## Banco e mídias no Neon (opcional)
+
+Em vez do Postgres local, o projeto pode usar um banco Neon e guardar as mídias no Neon Object Storage (compatível com S3). O arquivo `neon.ts` declara o bucket `uploads`.
+
+1. Instale a CLI e vincule o projeto (o vínculo fica em `.neon`, fora do Git):
+
+   ```bash
+   npm install -g neon@latest
+   neon login
+   neon link --project-id <id-do-projeto> --branch production
+   ```
+
+2. Crie o bucket e grave as variáveis no `.env`:
+
+   ```bash
+   neon deploy
+   ```
+
+   O comando preenche `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` e `AWS_REGION`. Ele reescreve `DATABASE_URL` a cada execução, assim como `neon env pull`.
+
+3. Defina `MEDIA_BUCKET=uploads` no `.env`. Com essa variável, os uploads do Payload vão para o bucket; sem ela, ficam na pasta local `media/`.
+4. Aplique as migrações e, se quiser, o conteúdo de demonstração:
+
+   ```bash
+   npm run payload -- migrate
+   npm run seed
+   ```
+
+5. Para enviar ao bucket os arquivos que já estão em `media/` e são referenciados pelo banco:
+
+   ```bash
+   npm run media:upload
+   ```
+
+   O script é idempotente: arquivos já presentes com o mesmo tamanho são ignorados.
+
+Observações:
+
+- O bucket é privado. As imagens continuam em `/api/media/file/...`, com o Payload lendo do bucket a cada requisição; em produção, use cache ou CDN na frente.
+- `npm run dev` sincroniza o schema direto no banco (push). Depois disso, `payload migrate` pede uma confirmação interativa antes de aplicar novas migrações.
+- `npm run test:int` e `npm run test:e2e` usam o `.env` e criam e apagam registros. Não rode os testes com o `.env` apontando para um banco que guarde dados reais.
+- `scripts/backup.sh` e `scripts/restore.sh` cobrem apenas o Postgres e a pasta `media` do Docker, não o Neon.
+
 ## Administração
 
 O painel está em `/admin`. As funções são:
