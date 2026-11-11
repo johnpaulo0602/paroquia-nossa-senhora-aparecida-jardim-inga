@@ -226,6 +226,7 @@ export interface Media {
    */
   blurData?: string | null;
   internalNotes?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1283,6 +1284,7 @@ export interface MediaSelect<T extends boolean = true> {
   usageAuthorized?: T;
   blurData?: T;
   internalNotes?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

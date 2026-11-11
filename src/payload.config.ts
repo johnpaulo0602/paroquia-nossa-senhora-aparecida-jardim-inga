@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -39,6 +40,10 @@ import { TitheWallPage } from './globals/TitheWallPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Neon Object Storage (S3-compatible). Only active when MEDIA_BUCKET is set;
+// without it, uploads stay on the local `media/` folder.
+const mediaBucket = process.env.MEDIA_BUCKET
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
@@ -104,5 +109,17 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      enabled: Boolean(mediaBucket),
+      bucket: mediaBucket || '',
+      collections: { media: true },
+      config: {
+        // Endpoint, region and credentials come from the AWS_* env vars.
+        endpoint: process.env.AWS_ENDPOINT_URL_S3,
+        region: process.env.AWS_REGION || 'us-east-2',
+        forcePathStyle: true, // required by Neon
+      },
+    }),
+  ],
 })
