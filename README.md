@@ -314,6 +314,31 @@ npm run build
 
 Os testes cobrem regras de acesso, fuso `America/Sao_Paulo`, exceções de celebrações, calendário, navegação pública e administração.
 
+## Deploy na Vercel
+
+O arquivo `vercel.json` define o build (`npm run ci`, que aplica as migrações e depois roda `next build`) e a região `cle1`, a mais próxima do banco Neon em `us-east-2`.
+
+1. Importe o repositório na Vercel.
+2. Em Settings → Environment Variables, cadastre:
+
+   | Variável | Valor |
+   | --- | --- |
+   | `DATABASE_URL` | URL do banco Neon (pooler) |
+   | `PAYLOAD_SECRET` | Segredo longo e aleatório, diferente do usado em desenvolvimento |
+   | `NEXT_PUBLIC_SITE_URL` | URL pública do site, com `https://` |
+   | `MEDIA_BUCKET` | `uploads` |
+   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `AWS_REGION` | Credenciais do Neon Object Storage (as mesmas que `neon deploy` grava no `.env`) |
+   | `SHOW_DEMO_CONTENT` | `false` |
+   | `CONTACT_FORM_ENABLED` e demais formulários | `true` apenas quando a paróquia definir o atendimento |
+
+3. Faça o deploy.
+
+Observações:
+
+- `MEDIA_BUCKET` é obrigatório na Vercel: o disco das funções é somente leitura, então uploads na pasta `media/` não funcionam.
+- Se o banco de produção já foi usado com `npm run dev`, a tabela `payload_migrations` guarda um registro `dev`. Nesse caso `payload migrate` pede confirmação e, sem terminal, encerra sem aplicar nada: o build segue com o schema antigo. Use uma branch separada do Neon para desenvolvimento, ou remova esse registro antes de depender de novas migrações.
+- O limite de envios dos formulários fica na memória de cada instância; em ambiente serverless ele não é compartilhado entre instâncias.
+
 ## Produção com Docker
 
 1. Configure `.env` com URL pública HTTPS, segredo e credenciais fortes de banco.
