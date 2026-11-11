@@ -8,13 +8,104 @@
 ![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A5_22.23-5FA04E?logo=nodedotjs&logoColor=white)
 ![Vitest](https://img.shields.io/badge/testes-Vitest-6E9F18?logo=vitest&logoColor=white)
 ![Playwright](https://img.shields.io/badge/e2e-Playwright-2EAD33?logo=playwright&logoColor=white)
-![Docker](https://img.shields.io/badge/deploy-Docker-2496ED?logo=docker&logoColor=white)
+![axe](https://img.shields.io/badge/a11y-WCAG_2.1_AA-663399)
+![Docker](https://img.shields.io/badge/deploy-Docker_ou_Vercel-2496ED?logo=docker&logoColor=white)
 
-Portal institucional com Next.js, Payload CMS e PostgreSQL. O conteúdo do protótipo em `docs/prototipo` é referência de desenvolvimento: exemplos, pesquisa e acervo permanecem identificados no CMS e não devem ser tratados como informação oficial sem revisão.
+Portal da Paróquia Nossa Senhora Aparecida, no Jardim Ingá (Diocese de Luziânia, GO). O site público e o painel da equipe paroquial rodam juntos em uma aplicação Next.js com Payload CMS e PostgreSQL. A equipe atualiza horários de missa, agenda, notícias, comunidades e pastorais pelo painel, sem mexer em código.
+
+<p align="center">
+  <img src="docs/readme/telas/home.webp" alt="Página inicial: banner da padroeira, próxima celebração do dia e atalhos para missas, catequese, secretaria e como chegar" width="900">
+</p>
+
+> [!NOTE]
+> O conteúdo de demonstração (seed) vem do protótipo em `docs/prototipo`: textos, pesquisas e acervo de referência. No CMS, cada registro é marcado pela **origem** (oficial, pesquisa, acervo ou demonstração) e não deve ser tratado como informação oficial sem revisão da paróquia.
+
+## Sumário
+
+- [O que o site oferece](#o-que-o-site-oferece)
+- [Telas](#telas)
+- [Início rápido](#início-rápido)
+- [Arquitetura](#arquitetura)
+- [Conteúdo no Payload](#conteúdo-no-payload)
+- [Fluxo editorial e permissões](#fluxo-editorial-e-permissões)
+- [Formulários públicos](#formulários-públicos)
+- [Sistema visual](#sistema-visual)
+- [Scripts](#scripts)
+- [Testes e verificação](#testes-e-verificação)
+- [Banco e mídias no Neon](#banco-e-mídias-no-neon-opcional)
+- [Deploy na Vercel](#deploy-na-vercel)
+- [Produção com Docker](#produção-com-docker)
+- [Backup e restauração](#backup-e-restauração)
+- [Documentação visual do README](#documentação-visual-do-readme)
+- [Pendências institucionais](#pendências-institucionais)
+
+## O que o site oferece
+
+| Para quem visita | Para a equipe da paróquia |
+| --- | --- |
+| **Missas e horários** com a próxima celebração em destaque e filtros por comunidade e dia da semana | **Painel `/admin`** com rótulos, grupos e formulários em português para cada tipo de conteúdo |
+| **Agenda** de eventos com visão de lista, mês e calendário, e arquivo `.ics` para salvar na agenda do celular | **Rascunhos e publicação** separados por função: colaborador escreve, editor publica |
+| **Comunidades** da paróquia, cada uma com endereço, mapa e horários próprios | **Exceções de celebração** para cancelar ou mudar uma missa sem alterar a regra semanal |
+| **Vida cristã**: sacramentos, catequese, pastorais, espiritualidade e mural do dízimo | **Origem e verificação** em cada registro, para separar o oficial do que ainda está em pesquisa |
+| **Notícias e reflexões** com carrossel de destaques | **Atendimento privado** (contato, sacramentos, dízimo e newsletter), visível só para a secretaria |
+| **Navegação acessível**: menu por teclado, contraste AA, texto mínimo de 14px e versão mobile em tela cheia | **Mídias com crédito e autorização de uso**, prévia desfocada gerada no upload |
+
+## Telas
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/readme/telas/horarios.webp" alt="Missas e horários: cartão da próxima celebração e filtros por comunidade e dia"><br><sub><b>Missas e horários</b> · próxima celebração e filtros em chips</sub></td>
+    <td width="50%"><img src="docs/readme/telas/agenda.webp" alt="Agenda paroquial com seletor de visualização"><br><sub><b>Agenda</b> · próximos eventos, mês, calendário e arquivo</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/readme/telas/vida-crista.webp" alt="Vida cristã: cartões de batismo, matrimônio, catequese e confissão"><br><sub><b>Vida cristã</b> · sacramentos, catequese e pastorais</sub></td>
+    <td><img src="docs/readme/telas/paroquia.webp" alt="A história da paróquia com foto da matriz"><br><sub><b>A paróquia</b> · história e linha do tempo</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/readme/telas/comunicacao.webp" alt="Comunicação: destaques e notícias"><br><sub><b>Comunicação</b> · destaques, notícias e reflexões</sub></td>
+    <td><img src="docs/readme/telas/admin-painel.webp" alt="Painel administrativo do Payload com as coleções agrupadas"><br><sub><b>Painel /admin</b> · coleções agrupadas por área</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/readme/telas/mobile-home.webp" alt="Página inicial no celular" width="260"><br><sub><b>Celular</b> · página inicial</sub></td>
+    <td align="center" width="33%"><img src="docs/readme/telas/mobile-menu.webp" alt="Menu do celular aberto em tela cheia" width="260"><br><sub><b>Celular</b> · menu em tela cheia</sub></td>
+    <td align="center" width="34%"><img src="docs/readme/telas/admin-celebracoes.webp" alt="Lista de celebrações no painel"><br><sub><b>Painel</b> · celebrações recorrentes</sub></td>
+  </tr>
+</table>
+
+## Início rápido
+
+Requisitos: Node.js 22.23.4 ou superior compatível, npm e Docker com Compose.
+
+```bash
+cp .env.example .env                           # defina um PAYLOAD_SECRET seguro
+docker compose -f docker/postgres.yml up -d    # só o banco
+npm install
+npm run generate:types
+npm run seed                                   # opcional: conteúdo de demonstração
+npm run dev                                    # http://localhost:3000 e /admin
+```
+
+- **Primeiro usuário:** defina `PAYLOAD_ADMIN_EMAIL` e `PAYLOAD_ADMIN_PASSWORD` no `.env` antes do `npm run seed`. Sem elas, crie o usuário na tela `/admin`.
+- **Seed idempotente:** pode ser executado de novo sem duplicar conteúdo.
+- **Imagens antigas sem prévia:** se o banco já tinha imagens de antes do campo `blurData`, gere as prévias com `npm run media:blur`.
+- **Conteúdo de demonstração:** em desenvolvimento ele aparece com o selo "Demonstração". Em produção, `SHOW_DEMO_CONTENT` deve ficar `false`.
+
+> [!TIP]
+> **Postgres fora do Docker:** deixe o servidor em UTC (`ALTER SYSTEM SET timezone = 'UTC'`). Com o fuso `America/Sao_Paulo`, o Postgres devolve datas históricas (como 1717, nos marcos da paróquia) com offset em segundos, `-03:06:28`, que o JavaScript não interpreta, e o seed falha com `RangeError: Invalid time value`. O container oficial do Postgres já roda em UTC.
 
 ## Arquitetura
 
-O site público e o painel administrativo rodam no mesmo processo Next.js. O Payload CMS é uma biblioteca dentro da aplicação: as páginas consultam o conteúdo chamando a API local do Payload direto no servidor, sem requisição HTTP entre "front" e "CMS".
+O site público e o painel administrativo rodam no mesmo processo Next.js. O Payload CMS é uma biblioteca dentro da aplicação: as páginas consultam o conteúdo pela API local do Payload, direto no servidor, sem requisição HTTP entre "front" e "CMS".
+
+<p align="center">
+  <img src="docs/readme/diagramas/arquitetura.gif" alt="Diagrama animado da arquitetura: visitante e equipe acessam site, formulários, painel e API dentro do Next.js; todos passam pelo Payload, que grava no PostgreSQL e nas mídias" width="900">
+</p>
+
+<details>
+<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 flowchart LR
@@ -44,35 +135,34 @@ flowchart LR
     payload -- "upload e leitura" --> storage
 ```
 
-Organização do código:
+</details>
 
 | Caminho | Conteúdo |
 | --- | --- |
-| `src/payload.config.ts` | Configuração central do Payload: coleções, globais, banco, storage |
-| `src/collections/` | Coleções (uma por arquivo) |
+| `src/payload.config.ts` | Configuração central do Payload: coleções, globais, banco e storage |
+| `src/collections/` | Coleções, uma por arquivo |
 | `src/globals/` | Globais: configuração do site e conteúdo de páginas únicas |
 | `src/access/` | Regras de acesso por função |
 | `src/fields/` | Campos reutilizados (origem e verificação editorial) |
-| `src/app/(frontend)/` | Páginas públicas e rotas de formulário |
+| `src/app/(frontend)/` | Páginas públicas, rotas de formulário, `tokens.css` e `styles.css` |
 | `src/app/(payload)/` | Painel `/admin` e API do Payload |
-| `src/components/` | Componentes React do site |
-| `src/lib/` | Datas, calendário, horários, formulários, acesso ao CMS |
+| `src/components/` | Componentes React do site, com CSS Modules |
+| `src/lib/` | Datas, calendário, horários, próxima celebração, formulários, prévia de imagens |
 | `src/migrations/` | Migrações de schema |
-| `scripts/` | Seed, envio de mídias, backup e restauração |
-| `tests/` | Testes de integração (Vitest) e ponta a ponta (Playwright) |
+| `scripts/` | Seed, mídias, backup, restauração e geração das imagens do README |
+| `tests/` | Integração (Vitest) e ponta a ponta (Playwright + axe) |
+| `docs/` | Dossiê do projeto, protótipo de referência e imagens do README |
 
-### Como o Payload funciona neste projeto
+### Do pedido ao banco
 
-O Payload é configurado por código. Cada **coleção** descreve um tipo de conteúdo com vários registros (publicações, eventos, pessoas); cada **global** descreve um documento único (configurações do site, texto de uma página). A partir dessas definições o Payload gera:
+O Payload é configurado por código. A partir das coleções e globais ele gera as tabelas no PostgreSQL (via Drizzle), os formulários do painel, a API REST e GraphQL e os tipos TypeScript em `src/payload-types.ts` (`npm run generate:types`). Em desenvolvimento, o schema é sincronizado direto no banco (push). Em produção, o push fica desligado e as mudanças entram por migrações em `src/migrations`.
 
-- as tabelas no PostgreSQL (via Drizzle);
-- os formulários do painel `/admin`;
-- a API REST e GraphQL em `/api`;
-- os tipos TypeScript em `src/payload-types.ts` (`npm run generate:types`).
+<p align="center">
+  <img src="docs/readme/diagramas/requisicao.gif" alt="Diagrama de sequência animado: o visitante pede uma notícia, a página consulta o Payload, as regras de acesso filtram só publicados, o PostgreSQL devolve o registro e a página responde com HTML do servidor" width="900">
+</p>
 
-Em desenvolvimento, o schema é sincronizado direto no banco a cada alteração (push). Em produção, o push fica desligado e as mudanças entram por migrações em `src/migrations`.
-
-Caminho de uma página pública até o banco:
+<details>
+<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 sequenceDiagram
@@ -92,16 +182,20 @@ sequenceDiagram
     P-->>V: HTML renderizado no servidor
 ```
 
-### Coleções
+</details>
 
-As coleções aparecem no painel agrupadas assim:
+## Conteúdo no Payload
+
+Cada **coleção** descreve um tipo de conteúdo com vários registros (publicações, eventos, pessoas). Cada **global** descreve um documento único (configurações do site, texto de uma página).
+
+### Coleções
 
 | Grupo no painel | Coleção (slug) | Para que serve |
 | --- | --- | --- |
 | Conteúdo | `posts` | Publicações: notícias e reflexões |
 | Conteúdo | `highlights` | Destaques do carrossel da página inicial |
 | Conteúdo | `notices` | Avisos com período de exibição |
-| Conteúdo | `media` | Imagens, com descrição, crédito e autorização de uso |
+| Conteúdo | `media` | Imagens, com descrição, crédito, autorização de uso e prévia desfocada |
 | Agenda e comunidades | `communities` | Comunidades da paróquia |
 | Agenda e comunidades | `celebrations` | Celebrações recorrentes (horários de missa) |
 | Agenda e comunidades | `celebration-exceptions` | Cancelamentos e mudanças pontuais de celebrações |
@@ -120,6 +214,15 @@ As coleções aparecem no painel agrupadas assim:
 | Administração | `users` | Usuários do painel e suas funções |
 
 Relações entre as coleções (a seta aponta para a coleção referenciada):
+
+<p align="center">
+  <img src="docs/readme/diagramas/colecoes.gif" alt="Diagrama animado das relações: posts referencia people, communities, pastorals e outros posts; highlights aponta para posts e events; events, celebrations, exceptions, pastorals e sacrament-requests apontam para communities; team-assignments e pastorals apontam para people; sponsors aponta para projects" width="860">
+</p>
+
+A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenciada por `posts`, `highlights`, `events`, `communities`, `people`, `pastorals`, `projects`, `sponsors` e `milestones`.
+
+<details>
+<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 flowchart LR
@@ -153,7 +256,7 @@ flowchart LR
     requests --> communities
 ```
 
-A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenciada por `posts`, `highlights`, `events`, `communities`, `people`, `pastorals`, `projects`, `sponsors` e `milestones`.
+</details>
 
 ### Globais
 
@@ -171,9 +274,16 @@ A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenci
 | Páginas | `pastorum-page` | In Cordibus Pastorum (`/vida/in-cordibus-pastorum`) |
 | Páginas | `tithe-wall-page` | Mural do dízimo (`/vida/mural-do-dizimo`) |
 
-### Fluxo editorial e permissões
+## Fluxo editorial e permissões
 
-As coleções de conteúdo têm rascunhos (`versions.drafts`) e os campos editoriais de `src/fields/editorial.ts`: **origem** (oficial, pesquisa externa, acervo histórico, demonstração) e **verificação** (pendente, revisado, aprovado pela paróquia).
+As coleções de conteúdo têm rascunhos (`versions.drafts`) e os campos editoriais de `src/fields/editorial.ts`: **origem** (oficial, pesquisa externa, acervo histórico, demonstração) e **verificação** (pendente, revisado, aprovado pela paróquia). No site, a origem aparece como um selo discreto ("Demonstração", "Em confirmação"), nunca como texto no título.
+
+<p align="center">
+  <img src="docs/readme/diagramas/editorial.gif" alt="Diagrama de estados animado: o conteúdo nasce como rascunho, pode ser editado, é publicado só por editor ou administrador, pode voltar a rascunho e, publicado, fica visível no site" width="860">
+</p>
+
+<details>
+<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 stateDiagram-v2
@@ -183,6 +293,8 @@ stateDiagram-v2
     Publicado --> Rascunho: despublicar
     Publicado --> [*]: visível no site
 ```
+
+</details>
 
 O que cada função pode fazer (regras em `src/access/index.ts`):
 
@@ -196,9 +308,16 @@ O que cada função pode fazer (regras em `src/access/index.ts`):
 
 Visitantes sem login só enxergam conteúdo publicado. Conteúdo com origem "demonstração" some do site em produção, a menos que `SHOW_DEMO_CONTENT=true`.
 
-### Formulários públicos
+## Formulários públicos
 
-Os registros de atendimento não podem ser criados pela API pública do Payload. Eles entram apenas pelas rotas de formulário, que validam os dados no servidor (`src/lib/form-server.ts`) antes de gravar:
+Os registros de atendimento não podem ser criados pela API pública do Payload. Eles entram apenas pelas rotas de formulário, que validam os dados no servidor (`src/lib/form-server.ts`) antes de gravar.
+
+<p align="center">
+  <img src="docs/readme/diagramas/formularios.gif" alt="Fluxograma animado: o formulário chega à rota; se não estiver ativado no .env, responde indisponível; se estiver, passa por validação, honeypot e limite por IP; inválido retorna erro 4xx; válido é gravado pelo Payload e acompanhado pela secretaria" width="900">
+</p>
+
+<details>
+<summary>Fonte do diagrama (Mermaid)</summary>
 
 ```mermaid
 flowchart LR
@@ -211,28 +330,71 @@ flowchart LR
     p --> s["Secretaria acompanha<br/>no painel /admin"]
 ```
 
-## Desenvolvimento local
+</details>
 
-Requisitos: Node.js 22.23.4 ou superior compatível, npm e Docker com Compose.
+Os fluxos ficam desativados até a paróquia definir responsáveis, atendimento e retenção. Para ativar:
 
-1. Copie `.env.example` para `.env` e defina um `PAYLOAD_SECRET` seguro.
-2. Suba apenas o banco local:
+```env
+CONTACT_FORM_ENABLED=true
+SACRAMENT_FORM_ENABLED=true
+TITHE_FORM_ENABLED=true
+NEWSLETTER_ENABLED=true
+```
 
-   ```bash
-   docker compose -f docker/postgres.yml up -d
-   ```
+Solicitações de sacramento não reservam datas. A newsletter começa como pendente e tem confirmação e descadastro por token; o envio de e-mails exige configurar um provedor real.
 
-3. Instale e prepare o projeto:
+## Sistema visual
 
-   ```bash
-   npm install
-   npm run generate:types
-   ```
+A identidade é azul-marinho, dourado e Poppins. Os valores ficam em `src/app/(frontend)/tokens.css` e todos os módulos usam as variáveis:
 
-4. Opcionalmente, defina `PAYLOAD_ADMIN_EMAIL` e `PAYLOAD_ADMIN_PASSWORD` no `.env` e execute `npm run seed`. O seed é idempotente e importa conteúdo de demonstração. Sem essas variáveis, crie o primeiro usuário pela tela `/admin`.
-5. Inicie a aplicação com `npm run dev` e abra `http://localhost:3000`.
+| Tokens | Regra |
+| --- | --- |
+| **Cores** | `--navy-*`, `--blue-*`, `--gold-*`, `--ink`, `--muted`, `--line`. Nenhum hex fora do `tokens.css`. Dourado 500 é só decoração; para texto, `--gold-700`. |
+| **Tipografia** | Só Poppins (400, 500 e 600, woff2 via `next/font/local`). Base 16px, mínimo 14px; 12px apenas no eyebrow em caixa alta. Horários com `tabular-nums`. |
+| **Breakpoints** | Quatro, sempre `max-width`: `480px` · `768px` · `1024px` · `1280px`. |
+| **Raios e sombras** | 8, 12, 20 e pill; sombras `--shadow-sm` (cards) e `--shadow` (dropdown, drawer). |
+| **Movimento** | `--dur-fast` 120ms, `--dur-base` 200ms, `--dur-slow` 320ms, `--ease-out`. Tudo desligado com `prefers-reduced-motion`. |
+| **Ícones** | [Lucide](https://lucide.dev) via `lucide-react`, pela mesma API `<Icon name="…" />`. O `SmartLink` adiciona o ícone de link externo sozinho. |
 
-Em desenvolvimento, demonstrações publicadas são visíveis. Em produção, `SHOW_DEMO_CONTENT` deve permanecer `false`.
+Testes de integração barram desvios: `tests/int/design-tokens.int.spec.ts` falha com cor fora dos tokens, e `tests/int/breakpoints.int.spec.ts` falha com breakpoint fora dos quatro.
+
+## Scripts
+
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Desenvolvimento com push automático do schema |
+| `npm run build` / `npm start` | Build e servidor de produção |
+| `npm run seed` | Conteúdo de demonstração e admin inicial (idempotente) |
+| `npm run generate:types` | Regenera `src/payload-types.ts` |
+| `npm run payload -- migrate` | Aplica migrações (`migrate:create` para gerar uma nova) |
+| `npm run media:blur` | Gera a prévia desfocada das imagens enviadas antes do campo existir |
+| `npm run media:upload` | Envia ao bucket do Neon as mídias que estão em `media/` |
+| `npm run lint` | ESLint |
+| `npm run test:int` / `npm run test:e2e` | Testes de integração e ponta a ponta |
+| `npm run docs:telas` | Regenera os prints do README (servidor rodando) |
+| `npm run docs:diagramas` | Regenera os diagramas animados do README (requer `ffmpeg`) |
+
+## Testes e verificação
+
+```bash
+npm run generate:types
+npx tsc --noEmit
+npm run lint
+npm run test:int
+npm run test:e2e
+npm run build
+```
+
+| Suíte | Cobre |
+| --- | --- |
+| `tests/int` (Vitest) | Regras de acesso, fuso `America/Sao_Paulo`, exceções de celebrações, calendário, formulários, tokens de cor e breakpoints |
+| `tests/e2e/navigation` | Dropdown que fecha com clique fora, Esc e troca de rota; um aberto por vez; seção atual marcada; menu mobile; 404 |
+| `tests/e2e/flows` | Próxima celebração, filtros sem botão, agenda com seletor único, nenhum texto de bastidor nas páginas públicas |
+| `tests/e2e/a11y` | axe (WCAG 2.1 AA) nas rotas principais e screenshots em 375, 768 e 1366px sem rolagem horizontal |
+| `tests/e2e/frontend` e `admin` | Todas as rotas públicas, arquivo `.ics` e cadastros do painel |
+
+> [!WARNING]
+> `npm run test:int` e `npm run test:e2e` usam o `.env` e criam e apagam registros. Não rode os testes com o `.env` apontando para um banco com dados reais.
 
 ## Banco e mídias no Neon (opcional)
 
@@ -262,57 +424,17 @@ Em vez do Postgres local, o projeto pode usar um banco Neon e guardar as mídias
    npm run seed
    ```
 
-5. Para enviar ao bucket os arquivos que já estão em `media/` e são referenciados pelo banco:
+5. Envie ao bucket os arquivos que já estão em `media/` e são referenciados pelo banco (idempotente: arquivos já presentes com o mesmo tamanho são ignorados):
 
    ```bash
    npm run media:upload
    ```
 
-   O script é idempotente: arquivos já presentes com o mesmo tamanho são ignorados.
-
 Observações:
 
 - O bucket é privado. As imagens continuam em `/api/media/file/...`, com o Payload lendo do bucket a cada requisição; em produção, use cache ou CDN na frente.
 - `npm run dev` sincroniza o schema direto no banco (push). Depois disso, `payload migrate` pede uma confirmação interativa antes de aplicar novas migrações.
-- `npm run test:int` e `npm run test:e2e` usam o `.env` e criam e apagam registros. Não rode os testes com o `.env` apontando para um banco que guarde dados reais.
 - `scripts/backup.sh` e `scripts/restore.sh` cobrem apenas o Postgres e a pasta `media` do Docker, não o Neon.
-
-## Administração
-
-O painel está em `/admin`. As funções são:
-
-- **Administrador**: usuários, configuração, conteúdo e atendimento.
-- **Editor**: cria, revisa e publica conteúdo.
-- **Colaborador**: cria e edita rascunhos, sem publicar.
-- **Secretaria**: acompanha contatos, solicitações e interesses privados.
-
-Publicações, eventos, horários, comunidades, destaques e demais conteúdos possuem formulários estruturados em português. Rascunhos não são públicos. Observações internas e dados de atendimento têm acesso restrito.
-
-## Formulários opcionais
-
-Os fluxos ficam desativados até a paróquia definir responsáveis, atendimento e retenção. Para ativá-los após essa configuração:
-
-```env
-CONTACT_FORM_ENABLED=true
-SACRAMENT_FORM_ENABLED=true
-TITHE_FORM_ENABLED=true
-NEWSLETTER_ENABLED=true
-```
-
-Os endpoints validam e persistem os dados antes de responder sucesso. Solicitações de sacramento não reservam datas. Newsletter começa como pendente e possui confirmação/descadastro por token; o envio de e-mails exige configurar um provedor real.
-
-## Verificação
-
-```bash
-npm run generate:types
-npx tsc --noEmit
-npm run lint
-npm run test:int
-npm run test:e2e
-npm run build
-```
-
-Os testes cobrem regras de acesso, fuso `America/Sao_Paulo`, exceções de celebrações, calendário, navegação pública e administração.
 
 ## Deploy na Vercel
 
@@ -379,7 +501,15 @@ CONFIRM_RESTORE=yes scripts/restore.sh backups/AAAAMMDDTHHMMSSZ
 
 Teste a restauração periodicamente em ambiente separado antes de depender do backup.
 
+## Documentação visual do README
+
+As imagens deste README são geradas a partir do próprio projeto, então dá para atualizá-las sempre que o site mudar:
+
+- **Prints** (`docs/readme/telas/*.webp`): `scripts/readme-telas.mjs` abre o site com Playwright em 1440px e no iPhone 13. Rode com o seed aplicado e o servidor de pé (`npm run build && npm start`), depois `npm run docs:telas`. Com `PAYLOAD_ADMIN_EMAIL` e `PAYLOAD_ADMIN_PASSWORD` no `.env`, ele também fotografa o painel.
+- **Diagramas animados** (`docs/readme/diagramas/*.gif`): cada diagrama é um SVG descrito em `docs/readme/diagramas/fonte/specs.js` e animado com [Motion](https://motion.dev) (`fonte/vendor/motion.js`, licença MIT). `npm run docs:diagramas` avança a timeline quadro a quadro com Playwright e monta o GIF com `ffmpeg`. Para ver a animação ao vivo, sirva a raiz do repositório (`npx serve .`) e abra `docs/readme/diagramas/fonte/index.html?d=arquitetura`.
+
+Ao mudar uma relação ou um fluxo, atualize o bloco Mermaid correspondente e o `specs.js`: o Mermaid continua sendo a fonte textual, e o GIF é a versão ilustrada.
+
 ## Pendências institucionais
 
 Antes da publicação oficial, confirme contatos, horários divergentes, equipe, pastorais, história, requisitos de sacramentos, projetos, patrocinadores e canais de doação. Não publique placeholders, exemplos ou dados financeiros sem aprovação. O dossiê completo está em `docs/DOSSIE-DESENVOLVIMENTO-PAROQUIA.md`.
-
