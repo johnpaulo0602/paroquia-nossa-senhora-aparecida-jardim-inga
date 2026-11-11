@@ -1,6 +1,215 @@
 # Paróquia Nossa Senhora Aparecida — Jardim Ingá
 
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Payload CMS](https://img.shields.io/badge/Payload_CMS-3.93-000000?logo=payloadcms&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon_ou_Docker-4169E1?logo=postgresql&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A5_22.23-5FA04E?logo=nodedotjs&logoColor=white)
+![Vitest](https://img.shields.io/badge/testes-Vitest-6E9F18?logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/e2e-Playwright-2EAD33?logo=playwright&logoColor=white)
+![Docker](https://img.shields.io/badge/deploy-Docker-2496ED?logo=docker&logoColor=white)
+
 Portal institucional com Next.js, Payload CMS e PostgreSQL. O conteúdo do protótipo em `docs/prototipo` é referência de desenvolvimento: exemplos, pesquisa e acervo permanecem identificados no CMS e não devem ser tratados como informação oficial sem revisão.
+
+## Arquitetura
+
+O site público e o painel administrativo rodam no mesmo processo Next.js. O Payload CMS é uma biblioteca dentro da aplicação: as páginas consultam o conteúdo chamando a API local do Payload direto no servidor, sem requisição HTTP entre "front" e "CMS".
+
+```mermaid
+flowchart LR
+    visitante(["Visitante"])
+    equipe(["Equipe da paróquia"])
+
+    subgraph next["Aplicação Next.js (um único processo)"]
+        direction TB
+        front["Site público<br/>src/app/(frontend)"]
+        forms["Rotas de formulário<br/>/api/contato, /api/sacramentos,<br/>/api/dizimo, /api/newsletter"]
+        admin["Painel /admin<br/>src/app/(payload)"]
+        api["API REST e GraphQL<br/>/api/..."]
+        payload["Payload CMS<br/>src/payload.config.ts"]
+    end
+
+    db[("PostgreSQL<br/>Docker local ou Neon")]
+    storage[("Mídias<br/>pasta media/ ou bucket S3 do Neon")]
+
+    visitante --> front
+    visitante --> forms
+    equipe --> admin
+    front -- "API local (getPayload)" --> payload
+    forms -- "valida e grava" --> payload
+    admin --> payload
+    api --> payload
+    payload -- "Drizzle + migrações" --> db
+    payload -- "upload e leitura" --> storage
+```
+
+Organização do código:
+
+| Caminho | Conteúdo |
+| --- | --- |
+| `src/payload.config.ts` | Configuração central do Payload: coleções, globais, banco, storage |
+| `src/collections/` | Coleções (uma por arquivo) |
+| `src/globals/` | Globais: configuração do site e conteúdo de páginas únicas |
+| `src/access/` | Regras de acesso por função |
+| `src/fields/` | Campos reutilizados (origem e verificação editorial) |
+| `src/app/(frontend)/` | Páginas públicas e rotas de formulário |
+| `src/app/(payload)/` | Painel `/admin` e API do Payload |
+| `src/components/` | Componentes React do site |
+| `src/lib/` | Datas, calendário, horários, formulários, acesso ao CMS |
+| `src/migrations/` | Migrações de schema |
+| `scripts/` | Seed, envio de mídias, backup e restauração |
+| `tests/` | Testes de integração (Vitest) e ponta a ponta (Playwright) |
+
+### Como o Payload funciona neste projeto
+
+O Payload é configurado por código. Cada **coleção** descreve um tipo de conteúdo com vários registros (publicações, eventos, pessoas); cada **global** descreve um documento único (configurações do site, texto de uma página). A partir dessas definições o Payload gera:
+
+- as tabelas no PostgreSQL (via Drizzle);
+- os formulários do painel `/admin`;
+- a API REST e GraphQL em `/api`;
+- os tipos TypeScript em `src/payload-types.ts` (`npm run generate:types`).
+
+Em desenvolvimento, o schema é sincronizado direto no banco a cada alteração (push). Em produção, o push fica desligado e as mudanças entram por migrações em `src/migrations`.
+
+Caminho de uma página pública até o banco:
+
+```mermaid
+sequenceDiagram
+    participant V as Visitante
+    participant P as Página (Server Component)
+    participant C as Payload (API local)
+    participant A as Regras de acesso
+    participant D as PostgreSQL
+
+    V->>P: GET /comunicacao/minha-noticia
+    P->>C: getCMS().find({ collection: 'posts', where: slug })
+    C->>A: readPublicContent (sem usuário logado)
+    A-->>C: somente publicados, sem demonstração em produção
+    C->>D: SELECT com o filtro aplicado
+    D-->>C: registro
+    C-->>P: documento tipado
+    P-->>V: HTML renderizado no servidor
+```
+
+### Coleções
+
+As coleções aparecem no painel agrupadas assim:
+
+| Grupo no painel | Coleção (slug) | Para que serve |
+| --- | --- | --- |
+| Conteúdo | `posts` | Publicações: notícias e reflexões |
+| Conteúdo | `highlights` | Destaques do carrossel da página inicial |
+| Conteúdo | `notices` | Avisos com período de exibição |
+| Conteúdo | `media` | Imagens, com descrição, crédito e autorização de uso |
+| Agenda e comunidades | `communities` | Comunidades da paróquia |
+| Agenda e comunidades | `celebrations` | Celebrações recorrentes (horários de missa) |
+| Agenda e comunidades | `celebration-exceptions` | Cancelamentos e mudanças pontuais de celebrações |
+| Agenda e comunidades | `events` | Eventos com data, local e arquivo `.ics` |
+| Institucional | `people` | Pessoas (clero, equipe, autores) |
+| Institucional | `team-assignments` | Funções que cada pessoa exerce |
+| Institucional | `milestones` | Marcos da história da paróquia |
+| Institucional | `projects` | Projetos |
+| Institucional | `sponsors` | Patrocinadores |
+| Vida cristã | `pastorals` | Pastorais e movimentos |
+| Vida cristã | `sacrament-guides` | Guias de sacramentos (batismo, matrimônio, catequese) |
+| Atendimento privado | `contact-messages` | Mensagens do formulário de contato |
+| Atendimento privado | `sacrament-requests` | Solicitações de sacramentos |
+| Atendimento privado | `tithe-interests` | Interesses no dízimo |
+| Atendimento privado | `newsletter-subscribers` | Assinantes da newsletter |
+| Administração | `users` | Usuários do painel e suas funções |
+
+Relações entre as coleções (a seta aponta para a coleção referenciada):
+
+```mermaid
+flowchart LR
+    posts["posts"]
+    highlights["highlights"]
+    events["events"]
+    celebrations["celebrations"]
+    exceptions["celebration-exceptions"]
+    communities["communities"]
+    people["people"]
+    team["team-assignments"]
+    pastorals["pastorals"]
+    projects["projects"]
+    sponsors["sponsors"]
+    requests["sacrament-requests"]
+
+    posts -- "autoria" --> people
+    posts --> communities
+    posts --> pastorals
+    posts -- "relacionadas" --> posts
+    highlights -- "destino" --> posts
+    highlights -- "destino" --> events
+    events --> communities
+    celebrations --> communities
+    exceptions --> celebrations
+    exceptions --> communities
+    pastorals --> people
+    pastorals --> communities
+    team --> people
+    sponsors --> projects
+    requests --> communities
+```
+
+A coleção `media` ficou fora do diagrama para não poluí-lo: ela é referenciada por `posts`, `highlights`, `events`, `communities`, `people`, `pastorals`, `projects`, `sponsors` e `milestones`.
+
+### Globais
+
+| Grupo no painel | Global (slug) | Para que serve |
+| --- | --- | --- |
+| Configuração | `site-settings` | Nome, contatos e dados gerais do site |
+| Configuração | `navigation` | Menus do cabeçalho e do rodapé |
+| Páginas | `home-page` | Página inicial |
+| Páginas | `history-page` | História da paróquia (`/paroquia`) |
+| Páginas | `patron-page` | Padroeira (`/padroeira`) |
+| Páginas | `secretariat-page` | Secretaria (`/secretaria`) |
+| Páginas | `contact-page` | Contato (`/contato`) |
+| Páginas | `contribution-page` | Contribuição (`/contribuir`) |
+| Páginas | `spirituality-page` | Espiritualidade (`/vida/espiritualidade`) |
+| Páginas | `pastorum-page` | In Cordibus Pastorum (`/vida/in-cordibus-pastorum`) |
+| Páginas | `tithe-wall-page` | Mural do dízimo (`/vida/mural-do-dizimo`) |
+
+### Fluxo editorial e permissões
+
+As coleções de conteúdo têm rascunhos (`versions.drafts`) e os campos editoriais de `src/fields/editorial.ts`: **origem** (oficial, pesquisa externa, acervo histórico, demonstração) e **verificação** (pendente, revisado, aprovado pela paróquia).
+
+```mermaid
+stateDiagram-v2
+    [*] --> Rascunho: colaborador, editor ou administrador cria
+    Rascunho --> Rascunho: edição
+    Rascunho --> Publicado: somente editor ou administrador
+    Publicado --> Rascunho: despublicar
+    Publicado --> [*]: visível no site
+```
+
+O que cada função pode fazer (regras em `src/access/index.ts`):
+
+| Ação | Administrador | Editor | Colaborador | Secretaria |
+| --- | :-: | :-: | :-: | :-: |
+| Criar e editar rascunhos de conteúdo | ✅ | ✅ | ✅ | — |
+| Publicar e excluir conteúdo | ✅ | ✅ | — | — |
+| Enviar mídias e editar globais | ✅ | ✅ | — | — |
+| Ler e tratar atendimentos privados | ✅ | — | — | ✅ |
+| Gerenciar usuários | ✅ | — | — | — |
+
+Visitantes sem login só enxergam conteúdo publicado. Conteúdo com origem "demonstração" some do site em produção, a menos que `SHOW_DEMO_CONTENT=true`.
+
+### Formulários públicos
+
+Os registros de atendimento não podem ser criados pela API pública do Payload. Eles entram apenas pelas rotas de formulário, que validam os dados no servidor (`src/lib/form-server.ts`) antes de gravar:
+
+```mermaid
+flowchart LR
+    f["Formulário no site"] --> r["Rota /api/contato<br/>(ou sacramentos, dizimo, newsletter)"]
+    r --> c{"Formulário ativado<br/>no .env?"}
+    c -- "não" --> off["Resposta: indisponível"]
+    c -- "sim" --> v["Validação, honeypot<br/>e limite de envios por IP"]
+    v -- "inválido" --> err["Erro 4xx"]
+    v -- "ok" --> p["Payload grava na coleção<br/>de atendimento privado"]
+    p --> s["Secretaria acompanha<br/>no painel /admin"]
+```
 
 ## Desenvolvimento local
 
