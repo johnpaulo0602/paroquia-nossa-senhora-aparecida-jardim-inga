@@ -19,6 +19,7 @@
   /* Color · gold */
   --gold-500: #b9944f; /* decorative only (2.9:1): active underline, focus ring */
   --gold-700: #8a6a2f; /* gold text · 5:1 */
+  --gold-300: #d9c08a; /* gold text on navy only · 7.6:1 on navy-800 */
 
   /* Color · text and lines */
   --ink: #344355; /* body text · 10:1 */

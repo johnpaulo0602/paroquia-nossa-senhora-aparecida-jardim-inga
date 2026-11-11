@@ -55,7 +55,7 @@
 }
 
 .inverted {
-  color: white;
+  color: var(--on-dark);
 }
 
 @media (max-width: 480px) {

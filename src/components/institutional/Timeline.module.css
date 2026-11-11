@@ -1,5 +1,5 @@
 .jump {
-  border-block: 1px solid #e1e8ef;
+  border-block: 1px solid var(--line);
   padding: 22px 0;
 }
 
@@ -15,11 +15,11 @@
 
 .jump a {
   display: block;
-  border: 1px solid #d7e2ec;
+  border: 1px solid var(--line);
   border-radius: var(--radius-pill);
   padding: 9px 16px;
-  background: #fff;
-  color: #526f87;
+  background: var(--paper);
+  color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.5;
   text-decoration: none;
@@ -28,7 +28,7 @@
 .jump a:hover {
   border-color: var(--navy-600);
   background: var(--navy-600);
-  color: #fff;
+  color: var(--on-dark);
 }
 
 .jump a:focus-visible,
@@ -73,7 +73,7 @@
   left: 0;
   width: 16px;
   height: 16px;
-  border: 4px solid #fff;
+  border: 4px solid var(--paper);
   border-radius: 50%;
   background: var(--blue-500);
   box-shadow: 0 0 0 2px var(--line);
@@ -106,7 +106,7 @@
 
 .media figcaption {
   margin-top: 11px;
-  color: #748699;
+  color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.7;
 }
@@ -117,7 +117,7 @@
 .date {
   display: block;
   margin-bottom: 10px;
-  color: #547e9f;
+  color: var(--blue-500);
   font-size: var(--text-sm);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -145,7 +145,7 @@
 
 .source {
   display: block;
-  color: #6f8496;
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 

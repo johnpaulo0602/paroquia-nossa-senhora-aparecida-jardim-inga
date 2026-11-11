@@ -20,7 +20,7 @@
 .media::after {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #0c2347f7 0%, #102a4ce8 25%, #102a4c60 60%, #102a4c08);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--navy-950) 97%, transparent) 0%, color-mix(in srgb, var(--navy-800) 91%, transparent) 25%, color-mix(in srgb, var(--navy-800) 38%, transparent) 60%, color-mix(in srgb, var(--navy-800) 3%, transparent));
   content: '';
 }
 
@@ -34,7 +34,7 @@
 .copy {
   max-width: 690px;
   padding: 75px 60px 95px;
-  color: white;
+  color: var(--on-dark);
 }
 
 .copy :global(.eyebrow) {
@@ -43,7 +43,7 @@
 
 .copy h1 {
   margin: 19px 0 22px;
-  color: white;
+  color: var(--on-dark);
   font-size: clamp(2.25rem, 4vw, 3rem);
   letter-spacing: var(--tracking-tight);
   line-height: 1.18;
@@ -62,9 +62,9 @@
   min-height: 48px;
   align-items: center;
   gap: 22px;
-  border: 1px solid white;
+  border: 1px solid var(--paper);
   border-radius: var(--radius-pill);
-  background: white;
+  background: var(--paper);
   padding: 13px 22px;
   color: var(--navy);
   font-size: var(--text-sm);
@@ -107,7 +107,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #92abc1;
+  background: var(--blue-300);
   content: '';
 }
 
@@ -115,7 +115,7 @@
   left: 4px;
   width: 21px;
   border-radius: 5px;
-  background: white;
+  background: var(--paper);
 }
 
 .arrows {
@@ -128,15 +128,15 @@
   width: 38px;
   height: 38px;
   place-items: center;
-  border: 1px solid #ffffff50;
+  border: 1px solid color-mix(in srgb, var(--on-dark) 31%, transparent);
   border-radius: 50%;
-  background: #ffffff18;
-  color: white;
+  background: color-mix(in srgb, var(--on-dark) 9%, transparent);
+  color: var(--on-dark);
   font-size: var(--text-base);
 }
 
 .arrows button:hover {
-  background: #ffffff30;
+  background: color-mix(in srgb, var(--on-dark) 19%, transparent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -173,7 +173,7 @@
   }
 
   .media::after {
-    background: linear-gradient(0deg, #0b2449ff, #102a4cd9 43%, #102a4c50 100%);
+    background: linear-gradient(0deg, var(--navy-950), color-mix(in srgb, var(--navy-800) 85%, transparent) 43%, color-mix(in srgb, var(--navy-800) 31%, transparent) 100%);
   }
 
   .image {

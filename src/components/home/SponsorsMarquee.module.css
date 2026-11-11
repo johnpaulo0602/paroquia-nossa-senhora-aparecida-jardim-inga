@@ -33,9 +33,9 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid #e4eaf0;
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: white;
+  background: var(--paper);
   color: var(--navy);
   text-decoration: none;
 }
@@ -45,7 +45,7 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  background: white;
+  background: var(--paper);
   object-fit: contain;
 }
 

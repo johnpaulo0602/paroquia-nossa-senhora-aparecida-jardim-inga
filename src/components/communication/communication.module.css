@@ -13,12 +13,12 @@
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--navy-800);
-  color: #fff;
+  color: var(--on-dark);
 }
 
 .highlightMedia {
   min-height: 320px;
-  background: #1b3b5d;
+  background: var(--navy-600);
 }
 
 .highlightImage,
@@ -46,7 +46,7 @@
 
 .highlightCopy h2 {
   margin: 16px 0;
-  color: #fff;
+  color: var(--on-dark);
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 600;
   line-height: 1.15;
@@ -54,7 +54,7 @@
 }
 
 .highlightCopy p {
-  color: #dbe6ef;
+  color: var(--blue-100);
   line-height: 1.75;
 }
 
@@ -100,7 +100,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #a2b3c2;
+  background: var(--line-strong);
   content: '';
   transform: translate(-50%, -50%);
 }
@@ -144,16 +144,16 @@
 .filters button {
   min-height: 44px;
   padding: 8px 20px;
-  border: 1px solid #d4dfe9;
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: #fff;
+  background: var(--paper);
   color: var(--muted);
 }
 
 .filters button[aria-pressed='true'] {
   border-color: var(--navy-800);
   background: var(--navy-800);
-  color: #fff;
+  color: var(--on-dark);
 }
 
 .grid {
@@ -165,9 +165,9 @@
 .card {
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #e0e7ed;
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: #f5f7f9;
+  background: var(--blue-50);
 }
 
 .cardMedia {
@@ -201,7 +201,7 @@
   right: 14px;
   padding: 4px 11px;
   border-radius: var(--radius-lg);
-  background: rgb(255 255 255 / 94%);
+  background: color-mix(in srgb, var(--on-dark) 94%, transparent);
   color: var(--navy-800);
   font-size: var(--text-sm);
 }
@@ -249,7 +249,7 @@
   padding: 30px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--paper);
   text-align: center;
 }
 
@@ -371,7 +371,7 @@
 .source {
   margin-top: 32px;
   padding: 20px;
-  border-left: 3px solid #8aa9c4;
+  border-left: 3px solid var(--blue-300);
   background: var(--blue-50);
 }
 
@@ -440,11 +440,15 @@
 @media (prefers-reduced-motion: no-preference) {
   .card,
   .highlightControls button {
-    transition: box-shadow 160ms ease, border-color 160ms ease;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
   }
 
   .card:hover {
     border-color: var(--line-strong);
-    box-shadow: 0 10px 25px rgb(16 42 76 / 7%);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
   }
 }

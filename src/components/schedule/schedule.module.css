@@ -7,12 +7,12 @@
   border-radius: var(--radius-lg);
   background: var(--navy-800);
   padding: var(--space-6) var(--space-8);
-  color: white;
+  color: var(--on-dark);
 }
 
 .nextLabel {
   margin: 0 0 4px;
-  color: #d9c08a;
+  color: var(--gold-300);
   font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-caps);
@@ -21,13 +21,13 @@
 
 .nextTitle {
   margin: 0;
-  color: white;
+  color: var(--on-dark);
   font-size: var(--text-md);
   line-height: 1.4;
 }
 
 .nextTime {
-  color: white;
+  color: var(--on-dark);
   font-size: var(--text-3xl);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -132,7 +132,7 @@
   padding: 16px 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--paper);
 }
 
 .time {
@@ -197,7 +197,7 @@
 
 .exception {
   padding: 20px 24px;
-  border-left: 3px solid #8aa9c4;
+  border-left: 3px solid var(--blue-300);
   border-radius: 0 10px 10px 0;
   background: var(--blue-50);
 }
@@ -228,7 +228,7 @@
   padding: 30px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--paper);
   color: var(--muted);
   text-align: center;
 }

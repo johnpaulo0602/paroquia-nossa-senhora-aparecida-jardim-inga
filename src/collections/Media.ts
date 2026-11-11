@@ -1,6 +1,15 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import { authenticatedField, isAdminOrEditor } from '@/access'
+import { makeBlurDataURL } from '@/lib/blur'
+
+/** Regenerates the blur preview whenever a file is uploaded or replaced. */
+const generateBlur: CollectionBeforeChangeHook = async ({ data, req }) => {
+  if (req.file?.data && req.file.mimetype?.startsWith('image/')) {
+    data.blurData = await makeBlurDataURL(req.file.data)
+  }
+  return data
+}
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -15,6 +24,9 @@ export const Media: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    beforeChange: [generateBlur],
   },
   fields: [
     {
@@ -62,6 +74,16 @@ export const Media: CollectionConfig = {
       label: 'Uso autorizado',
       type: 'checkbox',
       defaultValue: false,
+    },
+    {
+      name: 'blurData',
+      label: 'Prévia desfocada',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        hidden: true,
+        description: 'Gerada automaticamente no upload; usada enquanto a imagem carrega.',
+      },
     },
     {
       name: 'internalNotes',

@@ -62,7 +62,7 @@ img {
   align-items: center;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  background: white;
+  background: var(--paper);
   padding: 1px 8px;
   color: var(--muted);
   font-size: var(--text-xs);
@@ -103,7 +103,7 @@ img {
   align-items: center;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  background: white;
+  background: var(--paper);
   padding: 0 16px;
   color: var(--navy-800);
   font-size: var(--text-sm);
@@ -118,7 +118,7 @@ img {
 .chips a[aria-current='true'] {
   border-color: var(--navy-800);
   background: var(--navy-800);
-  color: white;
+  color: var(--on-dark);
 }
 
 /* Set by the header while the mobile menu sheet is open. */
@@ -221,7 +221,7 @@ h3 {
 
 .button {
   background: var(--navy);
-  color: white;
+  color: var(--on-dark);
 }
 
 .button-secondary {
@@ -258,7 +258,7 @@ h3 {
 .card {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: white;
+  background: var(--paper);
   padding: 26px;
 }
 
@@ -297,7 +297,7 @@ h3 {
   z-index: 100;
   transform: translateY(-180%);
   border-radius: var(--radius-sm);
-  background: white;
+  background: var(--paper);
   padding: 10px 16px;
   box-shadow: var(--shadow);
   font-weight: 600;
@@ -311,15 +311,29 @@ h3 {
   margin-bottom: 0;
 }
 
+/*
+ * Motion (tokens.css): color changes use --dur-fast, cards lift 2px with --shadow-sm, images
+ * inside cards zoom to 1.03. The reduced-motion rule below switches all of it off.
+ */
 @media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  select {
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
   .button,
   .button-secondary,
   .card {
     transition:
-      background 180ms ease,
-      border-color 180ms ease,
-      box-shadow 180ms ease,
-      transform 180ms ease;
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
   }
 
   .button:hover,

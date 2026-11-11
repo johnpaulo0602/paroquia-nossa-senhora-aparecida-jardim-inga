@@ -39,7 +39,7 @@
 
 .viewSwitch a[aria-current='page'] {
   background: var(--navy-800);
-  color: #fff;
+  color: var(--on-dark);
 }
 
 .communityFilter {
@@ -151,7 +151,7 @@
   padding: 36px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--paper);
   text-align: center;
 }
 
@@ -178,7 +178,7 @@
   min-width: 700px;
   border-collapse: collapse;
   table-layout: fixed;
-  background: #fff;
+  background: var(--paper);
 }
 
 .calendar caption {
@@ -192,7 +192,7 @@
 .calendar th {
   padding: 12px 5px;
   background: var(--navy-800);
-  color: #fff;
+  color: var(--on-dark);
   font-size: var(--text-sm);
   font-weight: 500;
   text-align: center;
@@ -207,7 +207,7 @@
 }
 
 .calendar .blankDay {
-  background: #f0f4f7;
+  background: var(--blue-50);
 }
 
 .dayNumber {
@@ -220,7 +220,7 @@
   margin-top: 7px;
   padding: 6px;
   border-radius: 5px;
-  background: #e8f0f6;
+  background: var(--surface-strong);
   color: var(--navy-800);
   font-size: var(--text-sm);
   line-height: 1.4;

@@ -221,6 +221,10 @@ export interface Media {
    */
   recordedAt?: string | null;
   usageAuthorized?: boolean | null;
+  /**
+   * Gerada automaticamente no upload; usada enquanto a imagem carrega.
+   */
+  blurData?: string | null;
   internalNotes?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1277,6 +1281,7 @@ export interface MediaSelect<T extends boolean = true> {
   mediaType?: T;
   recordedAt?: T;
   usageAuthorized?: T;
+  blurData?: T;
   internalNotes?: T;
   updatedAt?: T;
   createdAt?: T;

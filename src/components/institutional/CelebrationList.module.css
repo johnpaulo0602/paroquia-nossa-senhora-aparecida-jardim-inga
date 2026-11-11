@@ -18,7 +18,7 @@
 
 .weekday {
   align-self: center;
-  color: #526575;
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 
@@ -41,7 +41,7 @@
 
 .list p {
   margin: 6px 0 0;
-  color: #6c8091;
+  color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.7;
   white-space: pre-line;
