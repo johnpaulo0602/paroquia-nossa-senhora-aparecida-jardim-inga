@@ -344,7 +344,18 @@ NEWSLETTER_ENABLED=false
 SHOW_DEMO_CONTENT=false
 ```
 
-Antes do lançamento oficial, desligue o que a paróquia ainda não aprovou (responsáveis, atendimento e retenção de dados). Hoje as rotas existem e são testadas, mas o site ainda não tem as telas de formulário que as chamam.
+Antes do lançamento oficial, desligue o que a paróquia ainda não aprovou (responsáveis, atendimento e retenção de dados).
+
+Onde cada formulário aparece (componentes em `src/components/forms/`):
+
+| Formulário | Página | Rota |
+| --- | --- | --- |
+| Fale conosco | `/contato` | `/api/contato` |
+| Pedido de batismo ou casamento | `/vida/batismo` e `/vida/matrimonio`, quando o campo "Formulário de pedido na página" do sacramento está preenchido | `/api/sacramentos` |
+| Interesse no dízimo | `/vida/mural-do-dizimo` | `/api/dizimo` |
+| Novidades por e-mail | faixa acima do rodapé, em todas as páginas | `/api/newsletter` |
+
+Com a variável de um formulário em `false`, a página volta a mostrar só os canais da secretaria.
 
 Solicitações de sacramento não reservam datas. A newsletter começa como pendente e tem confirmação e descadastro por token; o envio de e-mails exige configurar um provedor real.
 

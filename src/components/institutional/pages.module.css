@@ -807,3 +807,14 @@
     padding-left: 18px;
   }
 }
+
+.channelsTitle {
+  margin: 40px 0 0;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 28px;
+  font-size: var(--text-md);
+}
+
+.channelsTitle + .actions {
+  margin-top: 16px;
+}

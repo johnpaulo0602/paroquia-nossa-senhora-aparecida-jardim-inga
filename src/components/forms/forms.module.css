@@ -1,0 +1,206 @@
+.form {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field label,
+.legend {
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.optional {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  padding: 11px 14px;
+  color: var(--ink);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--blue-500);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  border-color: var(--navy);
+  outline-offset: 2px;
+}
+
+.fieldset {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--line-strong);
+  padding: var(--space-4) 0 0;
+}
+
+.fieldset .legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+}
+
+.consent {
+  display: grid;
+  align-items: start;
+  gap: var(--space-3);
+  grid-template-columns: auto 1fr;
+  color: var(--ink);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.consent input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--navy);
+}
+
+/* Bots fill every field; people never see this one. */
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.actions button {
+  cursor: pointer;
+}
+
+.actions button[disabled] {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.error,
+.success {
+  border-radius: var(--radius-sm);
+  margin: 0;
+  padding: 14px 18px;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.error {
+  border: 1px solid var(--danger-200);
+  border-left: 3px solid var(--danger-500);
+  background: var(--danger-50);
+  color: var(--danger-700);
+}
+
+.success {
+  border: 1px solid var(--success-200);
+  border-left: 3px solid var(--success-500);
+  background: var(--success-50);
+  color: var(--success-700);
+}
+
+.success strong {
+  display: block;
+  color: inherit;
+  font-size: var(--text-base);
+  margin-bottom: 4px;
+}
+
+.success button {
+  margin-top: var(--space-3);
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Compact single-line variant: newsletter sign-up on the dark footer band. */
+.inline {
+  margin-top: 0;
+  width: min(100%, 460px);
+}
+
+.inlineRow {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.inlineRow .field {
+  flex: 1;
+}
+
+.onDark .field label,
+.onDark .consent,
+.onDark .hint {
+  color: var(--on-dark);
+}
+
+.onDark .consent a {
+  color: inherit;
+}
+
+.onDark .field input {
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .inlineRow {
+    flex-direction: column;
+  }
+}

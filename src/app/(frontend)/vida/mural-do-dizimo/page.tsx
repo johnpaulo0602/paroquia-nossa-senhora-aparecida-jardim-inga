@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { MonthPicker } from '@/components/life/MonthPicker'
 import styles from '@/components/life/life.module.css'
 import { PageHeader } from '@/components/site/PageHeader'
+import { TitheInterestForm } from '@/components/forms/TitheInterestForm'
 import { Icon } from '@/components/site/Icon'
 import { titheWallPage as content } from '@/content/life'
+import { featureEnabled } from '@/lib/features'
 
 export const metadata: Metadata = {
   title: 'Mural do dízimo',
@@ -73,13 +75,25 @@ export default function TitheWallPage() {
             </p>
           </div>
           <div>
-            <p>
-              O atendimento é feito pelos canais da secretaria. Esta página não coleta dados,
-              realiza cadastro nem recebe pagamentos.
-            </p>
-            <Link className="button" href="/secretaria">
-              Falar com a secretaria <Icon name="arrow" />
-            </Link>
+            {featureEnabled('TITHE_FORM_ENABLED') ? (
+              <>
+                <p>
+                  Deixe seu nome e e-mail e a pastoral do dízimo entra em contato. Esta página não
+                  recebe pagamentos.
+                </p>
+                <TitheInterestForm />
+              </>
+            ) : (
+              <>
+                <p>
+                  O atendimento é feito pelos canais da secretaria. Esta página não coleta dados,
+                  realiza cadastro nem recebe pagamentos.
+                </p>
+                <Link className="button" href="/secretaria">
+                  Falar com a secretaria <Icon name="arrow" />
+                </Link>
+              </>
+            )}
           </div>
         </section>
       </div>

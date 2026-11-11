@@ -4,7 +4,11 @@ import type { SacramentGuide } from '@/payload-types'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 
+import { SacramentRequestForm } from '@/components/forms/SacramentRequestForm'
+import { featureEnabled } from '@/lib/features'
+
 import { EmptyState } from './EmptyState'
+import { getActiveCommunities } from './queries'
 import styles from './life.module.css'
 import { Icon } from '@/components/site/Icon'
 
@@ -14,7 +18,7 @@ type SacramentGuideViewProps = {
   fallbackIntro: string
 }
 
-export function SacramentGuideView({
+export async function SacramentGuideView({
   guide,
   fallbackTitle,
   fallbackIntro,
@@ -22,6 +26,12 @@ export function SacramentGuideView({
   const sections = guide?.sections ?? []
   const requirements = guide?.requirements ?? []
   const title = guide?.title ?? fallbackTitle
+  const formType =
+    featureEnabled('SACRAMENT_FORM_ENABLED') &&
+    (guide?.formType === 'baptism' || guide?.formType === 'marriage')
+      ? guide.formType
+      : null
+  const communities = formType ? await getActiveCommunities() : []
 
   return (
     <>
@@ -62,6 +72,11 @@ export function SacramentGuideView({
               <li>
                 <a href="#guia-secretaria">Atendimento</a>
               </li>
+              {formType ? (
+                <li>
+                  <a href="#guia-pedido">Fazer o pedido</a>
+                </li>
+              ) : null}
             </ol>
           </nav>
         ) : null}
@@ -120,10 +135,24 @@ export function SacramentGuideView({
             condições só são confirmados pela secretaria paroquial.
           </p>
         </div>
-        <Link className="button" href="/secretaria">
+        <Link className={formType ? 'button-secondary' : 'button'} href="/secretaria">
           Falar com a secretaria <Icon name="arrow" />
         </Link>
       </section>
+
+      {formType && (
+        <section className={styles.requestPanel} id="guia-pedido" aria-labelledby="guia-pedido-titulo">
+          <span className="eyebrow">Pedido pelo site</span>
+          <h2 id="guia-pedido-titulo">
+            {formType === 'baptism' ? 'Peça o batismo' : 'Peça o casamento'}
+          </h2>
+          <p>
+            Preencha o que já souber. A secretaria recebe o pedido e entra em contato para
+            combinar a preparação, os documentos e a data.
+          </p>
+          <SacramentRequestForm communities={communities} type={formType} />
+        </section>
+      )}
     </>
   )
 }

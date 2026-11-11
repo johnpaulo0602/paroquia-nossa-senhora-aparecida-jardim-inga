@@ -97,6 +97,21 @@ export const getClergy = cache(async () => {
   return docs
 })
 
+/** Names for the "which church?" list of the sacrament request form. */
+export const getActiveCommunities = cache(async () => {
+  const payload = await getCMS()
+  const { docs } = await payload.find({
+    collection: 'communities',
+    ...publicRead,
+    depth: 0,
+    where: { active: { equals: true } },
+    sort: 'order',
+    limit: 50,
+  })
+
+  return docs.map(({ id, name }) => ({ id, name }))
+})
+
 export const getLifeSiteSettings = cache(async () => {
   const payload = await getCMS()
   return payload.findGlobal({ slug: 'site-settings', ...publicRead })

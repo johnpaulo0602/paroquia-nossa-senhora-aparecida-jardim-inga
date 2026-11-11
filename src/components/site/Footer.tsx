@@ -1,6 +1,9 @@
 import type { SiteSetting } from '@/payload-types'
 
 import { Brand } from './Brand'
+import { NewsletterForm } from '@/components/forms/NewsletterForm'
+import { featureEnabled } from '@/lib/features'
+
 import { Icon } from './Icon'
 import { footerGroups as groups } from './navigation'
 import { SmartLink } from './SmartLink'
@@ -11,6 +14,7 @@ type FooterProps = {
 }
 
 export function Footer({ settings }: FooterProps) {
+  const newsletter = featureEnabled('NEWSLETTER_ENABLED')
   const name = settings?.name || 'Paróquia Nossa Senhora Aparecida'
 
   return (
@@ -21,15 +25,29 @@ export function Footer({ settings }: FooterProps) {
             <span className="eyebrow">Comunicação e acolhimento</span>
             <h2 id="footer-contact-title">Acompanhe a vida da nossa comunidade.</h2>
             <p>Leia os comunicados paroquiais ou fale com a secretaria para receber orientações.</p>
+            {newsletter && (
+              <div className={`${styles.ctaActions} ${styles.ctaActionsInline}`}>
+                <SmartLink className="button-secondary" href="/comunicacao">
+                  Ver comunicação <Icon name="arrow" />
+                </SmartLink>
+                <SmartLink className="button-secondary" href="/contato">
+                  Entrar em contato <Icon name="arrow" />
+                </SmartLink>
+              </div>
+            )}
           </div>
-          <div className={styles.ctaActions}>
-            <SmartLink className="button-secondary" href="/comunicacao">
-              Ver comunicação <Icon name="arrow" />
-            </SmartLink>
-            <SmartLink className="button" href="/contato">
-              Entrar em contato <Icon name="arrow" />
-            </SmartLink>
-          </div>
+          {newsletter ? (
+            <NewsletterForm />
+          ) : (
+            <div className={styles.ctaActions}>
+              <SmartLink className="button-secondary" href="/comunicacao">
+                Ver comunicação <Icon name="arrow" />
+              </SmartLink>
+              <SmartLink className="button" href="/contato">
+                Entrar em contato <Icon name="arrow" />
+              </SmartLink>
+            </div>
+          )}
         </div>
       </section>
       <footer className={styles.footer}>

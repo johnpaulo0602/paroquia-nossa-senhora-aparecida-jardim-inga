@@ -686,7 +686,7 @@ async function seedSacramentGuides(payload: Payload) {
       })),
       requirements: guide.requirements.map((text) => ({ text: richText(text) })),
       contactInfo,
-      formType: 'none',
+      formType: guide.guideType === 'catechesis' ? 'none' : guide.guideType,
       internalNotes: `seed:sacrament-guide:${guide.slug}`,
     })
   }

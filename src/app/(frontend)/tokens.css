@@ -29,6 +29,16 @@
   --on-dark: #ffffff;
   --on-dark-muted: #c7d5e5; /* secondary text on navy · 8:1 on navy-800 */
 
+  /* Feedback: form errors and confirmations */
+  --danger-700: #7a1a14; /* error text · 10:1 on danger-50 */
+  --danger-500: #b3261e; /* error accent border */
+  --danger-200: #e3b4ae;
+  --danger-50: #fdf3f2;
+  --success-700: #14522c; /* confirmation text · 9:1 on success-50 */
+  --success-500: #1e7a41; /* confirmation accent border */
+  --success-200: #b5d8c0;
+  --success-50: #f1f9f4;
+
   /* Aliases kept for existing modules */
   --navy: var(--navy-800);
   --blue: var(--blue-300);

@@ -8,6 +8,8 @@ import { emailHref, phoneHref, whatsappHref } from '@/components/institutional/u
 import { PageHeader } from '@/components/site/PageHeader'
 import { getCMS } from '@/lib/payload'
 import { Icon } from '@/components/site/Icon'
+import { ContactForm } from '@/components/forms/ContactForm'
+import { featureEnabled } from '@/lib/features'
 
 export const metadata: Metadata = {
   title: 'Fale conosco',
@@ -38,6 +40,8 @@ export default async function ContactPage() {
       )
     : null
 
+  const formEnabled = featureEnabled('CONTACT_FORM_ENABLED')
+
   return (
     <div className="page">
       <div className={`container ${styles.page}`}>
@@ -55,7 +59,9 @@ export default async function ContactPage() {
         <div className={styles.contactLayout}>
           <section className={styles.messagePanel} aria-labelledby="direct-message-title">
             <span className="eyebrow">Atendimento direto</span>
-            <h2 id="direct-message-title">Envie sua mensagem pelos canais oficiais</h2>
+            <h2 id="direct-message-title">
+              {formEnabled ? 'Envie sua mensagem' : 'Envie sua mensagem pelos canais oficiais'}
+            </h2>
             <p>
               {page.formIntro ||
                 'Para garantir que sua solicitação seja acolhida com segurança, o atendimento é realizado diretamente pelos canais da secretaria paroquial.'}
@@ -64,6 +70,13 @@ export default async function ContactPage() {
               Você pode falar sobre sacramentos, participação nas comunidades, pastorais,
               comunicação ou propostas de parceria.
             </p>
+
+            {formEnabled && (
+              <>
+                <ContactForm />
+                <h3 className={styles.channelsTitle}>Prefere falar direto com a secretaria?</h3>
+              </>
+            )}
 
             <div className={styles.actions}>
               {whatsappUrl && (

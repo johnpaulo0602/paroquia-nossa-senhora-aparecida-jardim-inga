@@ -11,7 +11,7 @@ import { getCMS } from '@/lib/payload'
 import { featureEnabled } from '@/lib/features'
 
 const responseMessage =
-  'Solicitação recebida. A inscrição só será ativada após confirmação pelo fluxo de double opt-in.'
+  'Recebemos o seu e-mail. A paróquia confirma a inscrição antes de começar a enviar as novidades.'
 
 export async function POST(request: Request): Promise<Response> {
   return handleJsonForm(
