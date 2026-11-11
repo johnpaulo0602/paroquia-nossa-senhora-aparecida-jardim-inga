@@ -336,7 +336,7 @@ O arquivo `vercel.json` define o build (`npm run ci`, que aplica as migrações 
 Observações:
 
 - `MEDIA_BUCKET` é obrigatório na Vercel: o disco das funções é somente leitura, então uploads na pasta `media/` não funcionam.
-- Se o banco de produção já foi usado com `npm run dev`, a tabela `payload_migrations` guarda um registro `dev`. Nesse caso `payload migrate` pede confirmação e, sem terminal, encerra sem aplicar nada: o build segue com o schema antigo. Use uma branch separada do Neon para desenvolvimento, ou remova esse registro antes de depender de novas migrações.
+- Não rode `npm run dev` com push contra o banco de produção: o push grava um registro `dev` em `payload_migrations`, e com ele o `payload migrate` do build para numa pergunta interativa e o deploy trava. Se o `.env` local apontar para o banco de produção, defina `PAYLOAD_DB_PUSH=false` e altere o schema só por migrações (`npm run payload -- migrate:create` e `migrate`).
 - O limite de envios dos formulários fica na memória de cada instância; em ambiente serverless ele não é compartilhado entre instâncias.
 
 ## Produção com Docker

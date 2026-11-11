@@ -103,7 +103,10 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
-    push: process.env.NODE_ENV !== 'production',
+    // Push syncs the schema straight into the database and leaves a `dev` row in
+    // payload_migrations, which blocks `payload migrate` in CI. Set
+    // PAYLOAD_DB_PUSH=false when DATABASE_URL points at a deployed database.
+    push: process.env.NODE_ENV !== 'production' && process.env.PAYLOAD_DB_PUSH !== 'false',
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
