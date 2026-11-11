@@ -77,6 +77,7 @@
   --dur-slow: 320ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  /* Breakpoints (reference only — CSS can't use vars in @media):
+  /* Breakpoints (reference only — CSS can't use vars in @media). Use only these four,
+     always as max-width; tests/int/breakpoints.int.spec.ts enforces it:
      sm 480px · md 768px · lg 1024px · xl 1280px */
 }

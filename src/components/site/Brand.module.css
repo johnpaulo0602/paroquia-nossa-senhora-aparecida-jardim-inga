@@ -58,7 +58,7 @@
   color: white;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 480px) {
   .symbol {
     width: 72px;
     height: 35px;

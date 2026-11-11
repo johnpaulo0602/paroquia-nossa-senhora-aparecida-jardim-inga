@@ -230,7 +230,7 @@ export function HomeSections({
                         <MediaImage
                           alt=""
                           image={post.cover}
-                          sizes="(max-width: 650px) 50vw, (max-width: 950px) 50vw, 390px"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 390px"
                         />
                       ) : (
                         <span className={styles.postCoverFallback}>
@@ -287,13 +287,13 @@ export function HomeSections({
               <MediaImage
                 alt="Fachada da matriz Nossa Senhora Aparecida"
                 image={home.participationImage}
-                sizes="(max-width: 650px) 100vw, 580px"
+                sizes="(max-width: 768px) 100vw, 580px"
               />
             ) : (
               <Image
                 alt="Fachada azul da matriz Nossa Senhora Aparecida"
                 height={900}
-                sizes="(max-width: 650px) 100vw, 580px"
+                sizes="(max-width: 768px) 100vw, 580px"
                 src="/images/matriz-atual.jpg"
                 width={1200}
               />
@@ -459,7 +459,7 @@ export function HomeSections({
                 <MediaImage
                   alt=""
                   image={projects[0].cover}
-                  sizes="(max-width: 750px) 100vw, 550px"
+                  sizes="(max-width: 768px) 100vw, 550px"
                 />
               ) : (
                 <div className={styles.projectVisualFallback}>

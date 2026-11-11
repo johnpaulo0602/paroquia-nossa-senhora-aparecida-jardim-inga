@@ -39,7 +39,7 @@ export function PastoralDetail({ pastoral }: { pastoral: Pastoral }) {
             image={pastoral.cover}
             alt={pastoral.title}
             className={styles.detailImage}
-            sizes="(max-width: 650px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
           {typeof pastoral.cover === 'object' && pastoral.cover?.caption ? (
             <figcaption>{pastoral.cover.caption}</figcaption>

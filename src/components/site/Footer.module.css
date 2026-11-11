@@ -141,7 +141,7 @@
   text-decoration: none;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1024px) {
   .contactCta > div {
     align-items: flex-start;
     flex-direction: column;
@@ -158,7 +158,7 @@
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 768px) {
   .contactCta {
     padding-block: 35px;
   }

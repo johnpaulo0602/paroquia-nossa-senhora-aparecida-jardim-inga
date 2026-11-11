@@ -149,13 +149,13 @@
   font-size: var(--text-sm);
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1024px) {
   .image {
     height: 230px;
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 768px) {
   .jump {
     padding: 18px 0;
   }

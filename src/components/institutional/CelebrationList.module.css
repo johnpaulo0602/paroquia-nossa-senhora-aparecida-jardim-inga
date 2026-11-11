@@ -54,7 +54,7 @@
   line-height: 1.8;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 480px) {
   .list li {
     grid-template-columns: 1fr auto;
     gap: 6px 14px;

@@ -39,7 +39,7 @@ export default async function PastorumPage() {
             image={content.image}
             alt="Equipe sacerdotal da paróquia"
             className={styles.pastorImage}
-            sizes="(max-width: 650px) 100vw, 40vw"
+            sizes="(max-width: 768px) 100vw, 40vw"
           />
           <div>
             <span className="eyebrow">A palavra dos nossos pastores</span>

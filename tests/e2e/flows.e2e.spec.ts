@@ -29,12 +29,35 @@ test('agenda abre em próximos eventos com um único seletor', async ({ page }) 
   await expect(page).toHaveURL(/visualizacao=calendario/)
 })
 
-test('páginas públicas não mostram placeholders de CMS', async ({ page }) => {
-  for (const route of ['/', '/paroquia', '/padroeira', '/comunicacao', '/contato']) {
+const publicRoutes = [
+  '/',
+  '/horarios',
+  '/agenda',
+  '/paroquia',
+  '/padroeira',
+  '/equipe',
+  '/comunidades',
+  '/comunicacao',
+  '/vida/pastorais',
+  '/vida/espiritualidade',
+  '/vida/mural-do-dizimo',
+  '/contato',
+  '/contribuir',
+]
+
+test('páginas públicas não mostram placeholders nem texto de bastidor', async ({ page }) => {
+  for (const route of publicRoutes) {
     await page.goto(route)
-    const text = await page.locator('main').innerText()
+    // The origin badge is the one allowed place for "Demonstração" / "Em confirmação".
+    const text = await page
+      .locator('main')
+      .evaluate((main) => {
+        const copy = main.cloneNode(true) as HTMLElement
+        copy.querySelectorAll('.origin-badge').forEach((badge) => badge.remove())
+        return copy.innerText
+      })
     expect(text, route).not.toMatch(
-      /não cadastrad|Nenhum destaque está em exibição|serão apresentados aqui|fictíci/i,
+      /não cadastrad|Nenhum destaque está em exibição|serão apresentados aqui|fictíci|demonstraç|pendente|provisóri|não está ativo/i,
     )
   }
 })

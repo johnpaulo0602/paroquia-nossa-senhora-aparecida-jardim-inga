@@ -44,7 +44,7 @@ export function Timeline({ items, label, idPrefix, emptyMessage }: TimelineProps
                       image={image}
                       alt={image.alt || item.title}
                       className={styles.image}
-                      sizes="(max-width: 650px) 100vw, 42vw"
+                      sizes="(max-width: 768px) 100vw, 42vw"
                     />
                     {(image.caption || image.credit) && (
                       <figcaption>

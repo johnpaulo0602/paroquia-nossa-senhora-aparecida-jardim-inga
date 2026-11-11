@@ -59,7 +59,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .nextMass {
     flex-wrap: wrap;
     padding: var(--space-4);
@@ -760,7 +760,7 @@
   }
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1024px) {
   .services {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -793,7 +793,7 @@
   }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 768px) {
   .agenda,
   .communities,
   .faith,
@@ -844,7 +844,7 @@
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 768px) {
   .home {
     padding-top: 18px;
   }
@@ -1027,7 +1027,7 @@
   }
 }
 
-@media (max-width: 390px) {
+@media (max-width: 480px) {
   .postGrid {
     grid-template-columns: 1fr;
   }

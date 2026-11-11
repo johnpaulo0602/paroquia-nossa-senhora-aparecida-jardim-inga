@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   }
 
   return (
-    <html className={poppins.variable} lang="pt-BR">
+    <html className={poppins.variable} data-scroll-behavior="smooth" lang="pt-BR">
       <body>
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo

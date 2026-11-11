@@ -48,7 +48,7 @@ export default async function CommunitiesPage() {
                       image={cover}
                       alt={cover.alt || `Imagem da comunidade ${community.name}`}
                       className={styles.communityCardImage}
-                      sizes="(max-width: 700px) 100vw, (max-width: 950px) 50vw, 33vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
                     <div className={styles.communityCardFallback} aria-hidden="true">

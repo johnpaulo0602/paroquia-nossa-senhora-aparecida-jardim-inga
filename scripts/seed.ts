@@ -451,7 +451,8 @@ async function seedCommunities(payload: Payload) {
         community: ids.get(communitySlug)!,
         weekday,
         time,
-        notes: 'Horário encontrado na pesquisa; confirmação paroquial pendente.',
+        // The origin badge already says this is unconfirmed; null also clears older seeds.
+        notes: null,
         active: true,
         internalNotes: `seed:celebration:${communitySlug}:${weekday}:${time}`,
       },
@@ -477,37 +478,37 @@ async function seedPeopleAndPastorals(payload: Payload) {
     },
     {
       slug: 'placeholder-secretaria',
-      name: 'Nome a confirmar — Secretaria paroquial (demonstração)',
+      name: 'Nome a confirmar — Secretaria paroquial',
       role: 'Secretaria paroquial',
       roleType: 'service',
     },
     {
       slug: 'placeholder-coordenacao-administrativa',
-      name: 'Nome a confirmar — Coordenação administrativa (demonstração)',
+      name: 'Nome a confirmar — Coordenação administrativa',
       role: 'Coordenação administrativa',
       roleType: 'administration',
     },
     {
       slug: 'placeholder-comunicacao',
-      name: 'Nome a confirmar — Pastoral da comunicação (demonstração)',
+      name: 'Nome a confirmar — Pastoral da comunicação',
       role: 'Pastoral da comunicação',
       roleType: 'pastoral',
     },
     {
       slug: 'placeholder-conselho-pastoral',
-      name: 'Nome a confirmar — Conselho pastoral (demonstração)',
+      name: 'Nome a confirmar — Conselho pastoral',
       role: 'Conselho pastoral',
       roleType: 'pastoral',
     },
     {
       slug: 'placeholder-catequese',
-      name: 'Nome a confirmar — Coordenação da catequese (demonstração)',
+      name: 'Nome a confirmar — Coordenação da catequese',
       role: 'Coordenação da catequese',
       roleType: 'pastoral',
     },
     {
       slug: 'placeholder-acolhimento',
-      name: 'Nome a confirmar — Equipe de acolhimento (demonstração)',
+      name: 'Nome a confirmar — Equipe de acolhimento',
       role: 'Equipe de acolhimento',
       roleType: 'service',
     },
@@ -526,11 +527,8 @@ async function seedPeopleAndPastorals(payload: Payload) {
       name: member.name,
       slug: member.slug,
       generateSlug: false,
-      biography: richText(
-        member.roleType === 'clergy'
-          ? 'Perfil de demonstração. A identificação do sacerdote consta no diretório diocesano consultado em 28/10/2026; biografia e fotografia estão pendentes.'
-          : 'Perfil inteiramente provisório para demonstrar a estrutura do portal. Função, responsável, biografia e fotografia precisam ser confirmados pela paróquia.',
-      ),
+      // No placeholder biography: an empty field hides the block on the site.
+      biography: null,
       photo,
       publicContactAuthorized: false,
       internalNotes: `seed:person:${member.slug}`,
@@ -568,7 +566,7 @@ async function seedPeopleAndPastorals(payload: Payload) {
       coordinators: [],
       meetingInfo: [],
       participationInfo: richText(
-        'Conteúdo de demonstração. Para conhecer as formas de participação confirmadas, fale com a secretaria paroquial.',
+        'Para saber como participar, fale com a secretaria paroquial.',
       ),
       requirements: richText('Coordenação, encontros, local, preparação e requisitos a confirmar.'),
       cover,
@@ -642,7 +640,7 @@ async function seedSacramentGuides(payload: Payload) {
           paragraphs: [
             'A secretaria orientará sobre os encontros de preparação, a documentação e os passos do processo matrimonial.',
             'Consulte a equipe sobre a celebração, a organização do espaço e as orientações litúrgicas.',
-            'Eventuais contribuições serão informadas pela secretaria. Não há cobrança ou pagamento nesta demonstração.',
+            'Eventuais contribuições serão informadas pela secretaria.',
           ],
         },
       ],
@@ -787,7 +785,6 @@ async function seedPosts(
       generateSlug: false,
       summary: reflection.summary,
       body: richText([
-        'Texto original de demonstração, sem autoria atribuída aos sacerdotes.',
         ...reflection.body,
       ]),
       format: 'article',
@@ -849,7 +846,7 @@ async function seedEvents(payload: Payload, communityIds: Map<string, number>) {
       community: communityIds.get(event.community)!,
       locationText: communityName,
       participationInfo: richText(
-        'Demonstração sem inscrição, reserva ou programação oficial. Em um evento real, este espaço apresentará orientações confirmadas pela equipe.',
+        'Para informações sobre inscrição e participação, fale com a secretaria paroquial.',
       ),
       archived: false,
       internalNotes: `seed:event:${event.slug}`,
@@ -936,7 +933,6 @@ async function seedMilestones(payload: Payload) {
       context: 'parish',
       title: 'Os primeiros passos da comunidade',
       paragraphs: [
-        'Texto provisório de demonstração, sem valor histórico.',
         'Espaço reservado para contar como a comunidade começou a se reunir, com depoimentos e registros dos primeiros paroquianos.',
       ],
       datePrecision: 'text',
@@ -948,7 +944,6 @@ async function seedMilestones(payload: Payload) {
       context: 'parish',
       title: 'A construção da nossa matriz',
       paragraphs: [
-        'Texto provisório de demonstração, sem valor histórico.',
         'Inserir aqui as datas da construção, as etapas da obra e a história das pessoas que ajudaram a erguer a igreja.',
       ],
       datePrecision: 'text',
@@ -960,7 +955,6 @@ async function seedMilestones(payload: Payload) {
       context: 'parish',
       title: 'Uma fé que alcança novos lugares',
       paragraphs: [
-        'Texto provisório de demonstração, sem valor histórico.',
         'Este espaço receberá a história das capelas, das pastorais e dos grupos que passaram a integrar a vida paroquial.',
       ],
       datePrecision: 'text',
@@ -1291,7 +1285,7 @@ async function seedGlobals(payload: Payload) {
       { weekday: 'saturday', opensAt: '08:00', closesAt: '11:00' },
     ],
     donationInfo: richText(
-      'Esta demonstração não recebe doações. Canais financeiros, dados bancários e campanhas somente serão publicados após fornecimento e confirmação oficial pela paróquia.',
+      'Para contribuir com a paróquia, fale com a secretaria paroquial, que orienta sobre o dízimo e as campanhas em andamento.',
     ),
   })
 
@@ -1377,7 +1371,7 @@ async function seedGlobals(payload: Payload) {
     ],
     communicationTitle: 'A vida da Igreja, mais perto de você.',
     communicationIntro:
-      'Seleção editorial de 12/10/2026; notícias com fontes e imagens ilustrativas, apresentadas como demonstração.',
+      'Notícias, avisos e reflexões da paróquia e da Igreja.',
     participationTitle: 'A igreja azul. Uma história de encontros.',
     participationBody:
       'Conheça a matriz Nossa Senhora Aparecida e as comunidades que caminham juntas no Jardim Ingá.',
@@ -1436,7 +1430,7 @@ async function seedGlobals(payload: Payload) {
     coverCaption: 'Imagem de referência da matriz. Não representa a fachada em 1997.',
     contributionTitle: 'Você tem uma história para compartilhar?',
     contributionBody:
-      'Fotografias antigas, documentos e lembranças podem ajudar a contar a trajetória da nossa comunidade. Converse com a secretaria para saber como colaborar. Página em preparação; marcos sem data e textos provisórios não têm valor histórico.',
+      'Fotografias antigas, documentos e lembranças podem ajudar a contar a trajetória da nossa comunidade. Converse com a secretaria para saber como colaborar.',
   })
 
   await updateGlobal(payload, 'patron-page', {
@@ -1500,11 +1494,11 @@ async function seedGlobals(payload: Payload) {
       'Há muitas formas de contribuir: participar de uma pastoral, oferecer seu tempo e apoiar a missão paroquial.',
     body: richText([
       'Seja dizimista: converse com a secretaria sobre a pastoral do dízimo e as formas de participação.',
-      'Ofereça seu tempo: conheça as pastorais de demonstração e procure a secretaria para saber quais serviços estão confirmados.',
-      'Apoie uma campanha: as campanhas e os canais de doação serão publicados somente após confirmação da paróquia.',
+      'Ofereça seu tempo: conheça as pastorais e procure a secretaria para saber onde servir.',
+      'Apoie uma campanha: a secretaria informa as campanhas em andamento.',
     ]),
     donationNotice:
-      'Esta demonstração não recebe doações. Dados bancários e campanhas precisam ser confirmados pela paróquia.',
+      'Para doar, fale com a secretaria paroquial.',
   })
 
   await updateGlobal(payload, 'spirituality-page', {
@@ -1539,7 +1533,7 @@ async function seedGlobals(payload: Payload) {
     image: teamPlaceholder,
     sectionTitle: 'Uma presença que acolhe e orienta.',
     sectionBody:
-      'Este espaço reunirá mensagens, homilias e reflexões aprovadas pelos sacerdotes da paróquia. Pe. Inaldo José Salustiano e Pe. Cláudio Eduardo de Faria foram identificados no diretório diocesano; fotografias e apresentações estão pendentes. As reflexões de demonstração não são atribuídas aos sacerdotes.',
+      'Mensagens, homilias e reflexões dos sacerdotes da paróquia, Pe. Inaldo José Salustiano e Pe. Cláudio Eduardo de Faria, para caminhar na fé com a comunidade.',
   })
 
   await updateGlobal(payload, 'tithe-wall-page', {
@@ -1567,7 +1561,7 @@ async function seedGlobals(payload: Payload) {
     ].map((title) => ({ title })),
     interestTitle: 'Tenho interesse em ser dizimista',
     interestBody:
-      'Procure a secretaria para receber orientações. O formulário demonstrativo não está ativo: não envia nem armazena dados, não realiza cadastro e não recebe pagamentos.',
+      'Procure a secretaria paroquial para receber orientações sobre como se tornar dizimista.',
   })
 }
 

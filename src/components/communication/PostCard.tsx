@@ -18,7 +18,7 @@ export function PostCard({ post }: { post: Post }) {
             image={post.cover}
             alt=""
             className={styles.cardImage}
-            sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <span className={styles.cardPlaceholder}>{postFormatLabels[post.format]}</span>

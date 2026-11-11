@@ -57,8 +57,9 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
             <MediaImage
               alt=""
               className={styles.image}
+              eager={activeIndex === 0}
               image={slide.image}
-              sizes="(max-width: 650px) 100vw, 1240px"
+              sizes="(max-width: 768px) 100vw, 1240px"
             />
           ) : (
             <Image
@@ -66,7 +67,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
               className={styles.image}
               fill
               priority
-              sizes="(max-width: 650px) 100vw, 1240px"
+              sizes="(max-width: 768px) 100vw, 1240px"
               src="/images/matriz-atual.jpg"
             />
           )}

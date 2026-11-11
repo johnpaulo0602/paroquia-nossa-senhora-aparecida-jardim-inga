@@ -112,7 +112,7 @@ export default async function PostPage({ params }: PageProps) {
               <MediaImage
                 image={cover}
                 alt={cover.alt || post.title}
-                sizes="(max-width: 900px) 100vw, 850px"
+                sizes="(max-width: 1024px) 100vw, 850px"
               />
               {coverCredits && <figcaption>{coverCredits}</figcaption>}
             </figure>
@@ -132,7 +132,7 @@ export default async function PostPage({ params }: PageProps) {
                       <MediaImage
                         image={image}
                         alt={image.alt || item.caption || post.title}
-                        sizes="(max-width: 700px) 100vw, 420px"
+                        sizes="(max-width: 768px) 100vw, 420px"
                       />
                       {(item.caption || image.credit) && (
                         <figcaption>

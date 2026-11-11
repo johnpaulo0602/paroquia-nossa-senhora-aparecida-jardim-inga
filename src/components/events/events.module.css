@@ -359,14 +359,14 @@
   border-top: 1px solid var(--line);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .detailGrid {
     grid-template-columns: 1fr;
     gap: 30px;
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 480px) {
   .eventCard {
     align-items: flex-start;
     gap: 15px;

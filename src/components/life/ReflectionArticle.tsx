@@ -42,7 +42,7 @@ export function ReflectionArticle({ post }: { post: Post }) {
             image={post.cover}
             alt=""
             className={styles.readingImage}
-            sizes="(max-width: 850px) 100vw, 800px"
+            sizes="(max-width: 768px) 100vw, 800px"
           />
         ) : null}
 

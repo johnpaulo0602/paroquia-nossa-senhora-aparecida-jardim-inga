@@ -87,7 +87,7 @@ img {
 }
 
 /* On phones chips scroll sideways in one row instead of stacking. */
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .chips {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -328,7 +328,7 @@ h3 {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 768px) {
   .container {
     width: calc(100% - 40px);
   }
@@ -342,7 +342,7 @@ h3 {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 480px) {
   .container {
     width: calc(100% - 36px);
   }

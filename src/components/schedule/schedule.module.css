@@ -294,7 +294,7 @@
   font-weight: 700;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .sectionHeading,
   .contact {
     align-items: flex-start;
@@ -314,7 +314,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .occurrence {
     grid-template-columns: 64px minmax(0, 1fr);
     gap: 12px;

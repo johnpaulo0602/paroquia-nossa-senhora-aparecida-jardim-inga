@@ -7,6 +7,8 @@ type MediaImageProps = {
   alt?: string
   className?: string
   sizes?: string
+  /** Above-the-fold image (logo, first hero slide): load eagerly with high priority. */
+  eager?: boolean
 }
 
 function normalizeMediaSrc(url: string): string {
@@ -22,14 +24,16 @@ function normalizeMediaSrc(url: string): string {
   return url
 }
 
-export function MediaImage({ image, alt, className, sizes = '100vw' }: MediaImageProps) {
+export function MediaImage({ image, alt, className, sizes = '100vw', eager }: MediaImageProps) {
   if (!image || typeof image === 'number' || !image.url) return null
 
   return (
     <Image
       alt={alt ?? image.alt}
       className={className}
+      fetchPriority={eager ? 'high' : undefined}
       height={image.height || 900}
+      loading={eager ? 'eager' : undefined}
       sizes={sizes}
       src={normalizeMediaSrc(image.url)}
       width={image.width || 1200}

@@ -5,6 +5,7 @@ import { Callout } from '@/components/institutional/Callout'
 import styles from '@/components/institutional/pages.module.css'
 import { asMedia, asPerson, emailHref, phoneHref } from '@/components/institutional/utils'
 import { MediaImage } from '@/components/site/MediaImage'
+import { OriginBadge } from '@/components/site/OriginBadge'
 import { PageHeader } from '@/components/site/PageHeader'
 import { RichText } from '@/components/site/RichText'
 import { getCMS } from '@/lib/payload'
@@ -78,7 +79,7 @@ export default async function TeamPage() {
                         image={photo}
                         alt={photo.alt || `Fotografia de ${person.name}`}
                         className={styles.teamPhoto}
-                        sizes="(max-width: 700px) 100vw, 340px"
+                        sizes="(max-width: 768px) 100vw, 340px"
                       />
                     ) : (
                       <div className={styles.photoFallback}>Fotografia não publicada.</div>
@@ -86,11 +87,10 @@ export default async function TeamPage() {
                     <div className={styles.teamLeadCopy}>
                       <span className="eyebrow">{assignment.roleTitle}</span>
                       <h2>{person.name}</h2>
+                      <OriginBadge origin={person.origin} />
                       {assignment.area && <span className={styles.area}>{assignment.area}</span>}
-                      {person.biography ? (
+                      {person.biography && (
                         <RichText content={person.biography} className={styles.biography} />
-                      ) : (
-                        <p className={styles.muted}>Biografia ainda não publicada.</p>
                       )}
                       <PersonContactLinks person={person} />
                     </div>
@@ -122,7 +122,7 @@ export default async function TeamPage() {
                         image={photo}
                         alt={photo.alt || `Fotografia de ${person.name}`}
                         className={styles.teamCardPhoto}
-                        sizes="(max-width: 700px) 100vw, (max-width: 950px) 50vw, 33vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
                       <div className={styles.photoFallback}>Fotografia não publicada.</div>
@@ -130,11 +130,10 @@ export default async function TeamPage() {
                     <div className={styles.teamCardCopy}>
                       <span className="eyebrow">{assignment.roleTitle}</span>
                       <h3>{person.name}</h3>
+                      <OriginBadge origin={person.origin} />
                       {assignment.area && <span className={styles.area}>{assignment.area}</span>}
-                      {person.biography ? (
+                      {person.biography && (
                         <RichText content={person.biography} className={styles.biography} />
-                      ) : (
-                        <p className={styles.muted}>Apresentação ainda não publicada.</p>
                       )}
                       <PersonContactLinks person={person} />
                     </div>

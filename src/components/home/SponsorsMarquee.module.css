@@ -67,7 +67,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .logo {
     width: 165px;
     height: 105px;

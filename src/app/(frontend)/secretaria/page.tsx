@@ -186,7 +186,7 @@ export default async function SecretariatPage() {
               image={specialImage}
               alt={specialImage.alt || 'Celebrações na Paróquia Nossa Senhora Aparecida'}
               className={styles.specialImage}
-              sizes="(max-width: 700px) 100vw, 520px"
+              sizes="(max-width: 768px) 100vw, 520px"
             />
           ) : (
             <div className={styles.readingMark} aria-hidden="true">

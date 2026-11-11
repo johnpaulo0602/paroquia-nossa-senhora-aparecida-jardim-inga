@@ -15,7 +15,7 @@ export function PastoralCard({ pastoral }: { pastoral: Pastoral }) {
         alt=""
         className={styles.pastoralImage}
         icon="users"
-        sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+        sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
       <div className={styles.pastoralCardBody}>
         <span className="eyebrow">Pastoral</span>

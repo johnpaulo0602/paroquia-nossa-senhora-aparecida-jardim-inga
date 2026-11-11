@@ -1036,7 +1036,7 @@
   align-self: center;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1024px) {
   .guideGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1067,7 +1067,7 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .pageInner {
     padding-bottom: 55px;
   }
@@ -1164,7 +1164,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .guideGrid,
   .pastoralGrid,
   .editorialGrid,

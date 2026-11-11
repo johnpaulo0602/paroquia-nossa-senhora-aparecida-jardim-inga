@@ -57,7 +57,7 @@ export function HighlightsCarousel({ highlights }: { highlights: Highlight[] }) 
               image={image}
               alt={image.alt || title}
               className={styles.highlightImage}
-              sizes="(max-width: 800px) 100vw, 55vw"
+              sizes="(max-width: 768px) 100vw, 55vw"
             />
           ) : (
             <span className={styles.highlightPlaceholder} aria-hidden="true">
